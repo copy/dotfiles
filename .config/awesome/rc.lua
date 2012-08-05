@@ -412,6 +412,7 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 -- }}}
 
 -- run xflux
+-- oh noes, you know where I live 
 awful.util.spawn_with_shell("~/xflux/xflux -l 51.5 -g 7.2")
 
 awful.util.spawn_with_shell("xfce4-settings-helper")
