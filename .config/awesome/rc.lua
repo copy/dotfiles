@@ -1,8 +1,5 @@
 -- If you want to use this configuration,
--- change the startup at the bottom of this file
--- and the terminal command in line 48
-
-
+-- change the startup scripts at the bottom of this file
 
 
 
@@ -46,8 +43,8 @@ end
 beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
--- run startup script
-terminal = "xfterm4 -e '/home/fabian/init.sh'"
+terminal = "xfterm4"
+
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -375,7 +372,7 @@ awful.rules.rules = {
 
         -- if this gets executed, it must be the first terminal to be
         -- invoked, so we move it to a tag
-        c:tags({tags[1][2]})
+        -- c:tags({tags[1][2]})
       end
     },
 
@@ -424,6 +421,5 @@ awful.util.spawn_with_shell("xfce4-settings-helper")
 
 -- run orage
 awful.util.spawn_with_shell("orage")
-
 
 
