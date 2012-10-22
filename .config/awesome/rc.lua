@@ -73,10 +73,27 @@ layouts =
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 tags = {}
-for s = 1, screen.count() do
+--for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[1])
-end
+   names = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }
+   start_layouts = {
+    awful.layout.suit.floating,
+    awful.layout.suit.magnifier,
+    awful.layout.suit.magnifier,
+    awful.layout.suit.magnifier,
+    awful.layout.suit.magnifier,
+
+    awful.layout.suit.magnifier,
+    awful.layout.suit.magnifier,
+    awful.layout.suit.magnifier,
+    awful.layout.suit.magnifier,
+    awful.layout.suit.magnifier
+	}
+   
+
+    tags[1] = awful.tag(names, 1, start_layouts)
+    tags[2] = awful.tag(names, 2, start_layouts)
+--end
 -- }}}
 
 -- {{{ Menu
@@ -252,7 +269,16 @@ globalkeys = awful.util.table.join(
                   mypromptbox[mouse.screen].widget,
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
-              end)
+              end),
+	
+	-- multimedia keys
+	--awful.key({ }, "XF86AudioNext",function () awful.util.spawn( "mpc next" ) end),
+	--awful.key({ }, "XF86AudioPrev",function () awful.util.spawn( "mpc prev" ) end),
+	--awful.key({ }, "XF86AudioPlay",function () awful.util.spawn( "mpc play" ) end),
+	--awful.key({ }, "XF86AudioStop",function () awful.util.spawn( "mpc pause" ) end),
+	awful.key({ }, "XF86AudioRaiseVolume",function () awful.util.spawn( "amixer  set Master 7%+ -q" ) end),
+	awful.key({ }, "XF86AudioLowerVolume",function () awful.util.spawn( "amixer  set Master 7%- -q" ) end),
+	awful.key({ }, "XF86AudioMute",function () awful.util.spawn( "amixer set Master toggle -q" ) end)
 )
 
 clientkeys = awful.util.table.join(
@@ -344,20 +370,27 @@ awful.rules.rules = {
                      buttons = clientbuttons } },
     { rule = { class = "MPlayer" },
       properties = { floating = true } },
-    { rule = { class = "pidgin" },
+    { rule = { class = "Pidgin" },
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
+    { rule = { class = "Skype" },
+      properties = { floating = true } },
+    { rule = { class = "Orage" },
+      properties = { floating = true } },
+
+	  
     --{ rule = { class = "Thunderbird" },
     --  properties = { tag = tags[2][1] } },
 
 	-- wine doesn't like borders
 	{ rule = { class = "Wine" },
 	  properties = { border_width = 0 } },
-    -- Set Firefox to always map on tags number 2 of screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { tag = tags[1][2] } },
-	
+
+     --{ rule = { class = "Firefox" },
+      -- properties = { tag = tags[1][2] } },
+      --properties = { floating = false, border_width = 5, maximized_vertical = true } },
+
 	-- move first terminal (autostart) to tag 2
     { rule = { class = "Terminal" },
       --properties = { border_width = 0 },
@@ -387,12 +420,17 @@ client.add_signal("manage", function (c, startup)
 
     -- Enable sloppy focus
     c:add_signal("mouse::enter", function(c)
-        if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+		local count = 0
+		--for _ in pairs(awful.client.tiled(c.screen)) do
+		for _ in pairs(awful.client.visible(c.screen)) do
+			count = count + 1
+		end
+
+       if (awful.layout.get(c.screen) ~= awful.layout.suit.magnifier or count < 2)
             and awful.client.focus.filter(c) then
             client.focus = c
         end
     end)
-
 
     if not startup then
         -- Set the windows at the slave,
@@ -415,7 +453,7 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 -- oh noes, you know where I live 
 awful.util.spawn_with_shell("~/xflux/xflux -l 51.5 -g 7.2")
 
-awful.util.spawn_with_shell("xfce4-settings-helper")
+--awful.util.spawn_with_shell("xfce4-settings-helper")
 
 -- run term on startup
 --awful.util.spawn("xfterm4")
