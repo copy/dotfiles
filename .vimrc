@@ -10,13 +10,25 @@ inoremap <f2> <c-o>:w<return>
 
 syntax enable
 set showcmd
-set tabstop=4 shiftwidth=4
+set tabstop=4 shiftwidth=4 expandtab
 set nocompatible
 set autoindent
 set selectmode=mouse
 set statusline=[%02n]\ %f\ %(\[%M%R%H]%)%=\ %4l,%02c%2V\ %P%*
 set number
 set mouse=a
+
+
+" autodetect tabs/spaces
+function Kees_settabs()
+    if len(filter(getbufline(winbufnr(0), 1, "$"), 'v:val =~ "^\\t"')) > len(filter(getbufline(winbufnr(0), 1, "$"), 'v:val =~ "^ "'))
+        set noet ts=8 sw=8
+    endif
+endfunction
+autocmd BufReadPost * call Kees_settabs()
+
+
+autocmd BufNewFile,BufRead *.go set nowrap tabstop=4 shiftwidth=4 expandtab
 
 
 " solarized theme
@@ -34,3 +46,13 @@ set mouse=a
 "map <Up>    :echo "no!"<cr>
 "map <Down>  :echo "no!"<cr>
 
+" make vim load latex suite
+filetype plugin on
+
+" IMPORTANT: grep will sometimes skip displaying the file name if you
+" search in a singe file. This will confuse Latex-Suite. Set your grep
+" program to always generate a file-name.
+set grepprg=grep\ -nH\ $*
+
+" OPTIONAL: This enables automatic indentation as you type.
+filetype indent on
