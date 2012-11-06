@@ -73,27 +73,26 @@ layouts =
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 tags = {}
---for s = 1, screen.count() do
-    -- Each screen has its own tag table.
-    names = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }
-    start_layouts = {
-        awful.layout.suit.max,
-        awful.layout.suit.max,
-        awful.layout.suit.max,
-        awful.layout.suit.max,
-        awful.layout.suit.max,
+names = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }
+start_layouts = {
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+    awful.layout.suit.max,
 
-        awful.layout.suit.max,
-        awful.layout.suit.max,
-        awful.layout.suit.max,
-        awful.layout.suit.max,
-        awful.layout.suit.max
-    }
-   
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+    awful.layout.suit.max
+}
 
-    tags[1] = awful.tag(names, 1, start_layouts)
-    tags[2] = awful.tag(names, 2, start_layouts)
---end
+
+
+for s = 1, screen.count() do
+    tags[s] = awful.tag(names, s, start_layouts)
+end
 -- }}}
 
 -- {{{ Menu
@@ -115,7 +114,7 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
 
 -- something magic should happen ...  :-)
 mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
-                                     command = './notifyfortune.sh' })
+                                     command = './magic.sh' })
 -- }}}
 
 -- {{{ Wibox
@@ -434,7 +433,7 @@ awful.rules.rules = {
     { rule = { class = "Skype" },
       properties = { floating = true } },
     { rule = { class = "Orage" },
-      properties = { floating = true, tag = tags[2][1], focus = false } },
+      properties = { floating = true, tag = tags[screen.count()][1], focus = false } },
 
     { rule = { class = "Audacious" },
       callback = function( c )
