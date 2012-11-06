@@ -3,7 +3,7 @@ vmap <C-c> y:call system("xclip -i -selection clipboard", getreg("\""))<CR>:call
 nmap <C-v> :call setreg("\"",system("xclip -o -selection clipboard"))<CR>p
 
 " alias w as W
-cnoreabbrev W w
+" cnoreabbrev W w
 
 noremap  <f2> :w<return>
 inoremap <f2> <c-o>:w<return>
@@ -22,7 +22,7 @@ set mouse=a
 " autodetect tabs/spaces
 function Kees_settabs()
     if len(filter(getbufline(winbufnr(0), 1, "$"), 'v:val =~ "^\\t"')) > len(filter(getbufline(winbufnr(0), 1, "$"), 'v:val =~ "^ "'))
-        set noet ts=8 sw=8
+        set noet ts=4 sw=4
     endif
 endfunction
 autocmd BufReadPost * call Kees_settabs()
