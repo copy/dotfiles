@@ -1,0 +1,19 @@
+"3.5 (created: 2012/08/04 00:41:20)
+
+highlight Hint font-family: monospace; font-size: 13px; font-weight: bold; text-transform: uppercase; color: white; background-color: black; border-color: ButtonShadow; border-width: 0px; border-style: solid; padding: 0px 1px 0px 1px; 
+imap <C-w> <Esc>:tabclose<Return>
+imap <C-t> <Esc>:tabopen<Return><C-l>
+imap <C-j> <Esc><C-j>
+imap <C-k> <Esc><C-k>
+map <C-j> gT
+map <C-k> gt
+noremap h 4h
+noremap l 4l
+noremap j 6j
+noremap k 6k
+noremap d <C-d>
+noremap u <C-u>
+set "titlestring=Netscape Navigator"
+source! /home/fabian/.vimperatorrc.local
+
+" vim: set ft=vimperator:
