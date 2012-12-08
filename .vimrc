@@ -10,7 +10,7 @@ inoremap <f2> <c-o>:w<return>
 
 syntax enable
 set showcmd
-set tabstop=4 shiftwidth=4 expandtab
+set softtabstop=4 shiftwidth=4 expandtab
 set nocompatible
 set autoindent
 set selectmode=mouse
@@ -18,6 +18,9 @@ set statusline=[%02n]\ %f\ %(\[%M%R%H]%)%=\ %4l,%02c%2V\ %P%*
 set number
 set mouse=a
 
+" store undos
+set undofile
+set undodir=~/.vimundo/
 
 " autodetect tabs/spaces
 function Kees_settabs()
@@ -41,18 +44,27 @@ autocmd BufNewFile,BufRead *.go set nowrap tabstop=4 shiftwidth=4 expandtab
 "set list 
 
 " disable cursor keys in normal mode
-"map <Left>  :echo "no!"<cr>
-"map <Right> :echo "no!"<cr>
-"map <Up>    :echo "no!"<cr>
-"map <Down>  :echo "no!"<cr>
+map <Left>  <nop>
+map <Right> <nop>
+map <Up>    <nop>
+map <Down>  <nop>
 
 " make vim load latex suite
 filetype plugin on
+
+" don't fold sections
+let Tex_FoldedSections=""
+let Tex_FoldedEnvironments=""
+let Tex_FoldedMisc=""
+
+
 
 " IMPORTANT: grep will sometimes skip displaying the file name if you
 " search in a singe file. This will confuse Latex-Suite. Set your grep
 " program to always generate a file-name.
 set grepprg=grep\ -nH\ $*
 
+
 " OPTIONAL: This enables automatic indentation as you type.
 filetype indent on
+
