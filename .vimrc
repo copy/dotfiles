@@ -21,6 +21,7 @@ set mouse=a
 " store undos
 set undofile
 set undodir=~/.vimundo/
+set undolevels=10000
 
 " autodetect tabs/spaces
 function Kees_settabs()
