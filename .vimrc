@@ -1,6 +1,6 @@
 " allow ctrl+c, ctrl+v with x clipboard
 vmap <C-c> y:call system("xclip -i -selection clipboard", getreg("\""))<CR>:call system("xclip -i", getreg("\""))<CR>
-nmap <C-v> :call setreg("\"",system("xclip -o -selection clipboard"))<CR>p
+nmap <C-p> :call setreg("\"",system("xclip -o -selection clipboard"))<CR>p
 
 " alias w as W
 " cnoreabbrev W w
