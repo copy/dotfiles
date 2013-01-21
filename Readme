@@ -1,0 +1,5 @@
+My dotfiles for commonly used software.
+
+Vimperator is a plugin that brings vim bindings to Firefox.
+
+.config/awesome/rc.lua is the config file for my lightweight, tiling window manager, awesome.
