@@ -35,6 +35,7 @@ autocmd BufReadPost * call Kees_settabs()
 autocmd BufNewFile,BufRead *.go set nowrap tabstop=4 shiftwidth=4 expandtab
 
 
+"#let g:solarized_termcolors=256
 " solarized theme
 "set background=dark
 "colorscheme solarized

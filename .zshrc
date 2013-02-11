@@ -30,9 +30,12 @@ export PATH=/home/fabian/.local/bin:$PATH
 # wine is on another drive
 export WINEPREFIX=/media/wdc/home/fabian/.wine
 
+export EDITOR=gvim
+
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
 
+alias wgets='H="--header"; wget $H="Accept-Language: en-us,en;q=0.5" $H="Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" $H="Connection: keep-alive" -U "Mozilla/5.0 (Windows NT 5.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2" '
 
 fortune

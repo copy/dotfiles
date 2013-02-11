@@ -40,10 +40,10 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
-beautiful.init("/usr/share/awesome/themes/default/theme.lua")
+beautiful.init("/home/fabian/.config/awesome/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xfterm4"
+terminal = "terminal"
 
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
@@ -327,9 +327,12 @@ globalkeys = awful.util.table.join(
 	awful.key({ }, "XF86AudioPlay",function () awful.util.spawn( "cmus-remote -u" ) end),
 	--awful.key({ }, "XF86AudioStop",function () awful.util.spawn( "mpc pause" ) end),
 
-	awful.key({ }, "XF86AudioRaiseVolume",function () awful.util.spawn( "amixer  set Master 7%+ -q" ) end),
-	awful.key({ }, "XF86AudioLowerVolume",function () awful.util.spawn( "amixer  set Master 7%- -q" ) end),
-	awful.key({ }, "XF86AudioMute",function () awful.util.spawn( "amixer set Master toggle -q" ) end)
+	-- awful.key({ }, "XF86AudioRaiseVolume",function () awful.util.spawn( "amixer -c'Audigy2' set Master 7%+ -q" ) end),
+	-- awful.key({ }, "XF86AudioLowerVolume",function () awful.util.spawn( "amixer -c'Audigy2' set Master 7%- -q" ) end),
+	-- awful.key({ }, "XF86AudioMute",function () awful.util.spawn( "amixer -c'Audigy2' set Master toggle -q" ) end)
+	awful.key({ }, "XF86AudioRaiseVolume",function () awful.util.spawn( ".local/bin/setvolume increase" ) end),
+	awful.key({ }, "XF86AudioLowerVolume",function () awful.util.spawn( ".local/bin/setvolume decrease" ) end),
+	awful.key({ }, "XF86AudioMute",function () awful.util.spawn( ".local/bin/setvolume mute" ) end)
 )
 
 clientkeys = awful.util.table.join(
@@ -495,7 +498,7 @@ client.add_signal("manage", function (c, startup)
     end
 end)
 
-client.add_signal("focus", function(c) c.border_color = "#bbaa11" end)
+client.add_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 

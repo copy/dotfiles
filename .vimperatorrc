@@ -5,6 +5,13 @@ imap <C-w> <Esc>:tabclose<Return>
 imap <C-t> <Esc>:tabopen<Return><C-l>
 imap <C-j> <Esc><C-j>
 imap <C-k> <Esc><C-k>
+imap <C-1> <Esc><C-1>
+imap <C-2> <Esc><C-2>
+imap <C-3> <Esc><C-3>
+imap <C-4> <Esc><C-4>
+imap <C-5> <Esc><C-5>
+imap <C-6> <Esc><C-6>
+imap <C-7> <Esc><C-7>
 inoremap <C-a> <Insert><C-a><Insert>
 map <C-h> <C-l>
 map <C-1> :tabrewind<Return>
