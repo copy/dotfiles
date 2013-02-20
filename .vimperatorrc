@@ -1,6 +1,8 @@
 "3.6 (created: 2012/12/24 13:05:56)
 
+cnoremap <C-j> <Nop>
 highlight Hint font-family: monospace; font-size: 13px; font-weight: bold; text-transform: uppercase; color: white; background-color: black; border-color: ButtonShadow; border-width: 0px; border-style: solid; padding: 0px 1px 0px 1px; 
+highlight StatusLine color: black; background: transparent; font-weight: bold; 
 imap <C-w> <Esc>:tabclose<Return>
 imap <C-t> <Esc>:tabopen<Return><C-l>
 imap <C-j> <Esc><C-j>
@@ -13,7 +15,6 @@ imap <C-5> <Esc><C-5>
 imap <C-6> <Esc><C-6>
 imap <C-7> <Esc><C-7>
 inoremap <C-a> <Insert><C-a><Insert>
-map <C-h> <C-l>
 map <C-1> :tabrewind<Return>
 map <C-2> <C-1><C-k>
 map <C-3> <C-1>2<C-k>
@@ -23,12 +24,16 @@ map <C-6> <C-1>5<C-k>
 map <C-7> <C-1>6<C-k>
 map <C-k> <C-Tab>
 map <C-j> <C-S-Tab>
-noremap h 4h
-noremap l 4l
+nnoremap h 4h
+nnoremap l 4l
+nnoremap j 7j
+nnoremap k 7k
+nnoremap <silent> <C-l> :tabmove!<Space>+1<Return>
+nnoremap <silent> <C-h> :tabmove!<Space>-1<Return>
+noremap <Esc> :stop<Return><Esc>
 noremap d <C-d>
 noremap u <C-u>
-noremap j 7j
-noremap k 7k
+set defsearch=g
 set "titlestring=Netscape Navigator"
 source! /home/fabian/.vimperatorrc.local
 
