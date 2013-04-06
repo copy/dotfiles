@@ -1,0 +1,28 @@
+
+PS1='%B%n %~%% %b'
+
+
+# set terminal title
+precmd () {print -Pn "\e]0;%n@%m: %d\a"}
+
+
+alias -s js=vim
+alias -s html=vim
+alias -s css=vim
+alias -s c=vim
+alias -s hs=vim
+alias -s py=vim
+alias -s md=vim
+
+
+alias -s jpg=feh
+alias -s jpeg=feh
+alias -s png=feh
+alias -s gif=feh
+
+
+alias -g ...='../..'
+alias -g ....='../../..'
+alias -g .....='../../../..'
+
+unsetopt listambiguous

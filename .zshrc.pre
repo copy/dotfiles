@@ -1,0 +1,71 @@
+
+#zstyle ':completion:*' completer _expand _complete _approximate
+#zstyle ':completion:*' completer _expand _complete 
+#
+#zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
+#zstyle ':completion:*:warnings' format '%BNo matches for: %d%b'
+#
+#zstyle ':completion:*:(ssh|scp|ftp):*' hosts $hosts
+#zstyle ':completion:*:(ssh|scp|ftp):*' users $users
+#
+#zstyle :compinstall filename '/home/fabian/.zshrc'
+#zstyle ':completion:*' menu select
+
+#fpath=(~/.zsh/zsh-completions/src $fpath)
+
+#autoload -Uz compinit
+#compinit
+
+setopt EXTENDED_GLOB
+
+
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+unsetopt beep
+
+bindkey ';5D' emacs-backward-word
+bindkey ';5C' emacs-forward-word
+
+WORDCHARS=${WORDCHARS//[&=\/;!#%\{]}
+bindkey -e
+
+zmodload zsh/complist
+
+
+# colors for file completion
+#eval `gdircolors`
+#zstyle ':completion:*' list-colors ''
+#zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
+
+setopt correctall
+setopt hist_ignore_space
+setopt autocd
+
+
+
+
+export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.9/
+
+
+# load google app engine binaries into path
+export PATH=/home/fabian/gae:$PATH
+export PATH=/home/fabian/.local/bin:$PATH
+
+# wine is on another drive
+export WINEPREFIX=/media/wdc/home/fabian/.wine
+
+export EDITOR=gvim
+
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+alias wgets='H="--header"; wget $H="Accept-Language: en-us,en;q=0.5" $H="Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" $H="Connection: keep-alive" -U "Mozilla/5.0 (Windows NT 5.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2" '
+ 
+
+
+fortune
+
+
