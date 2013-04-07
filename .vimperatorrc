@@ -25,6 +25,7 @@ map <C-7> <C-1>6<C-k>
 map <C-0> <C-1><C-j>
 map <C-k> <C-Tab>
 map <C-j> <C-S-Tab>
+map x <c-w>
 nnoremap h 4h
 nnoremap l 4l
 nnoremap j 7j
