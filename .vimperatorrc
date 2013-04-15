@@ -3,8 +3,8 @@
 cnoremap <C-j> <Nop>
 highlight Hint font-family: monospace; font-size: 13px; font-weight: bold; text-transform: uppercase; color: white; background-color: black; border-color: ButtonShadow; border-width: 0px; border-style: solid; padding: 0px 1px 0px 1px; 
 highlight StatusLine color: black; background: transparent; font-weight: bold; 
-imap <C-w> <Esc>:tabclose<Return>
-imap <C-t> <Esc>:tabopen<Return><C-l>
+"imap <C-w> <Esc>:tabclose<Return>
+"imap <C-t> <Esc>:tabopen<Return><C-l>
 imap <C-j> <Esc><C-j>
 imap <C-k> <Esc><C-k>
 imap <C-1> <Esc><C-1>
@@ -23,24 +23,30 @@ map <C-5> <C-1>4<C-k>
 map <C-6> <C-1>5<C-k>
 map <C-7> <C-1>6<C-k>
 map <C-0> <C-1><C-j>
-map <C-k> <C-Tab>
-map <C-j> <C-S-Tab>
-map x <c-w>
+"map <C-k> <C-Tab>
+"map <C-j> <C-S-Tab>
+map <C-k> :tabnext<Return>
+map <C-j> :tabprev<Return>
+"noremap j <down>
+"noremap k <up>
+noremap <c-d> :tab downloads<Return>
+inoremap <c-d> <Esc><c-d>
 nnoremap h 4h
 nnoremap l 4l
 nnoremap j 7j
 nnoremap k 7k
 nnoremap <silent> <C-l> :tabmove!<Space>+1<Return>
 nnoremap <silent> <C-h> :tabmove!<Space>-1<Return>
+nnoremap e <c-s-t>
 noremap <Esc> :stop<Return><Esc>
 noremap d <C-d>
 noremap u <C-u>
-noremap x <C-w>
+noremap x <Esc>:set noapptab<Return><c-w>
 set defsearch=g
 set hintchars=hjklasdfgyuiopqwertnmzxcvb
 set hintinputs=name,value
 set hintmatching=firstletters
 set "titlestring=Netscape Navigator"
-source! /home/fabian/.vimperatorrc.local
+"source! /home/fabian/.vimperatorrc.local
 
 " vim: set ft=vimperator:
