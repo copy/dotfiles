@@ -29,6 +29,7 @@ map <C-k> :tabnext<Return>
 map <C-j> :tabprev<Return>
 "noremap j <down>
 "noremap k <up>
+"noremap <c-u> <c-s-6>
 noremap <c-d> :tab downloads<Return>
 inoremap <c-d> <Esc><c-d>
 nnoremap h 4h
@@ -42,11 +43,14 @@ noremap <Esc> :stop<Return><Esc>
 noremap d <C-d>
 noremap u <C-u>
 noremap x <Esc>:set noapptab<Return><c-w>
+noremap s :set invapp<Return>
+noremap v <c-^>
 set defsearch=g
 set hintchars=hjklasdfgyuiopqwertnmzxcvb
 set hintinputs=name,value
 set hintmatching=firstletters
 set "titlestring=Netscape Navigator"
+set animations
 "source! /home/fabian/.vimperatorrc.local
 
 " vim: set ft=vimperator:
