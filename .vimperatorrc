@@ -51,6 +51,9 @@ set hintinputs=name,value
 set hintmatching=firstletters
 set "titlestring=Netscape Navigator"
 set animations
+set newtab=all
+set complete=l
+set maxitems=30
 "source! /home/fabian/.vimperatorrc.local
 
 " vim: set ft=vimperator:
