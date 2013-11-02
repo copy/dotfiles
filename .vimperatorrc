@@ -14,6 +14,8 @@ imap <C-4> <Esc><C-4>
 imap <C-5> <Esc><C-5>
 imap <C-6> <Esc><C-6>
 imap <C-7> <Esc><C-7>
+imap <C-o> <Esc><C-o>
+imap <C-i> <Esc><C-i>
 inoremap <C-a> <Insert><C-a><Insert>
 map <C-1> :tabrewind<Return>
 map <C-2> :2tabnext<Return>
@@ -22,7 +24,7 @@ map <C-4> :4tabnext<Return>
 map <C-5> :5tabnext<Return>
 map <C-6> :6tabnext<Return>
 map <C-7> :7tabnext<Return>
-map <C-0> :tablast<Return>
+noremap <C-0> :tablast<Return>
 "map <C-k> <C-Tab>
 "map <C-j> <C-S-Tab>
 map <C-k> :tabnext<Return>
@@ -32,19 +34,22 @@ map <C-j> :tabprev<Return>
 "noremap <c-u> <c-s-6>
 noremap <c-d> :tab downloads<Return>
 inoremap <c-d> <Esc><c-d>
-nnoremap h 4h
-nnoremap l 4l
-nnoremap j 7j
-nnoremap k 7k
-nnoremap <silent> <C-l> :tabmove!<Space>+1<Return>
-nnoremap <silent> <C-h> :tabmove!<Space>-1<Return>
-nnoremap e <c-s-t>
+noremap h 4h
+noremap l 4l
+noremap j 7j
+noremap k 7k
+noremap <silent> <C-l> :tabmove!<Space>+1<Return>
+noremap <silent> <C-h> :tabmove!<Space>-1<Return>
+noremap e <c-s-t>
 noremap <Esc> :stop<Return><Esc>
 noremap d <C-d>
 noremap u <C-u>
 noremap x <Esc>:set noapptab<Return><c-w>
 noremap s :set invapp<Return>
 noremap v <c-^>
+noremap p :t <c-v><Return>
+noremap gf :tab viewsource<Return>
+noremap <F2> <Esc>t chrome://browser/content/places/places.xul<Return>
 set defsearch=g
 set hintchars=hjklasdfgyuiopqwertnmzxcvb
 set hintinputs=name,value
@@ -55,5 +60,6 @@ set newtab=all
 set complete=l
 set maxitems=30
 "source! /home/fabian/.vimperatorrc.local
+
 
 " vim: set ft=vimperator:
