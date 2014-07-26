@@ -26,3 +26,19 @@ alias -g ....='../../..'
 alias -g .....='../../../..'
 
 unsetopt listambiguous
+
+unsetopt share_history
+
+alias d8=~/DL/v8/out/ia32.debug/d8
+
+alias webserver='python -m SimpleHTTPServer'
+alias longest="awk 'length > m { m = length; a = NR } END { print a }'"
+
+function google { Q="$@"; GOOG_URL='https://www.google.de/search?tbs=li:1&q='; AGENT="Mozilla/4.0"; stream=$(curl -A "$AGENT" -skLm 10 "${GOOG_URL}${Q//\ /+}" | grep -oP '\/url\?q=.+?&amp' | sed 's|/url?q=||; s|&amp||'); echo -e "${stream//\%/\x}"; }
+
+alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])"'
+alias urldecode='python -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])"'
+
+cd
+
+

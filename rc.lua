@@ -18,6 +18,8 @@ local menubar = require("menubar")
 
 --local vicious = require("vicious")
 --local blingbling = require("blingbling")
+-- shifty - dynamic tagging library
+--local shifty = require("shifty")
 
 
 function run_once(prg, args)
@@ -77,12 +79,12 @@ layouts =
 {
     awful.layout.suit.floating,
     --awful.layout.suit.tile,
-    --awful.layout.suit.tile.left,
+    awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     --awful.layout.suit.tile.top,
     --awful.layout.suit.fair,
     --awful.layout.suit.fair.horizontal,
-    awful.layout.suit.spiral,
+    --awful.layout.suit.spiral,
     --awful.layout.suit.spiral.dwindle,
     awful.layout.suit.max,
     --awful.layout.suit.max.fullscreen,
@@ -504,39 +506,49 @@ awful.rules.rules = {
                      keys = clientkeys,
                      buttons = clientbuttons } },
     { rule = { class = "MPlayer" },
-      properties = { floating = true } },
-    { rule = { class = "Pidgin" },
-      properties = { floating = true } },
-    { rule = { class = "gimp" },
+      properties = { border_width = 0 } },
+    { rule = { class = "Vlc" },
+      properties = { border_width = 0 } },
+    --{ rule = { class = "Pidgin" },
+      --properties = { floating = true } },
+    --{ rule = { class = "gimp" },
+      --properties = { floating = true } },
+    { rule = { class = "Orage" },
       properties = { floating = true } },
     --{ rule = { class = "Skype" },
       --properties = { floating = true } },
     { rule = { class = "VirtualBox" },
       properties = { border_width = 0 } },
+    --{ rule = { class = "Wine" },
+      --properties = { floating = true } },
+    { rule = { class = "Hexchat" },
+      properties = { border_width = 0 } },
+    { rule = { class = "qemu-system-i386" },
+      properties = { floating = true } },
     --{ rule = { class = "Orage" },
       --properties = { floating = true, tag = tags[0][0], focus = false } },
 
-    { rule = { class = "Audacious" },
-      callback = function( c )
-          -- set layout to floating for audacious
-          awful.layout.set(awful.layout.suit.floating, c.tags(c)[0])
-      end
-    },
+    --{ rule = { class = "Audacious" },
+    --  callback = function( c )
+    --      -- set layout to floating for audacious
+    --      awful.layout.set(awful.layout.suit.floating, c.tags(c)[0])
+    --  end
+    --},
 
-	-- wine doesn't like borders
-	{ rule = { class = "Wine" },
-	  properties = { border_width = 0 } },
+    -- wine doesn't like borders
+    { rule = { class = "Wine" },
+      properties = { border_width = 0 } },
 
      --{ rule = { class = "Firefox" },
       -- properties = { tag = tags[1][2] } },
       --properties = { floating = false, border_width = 5, maximized_vertical = true } },
 
-    { rule = { class = "Terminal" },
-      --properties = { border_width = 0 },
-      callback = function(c)
-          awful.layout.set(awful.layout.suit.spiral, c.tags(c)[0])
-      end
-    },
+    --{ rule = { class = "Terminal" },
+    --  --properties = { border_width = 0 },
+    --  callback = function(c)
+    --      awful.layout.set(awful.layout.suit.spiral, c.tags(c)[0])
+    --  end
+    --},
 
 }
 -- }}}

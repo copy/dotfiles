@@ -14,8 +14,11 @@ imap <C-4> <Esc><C-4>
 imap <C-5> <Esc><C-5>
 imap <C-6> <Esc><C-6>
 imap <C-7> <Esc><C-7>
+imap <C-8> <Esc><C-8>
+imap <C-9> <Esc><C-9>
+imap <C-0> <Esc><C-0>
 imap <C-o> <Esc><C-o>
-imap <C-i> <Esc><C-i>
+"imap <C-i> <Esc><C-i>
 inoremap <C-a> <Insert><C-a><Insert>
 map <C-1> :tabrewind<Return>
 map <C-2> :2tabnext<Return>
@@ -24,11 +27,15 @@ map <C-4> :4tabnext<Return>
 map <C-5> :5tabnext<Return>
 map <C-6> :6tabnext<Return>
 map <C-7> :7tabnext<Return>
+"noremap <C-8> :tablast<Return>2<C-j>
+"noremap <C-9> :tablast<Return><C-j>
 noremap <C-0> :tablast<Return>
 "map <C-k> <C-Tab>
 "map <C-j> <C-S-Tab>
 map <C-k> :tabnext<Return>
 map <C-j> :tabprev<Return>
+map X x<c-j>
+map i <Esc>:bmarks! 
 "noremap j <down>
 "noremap k <up>
 "noremap <c-u> <c-s-6>
@@ -42,16 +49,26 @@ noremap <silent> <C-l> :tabmove!<Space>+1<Return>
 noremap <silent> <C-h> :tabmove!<Space>-1<Return>
 noremap e <c-s-t>
 noremap <Esc> :stop<Return><Esc>
-noremap d <C-d>
-noremap u <C-u>
+"noremap d <C-d>
+"noremap u <C-u>
+map d 3j
+map u 3k
 noremap x <Esc>:set noapptab<Return><c-w>
 noremap s :set invapp<Return>
 noremap v <c-^>
 noremap p :t <c-v><Return>
 noremap gf :tab viewsource<Return>
 noremap <F2> <Esc>t chrome://browser/content/places/places.xul<Return>
-set defsearch=g
-set hintchars=hjklasdfgyuiopqwertnmzxcvb
+noremap <F3> <Esc>t chrome://downloadmgr/content/downloadmgrOverlay.xul<Return>
+
+inoremap <F2> <Esc>t chrome://browser/content/places/places.xul<Return>
+inoremap <F3> <Esc>t chrome://downloadmgr/content/downloadmgrOverlay.xul<Return>
+
+"set defsearch=duckduckgo
+"set defsearch=sp
+set defsearch=goo
+"set hintchars=hjklasdfgyuiopqwertnmzxcvb
+set hintchars=hjklasdf
 set hintinputs=name,value
 set hintmatching=firstletters
 set "titlestring=Netscape Navigator"
@@ -59,7 +76,8 @@ set animations
 set newtab=all
 set complete=l
 set maxitems=30
-"source! /home/fabian/.vimperatorrc.local
 
+set gui=none
+set gui=tabs
 
 " vim: set ft=vimperator:

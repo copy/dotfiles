@@ -4,6 +4,7 @@ nmap <C-p> :call setreg("\"",system("xclip -o -selection clipboard"))<CR>p
 
 " alias w as W
 " cnoreabbrev W w
+execute pathogen#infect()
 
 noremap  <f2> :w<return>
 inoremap <f2> <c-o>:w<return>
@@ -19,13 +20,20 @@ set statusline=[%02n]\ %f\ %(\[%M%R%H]%)%=\ %4l,%02c%2V\ %P%*
 set number
 set cursorline
 set mouse=a
+set so=15
+
+set encoding=utf-8
+set termencoding=utf-8
 
 filetype indent on
 
 " store undos
 set undofile
 set undodir=~/.vimundo/
-set undolevels=10000
+set undolevels=1000
+
+
+au BufNewFile,BufRead *.js.macro set filetype=javascript
 
 set hls
 
@@ -99,6 +107,8 @@ augroup resCur
 augroup END
 
 
+map <F5> <Esc>:edit<Return>
+
 
 "noremap n n:call HighlightNearCursor()<CR>
 "noremap p p:call HighlightNearCursor()<CR>
@@ -116,3 +126,48 @@ function HighlightNearCursor()
   endif
 endfunction
 
+
+"execute pathogen#infect()
+"let g:syntastic_javascript_checker = "closurecompiler"
+"let g:syntastic_javascript_closure_compiler_path = '~/closure-compiler.jar'
+" It takes additional options for Google Closure Compiler with the variable
+" g:syntastic_javascript_closure_compiler_options.
+
+"let g:syntastic_javascript_checker = "jslint"
+
+set fileformats+=dos
+
+
+
+" Transparent editing of gpg encrypted files.
+augroup encrypted
+au!
+" First make sure nothing is written to ~/.viminfo while editing
+" an encrypted file.
+autocmd BufReadPre,FileReadPre      *.gpg set viminfo=
+" We don't want a swap file, as it writes unencrypted data to disk
+autocmd BufReadPre,FileReadPre      *.gpg set noswapfile
+" Switch to binary mode to read the encrypted file
+autocmd BufReadPre,FileReadPre      *.gpg set bin
+autocmd BufReadPre,FileReadPre      *.gpg let ch_save = &ch|set ch=2
+autocmd BufReadPre,FileReadPre      *.gpg let shsave=&sh
+autocmd BufReadPre,FileReadPre      *.gpg let &sh='sh'
+autocmd BufReadPre,FileReadPre      *.gpg let ch_save = &ch|set ch=2
+autocmd BufReadPost,FileReadPost    *.gpg '[,']!gpg --decrypt 2> /dev/null
+autocmd BufReadPost,FileReadPost    *.gpg let &sh=shsave
+" Switch to normal mode for editing
+autocmd BufReadPost,FileReadPost    *.gpg set nobin
+autocmd BufReadPost,FileReadPost    *.gpg let &ch = ch_save|unlet ch_save
+autocmd BufReadPost,FileReadPost    *.gpg execute ":doautocmd BufReadPost " . expand("%:r")
+" Convert all text to encrypted text before writing
+autocmd BufWritePre,FileWritePre    *.gpg set bin
+autocmd BufWritePre,FileWritePre    *.gpg let shsave=&sh
+autocmd BufWritePre,FileWritePre    *.gpg let &sh='sh'
+"autocmd BufWritePre,FileWritePre    *.gpg '[,']!gpg --encrypt --default-recipient-self 2>/dev/null
+autocmd BufWritePre,FileWritePre    *.gpg '[,']!gpg --symmetric 2>/dev/null
+autocmd BufWritePre,FileWritePre    *.gpg let &sh=shsave
+" Undo the encryption so we are back in the normal text, directly
+" after the file has been written.
+autocmd BufWritePost,FileWritePost  *.gpg silent u
+autocmd BufWritePost,FileWritePost  *.gpg set nobin
+augroup END
