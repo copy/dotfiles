@@ -1,0 +1,14 @@
+
+cd ~/Music/
+
+# Don't play anything after play queue
+set play_library=false
+set repeat=false
+set aaa_mode=album
+set shuffle=false
+
+
+unbind common ^U
+unbind common ^D
+bind common ^U win-page-up
+bind common ^D win-page-down
