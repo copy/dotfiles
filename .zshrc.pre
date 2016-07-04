@@ -1,6 +1,6 @@
 
 #zstyle ':completion:*' completer _expand _complete _approximate
-#zstyle ':completion:*' completer _expand _complete 
+#zstyle ':completion:*' completer _expand _complete
 #
 #zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
 #zstyle ':completion:*:warnings' format '%BNo matches for: %d%b'
@@ -18,6 +18,11 @@
 
 setopt EXTENDED_GLOB
 
+# show the destination of symbolic links instead of its name
+setopt CHASE_LINKS
+
+# don't remove trailing slash after completing a dir
+#setopt no_auto_remove_slash
 
 HISTFILE=~/.histfile
 HISTSIZE=1000
@@ -44,28 +49,46 @@ setopt hist_ignore_space
 setopt autocd
 
 
-
-
-export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.9/
-
-
-# load google app engine binaries into path
-export PATH=/home/fabian/gae:$PATH
 export PATH=/home/fabian/.local/bin:$PATH
+export PATH=/home/fabian/.cabal/bin/:$PATH
+
 
 # wine is on another drive
-export WINEPREFIX=/media/wdc/home/fabian/.wine
+export WINEPREFIX=/media/samsung/wine/
 
 export EDITOR=gvim
 
+# confirm deleting files
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
 
+#alias dmesg='dmesg -L'
+
+alias hexdump='hexdump -C'
+
 alias wgets='H="--header"; wget $H="Accept-Language: en-us,en;q=0.5" $H="Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" $H="Connection: keep-alive" -U "Mozilla/5.0 (Windows NT 5.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2" '
- 
+
+alias grepi='grep -i'
+
+alias xtermhere='xterm -e "cd `pwd` && zsh"'
+
+alias saved='pwd|xclip'
+alias restored='cd `xclip -o`'
+
+alias "cd-"=cd
+
+export PYTHONSTARTUP=~/.pythonrc
+
+export PYTHONPATH=/usr/local/lib/python3.5/site-packages:$PYTHONPATH
+
+export LD_LIBRARY_PATH=/usr/local/lib
+#export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/home/fabian/.opam/system/lib/stublibs
+
+# keep sources when using opam and compile it with bin-annot in order to
+# browser opam packages with merlin
+export OPAMKEEPBUILDDIR=true
+export OCAMLPARAM="_,bin-annot=1"
 
 
-fortune
-
-
+source ~/.zshrc.private
