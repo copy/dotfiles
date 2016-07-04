@@ -1,0 +1,22 @@
+[user]
+	email = copy@copy.sh
+	name = Fabian
+[push]
+	default = matching
+[core]
+	editor = gvim -f
+
+
+# add "--rebase" to git pull
+[branch]
+    autosetuprebase = always
+[color]
+    status = auto
+[merge]
+    ff = true
+
+[diff]
+    tool = gvimdiff
+
+[difftool]
+    prompt = false
