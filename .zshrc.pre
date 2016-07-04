@@ -1,17 +1,4 @@
 
-#zstyle ':completion:*' completer _expand _complete _approximate
-#zstyle ':completion:*' completer _expand _complete
-#
-#zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
-#zstyle ':completion:*:warnings' format '%BNo matches for: %d%b'
-#
-#zstyle ':completion:*:(ssh|scp|ftp):*' hosts $hosts
-#zstyle ':completion:*:(ssh|scp|ftp):*' users $users
-#
-#zstyle :compinstall filename '/home/fabian/.zshrc'
-#zstyle ':completion:*' menu select
-
-#fpath=(~/.zsh/zsh-completions/src $fpath)
 
 #autoload -Uz compinit
 #compinit
@@ -49,8 +36,8 @@ setopt hist_ignore_space
 setopt autocd
 
 
-export PATH=/home/fabian/.local/bin:$PATH
-export PATH=/home/fabian/.cabal/bin/:$PATH
+export PATH=~/.local/bin:$PATH
+export PATH=~/.cabal/bin/:$PATH
 
 
 # wine is on another drive
@@ -83,7 +70,6 @@ export PYTHONSTARTUP=~/.pythonrc
 export PYTHONPATH=/usr/local/lib/python3.5/site-packages:$PYTHONPATH
 
 export LD_LIBRARY_PATH=/usr/local/lib
-#export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/home/fabian/.opam/system/lib/stublibs
 
 # keep sources when using opam and compile it with bin-annot in order to
 # browser opam packages with merlin
