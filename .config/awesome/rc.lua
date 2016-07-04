@@ -3,6 +3,39 @@
 
 
 
+
+-- Delightful widgets
+--require('delightful.widgets.cpu')
+--require('delightful.widgets.memory')
+require('delightful.widgets.network')
+
+-- Which widgets to install?
+-- This is the order the widgets appear in the wibox.
+delightful_widgets = {
+    delightful.widgets.network,
+    --delightful.widgets.cpu,
+    --delightful.widgets.memory,
+}
+
+-- Widget configuration
+delightful_config = {
+    --[delightful.widgets.cpu] = {
+    --    command = 'gnome-system-monitor',
+    --},
+    --[delightful.widgets.memory] = {
+    --    command = 'gnome-system-monitor',
+    --},
+    --[delightful.widgets.pulseaudio] = {
+    --    mixer_command = 'pavucontrol',
+    --},
+    [delightful.widgets.network] = {
+        no_icon = true,
+    },
+}
+
+
+
+
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
@@ -16,10 +49,11 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 
---local vicious = require("vicious")
+local vicious = require("vicious")
 --local blingbling = require("blingbling")
 -- shifty - dynamic tagging library
 --local shifty = require("shifty")
+
 
 
 function run_once(prg, args)
@@ -95,7 +129,7 @@ layouts =
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 tags = {}
-names = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 }
+names = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "a", "b", "c", "d", "e", "f" }
 start_layouts = {
     awful.layout.suit.max,
     awful.layout.suit.max,
@@ -103,6 +137,13 @@ start_layouts = {
     awful.layout.suit.max,
     awful.layout.suit.max,
 
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+
+    awful.layout.suit.max,
     awful.layout.suit.max,
     awful.layout.suit.max,
     awful.layout.suit.max,
@@ -162,6 +203,12 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 --mytextclock = awful.widget.textclock({ align = "right"}, " %a %b %d, %H:%M:%S ", 1)
 mytextclock = awful.widget.textclock(" %a %b %d, %H:%M:%S ", 1)
 
+-- Initialize widgets
+memwidget = wibox.widget.textbox()
+vicious.register(memwidget, vicious.widgets.mem, function (widget, args) return string.format(" M%02d%%", args[1]) end, 13)
+cpuwidget = wibox.widget.textbox()
+vicious.register(cpuwidget, vicious.widgets.cpu, function (widget, args) return string.format("  %02d%% ", args[1]) end, 15)
+
 -- Create a systray
 -- mysystray = widget({ type = "systray" })
 
@@ -207,7 +254,7 @@ mytasklist.buttons = awful.util.table.join(
                      awful.button({ }, 4, function (c)
                                               --awful.client.focus.byidx(1)
                                               --if client.focus then client.focus:raise() end
-                                              
+
                                               -- mouse wheel set/removes focus
                                               c.minimized = true
 
@@ -248,7 +295,12 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
-    if s == 1 then right_layout:add(wibox.widget.systray()) end
+    if s == 1 then
+        right_layout:add(wibox.widget.systray())
+        right_layout:add(cpuwidget)
+        right_layout:add(memwidget)
+        delightful.utils.fill_wibox_container(delightful_widgets, delightful_config, right_layout)
+    end
     right_layout:add(mytextclock)
     right_layout:add(mylayoutbox[s])
 
@@ -277,7 +329,7 @@ globalkeys = awful.util.table.join(
 
 
     -- added: go to left/right tag and take focused client with you
-    awful.key({ modkey, "Shift" }, "Right",  
+    awful.key({ modkey, "Shift" }, "Right",
         function()
           if client.focus then
              local screen = client.focus.screen
@@ -285,7 +337,7 @@ globalkeys = awful.util.table.join(
              local c = client.focus
 
              --for k,v in pairs(client.focus:tags()) do
-             --    naughty.notify({ 
+             --    naughty.notify({
              --       title = "foo",
              --       text = tostring(k)
              --    })
@@ -299,7 +351,7 @@ globalkeys = awful.util.table.join(
              awful.tag.viewnext()
          end
         end),
-    awful.key({ modkey, "Shift" }, "Left",  
+    awful.key({ modkey, "Shift" }, "Left",
         function()
           if client.focus then
              local screen = client.focus.screen
@@ -358,13 +410,13 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "n", awful.client.restore),
 
     -- Prompt
-    awful.key({ modkey },            "r",     
-              function () 
+    awful.key({ modkey },            "r",
+              function ()
                   mypromptbox[mouse.screen]:run({},
                   mypromptbox[mouse.screen].widget,
                   awful.util.spawn_with_shell
-                  ) 
-              
+                  )
+
               end),
 
     awful.key({ modkey }, "x",
@@ -374,7 +426,7 @@ globalkeys = awful.util.table.join(
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
               end),
-	
+
 	-- multimedia keys
 	awful.key({ }, "XF86AudioNext",function () awful.util.spawn( "cmus-remote -n" ) end),
 	awful.key({ }, "XF86Tools",function () awful.util.spawn( "cmus-remote -n" ) end), -- the button looks like a next key anyways
@@ -387,9 +439,40 @@ globalkeys = awful.util.table.join(
 	awful.key({ }, "XF86AudioMute",function () awful.util.spawn( ".local/bin/setvolume.sh mute" ) end),
 
 
+   awful.key(
+       { modkey },
+       "F1",
+       function()
+           awful.util.spawn(".local/bin/change_headphones_speakers.py", false)
+       end
+   ),
 
-    awful.key({ modkey }, "p", function() menubar.show() end),
+   awful.key(
+       { modkey },
+       "F2",
+       function()
+           awful.util.spawn("pavucontrol", false)
+       end
+   ),
 
+   awful.key(
+       { modkey },
+       "F3",
+       function()
+           awful.util.spawn(".local/bin/notify-ip.sh", false)
+       end
+   ),
+
+
+    --awful.key({ modkey }, "p", function() menubar.show() end),
+
+   awful.key(
+       { modkey },
+       "F12",
+       function()
+           awful.util.spawn("xlock",false)
+       end
+   ),
 
    -- bind PrintScrn to capture a screen
    awful.key(
@@ -418,8 +501,8 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "q",      function (c) c:kill()                         end),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
-    awful.key({ modkey,           }, "o",      
-		function (c) 
+    awful.key({ modkey,           }, "o",
+		function (c)
 			-- fix bug with screens which do not have the same size
 			local old_maximized = c.maximized_horizontal
             c.maximized_horizontal = false
@@ -515,16 +598,19 @@ awful.rules.rules = {
       --properties = { floating = true } },
     { rule = { class = "Orage" },
       properties = { floating = true } },
+
     --{ rule = { class = "Skype" },
       --properties = { floating = true } },
     { rule = { class = "VirtualBox" },
+      properties = { border_width = 0 } },
+    { rule = { class = "rdesktop" },
       properties = { border_width = 0 } },
     --{ rule = { class = "Wine" },
       --properties = { floating = true } },
     { rule = { class = "Hexchat" },
       properties = { border_width = 0 } },
-    { rule = { class = "qemu-system-i386" },
-      properties = { floating = true } },
+    --{ rule = { class = "qemu-system-i386" },
+      --properties = { floating = true } },
     --{ rule = { class = "Orage" },
       --properties = { floating = true, tag = tags[0][0], focus = false } },
 
@@ -589,10 +675,6 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
-
--- run xflux
--- oh noes, you know where I live 
-awful.util.spawn_with_shell("~/xflux/xflux -l 51.5 -g 7.2")
 
 --awful.util.spawn_with_shell("xfce4-settings-helper")
 
