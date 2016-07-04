@@ -160,3 +160,4 @@ set! ui.key.menuAccessKeyFocuses=false
 
 command! incognito :emenu File.New Private Window
 command! config tab o about:config
+command! support tab o about:support
