@@ -2,37 +2,7 @@
 -- change the startup scripts at the bottom of this file
 
 
--- Delightful widgets
---require('delightful.widgets.cpu')
---require('delightful.widgets.memory')
-require('delightful.widgets.network')
-
--- Which widgets to install?
--- This is the order the widgets appear in the wibox.
-delightful_widgets = {
-    delightful.widgets.network,
-    --delightful.widgets.cpu,
-    --delightful.widgets.memory,
-}
-
--- Widget configuration
-delightful_config = {
-    --[delightful.widgets.cpu] = {
-    --    command = 'gnome-system-monitor',
-    --},
-    --[delightful.widgets.memory] = {
-    --    command = 'gnome-system-monitor',
-    --},
-    --[delightful.widgets.pulseaudio] = {
-    --    mixer_command = 'pavucontrol',
-    --},
-    [delightful.widgets.network] = {
-        no_icon = true,
-    },
-}
-
-
-
+local interfaces = {"wlp112s0", "enp109s0"}
 
 -- Standard awesome library
 local gears = require("gears")
@@ -48,10 +18,6 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 
 local vicious = require("vicious")
---local blingbling = require("blingbling")
--- shifty - dynamic tagging library
---local shifty = require("shifty")
-
 
 
 function run_once(prg, args)
@@ -111,7 +77,8 @@ layouts =
 {
     awful.layout.suit.floating,
     --awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
+    --awful.layout.suit.tile.left, -- left is nice, but order of windows on screen is different than in the task list, so we prefer right
+    awful.layout.suit.tile.right,
     awful.layout.suit.tile.bottom,
     --awful.layout.suit.tile.top,
     --awful.layout.suit.fair,
@@ -127,7 +94,7 @@ layouts =
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 tags = {}
-names = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "a", "b", "c", "d", "e", "f" }
+names = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "a", "b", "c", "d", "e", "f",  "g", "h", "i", "j", "k" }
 start_layouts = {
     awful.layout.suit.max,
     awful.layout.suit.max,
@@ -146,7 +113,13 @@ start_layouts = {
     awful.layout.suit.max,
     awful.layout.suit.max,
     awful.layout.suit.max,
-    awful.layout.suit.max
+    awful.layout.suit.max,
+
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+    awful.layout.suit.max,
+    awful.layout.suit.max,
 }
 
 
@@ -157,7 +130,6 @@ end
 -- }}}
 
 awful.screen.connect_for_each_screen(function(s)
-    s.mypromptbox = awful.widget.prompt()
 end)
 
 -- something magic should happen ...  :-)
@@ -181,12 +153,27 @@ vicious.register(memwidget, vicious.widgets.mem, function (widget, args) return 
 cpuwidget = wibox.widget.textbox()
 vicious.register(cpuwidget, vicious.widgets.cpu, function (widget, args) return string.format(" %02d%% ", args[1]) end, 15)
 
+netwidget = wibox.widget.textbox()
+vicious.register(netwidget, vicious.widgets.net, function (widget, args)
+    local widget_text = ""
+    for i, name in ipairs(interfaces) do
+        local up = tonumber(args["{" .. name .. " up_kb}"])
+        local down = tonumber(args["{" .. name .. " down_kb}"])
+        if down ~= 0 and up ~= 0 or args["{" .. name .. " carrier}"] ~= 0 then
+            widget_text = string.format("↓%4s ↑%4s", down, up)
+            break
+        end
+    end
+    netwidget:set_text(widget_text)
+end, 3)
+
 batterywidget = wibox.widget.textbox()
 batterywidget:set_text("")
 batterywidgettimer = timer({ timeout = 60 })
 batterywidgettimer:connect_signal("timeout",
   function()
-    fh = assert(io.popen("acpi | cut -d, -f 2,3 - |sed 's/, discharging at zero rate - will never fully discharge.//' | sed 's/ 100%//'", "r"))
+    fh = assert(io.popen("acpi | cut -d, -f 2,3 - |sed 's/, discharging at zero rate - will never fully discharge.//' | sed 's/ 100%//' " ..
+                         " | sed 's/..:..:.. until charged/charging/' | sed 's/\\s*$//' ", "r"))
     batterywidget:set_text(" " .. fh:read("*l"))
     fh:close()
   end
@@ -196,10 +183,10 @@ batterywidgettimer:emit_signal("timeout")
 
 temperaturewidget = wibox.widget.textbox()
 temperaturewidget:set_text("")
-temperaturewidgetimer = timer({ timeout = 15 })
+temperaturewidgetimer = timer({ timeout = 5 })
 temperaturewidgetimer:connect_signal("timeout",
   function()
-    fh = assert(io.popen("sensors coretemp-isa-0000 |grep Phy | cut -d' ' -f5-6 - |sed 's/+//'", "r"))
+    fh = assert(io.popen("sensors coretemp-isa-0000 |cut -d' ' -f5-6 - |sed 's/+//' | sed 's/\\.0//' |grep C |head -n1", "r"))
     temperaturewidget:set_text("  " .. fh:read("*l"))
     fh:close()
   end
@@ -209,11 +196,7 @@ temperaturewidgetimer:emit_signal("timeout")
 
 
 -- Create a wibox for each screen and add it
-mywibox = {}
-mypromptbox = {}
-mylayoutbox = {}
-mytaglist = {}
-mytaglist.buttons = awful.util.table.join(
+local mytaglist_buttons = awful.util.table.join(
                     awful.button({ }, 1, awful.tag.viewonly),
                     awful.button({ modkey }, 1, awful.client.movetotag),
                     awful.button({ }, 3, awful.tag.viewtoggle),
@@ -222,8 +205,7 @@ mytaglist.buttons = awful.util.table.join(
                     awful.button({ }, 4, function(t) awful.tag.viewnext(awful.tag.getscreen(t)) end),
                     awful.button({ }, 5, function(t) awful.tag.viewprev(awful.tag.getscreen(t)) end)
                     )
-mytasklist = {}
-mytasklist.buttons = awful.util.table.join(
+local mytasklist_buttons = awful.util.table.join(
     awful.button({ }, 1, function (c)
         if c == client.focus then
             c.minimized = true
@@ -252,53 +234,49 @@ mytasklist.buttons = awful.util.table.join(
         c:raise()
 end))
 
-for s = 1, screen.count() do
+awful.screen.connect_for_each_screen(function(s)
     -- Create a promptbox for each screen
-    mypromptbox[s] = awful.widget.prompt()
+    --mypromptbox[s] = awful.widget.prompt()
+    s.mypromptbox = awful.widget.prompt()
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
-    mylayoutbox[s] = awful.widget.layoutbox(s)
-    mylayoutbox[s]:buttons(awful.util.table.join(
+    s.mylayoutbox = awful.widget.layoutbox(s)
+    s.mylayoutbox:buttons(awful.util.table.join(
                            awful.button({ }, 1, function () awful.layout.inc(layouts, 1) end),
                            awful.button({ }, 3, function () awful.layout.inc(layouts, -1) end),
                            awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)))
     -- Create a taglist widget
-    mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist.buttons)
+    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist_buttons)
 
     -- Create a tasklist widget
-    mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons)
+    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist_buttons)
 
     -- Create the wibox
-    mywibox[s] = awful.wibox({ position = "top", screen = s })
+    s.mywibox = awful.wibar({ position = "top", screen = s })
 
-    -- Widgets that are aligned to the left
-    local left_layout = wibox.layout.fixed.horizontal()
-    left_layout:add(mylauncher)
-    left_layout:add(mytaglist[s])
-    left_layout:add(mypromptbox[s])
-
-    -- Widgets that are aligned to the right
-    local right_layout = wibox.layout.fixed.horizontal()
-    if s == 1 then
-        right_layout:add(wibox.widget.systray())
-        right_layout:add(batterywidget)
-        right_layout:add(temperaturewidget)
-        right_layout:add(cpuwidget)
-        right_layout:add(memwidget)
-        delightful.utils.fill_wibox_container(delightful_widgets, delightful_config, right_layout)
-    end
-    right_layout:add(mytextclock)
-    right_layout:add(mylayoutbox[s])
-
-    -- Now bring it all together (with the tasklist in the middle)
-    local layout = wibox.layout.align.horizontal()
-    layout:set_left(left_layout)
-    layout:set_middle(mytasklist[s])
-    layout:set_right(right_layout)
-
-    mywibox[s]:set_widget(layout)
-end
+    s.mywibox:setup {
+        layout = wibox.layout.align.horizontal,
+        {
+            layout = wibox.layout.fixed.horizontal,
+            mylauncher,
+            s.mytaglist,
+            s.mypromptbox,
+        },
+        s.mytasklist,
+        {
+            layout = wibox.layout.fixed.horizontal,
+            (wibox.widget.systray()),
+            (batterywidget),
+            (temperaturewidget),
+            (netwidget),
+            (cpuwidget),
+            (memwidget),
+            (mytextclock),
+            (mylayoutbox),
+        }
+    }
+end)
 -- }}}
 
 -- {{{ Mouse bindings
@@ -315,7 +293,10 @@ globalkeys = awful.util.table.join(
    awful.key({}, "F8" , function() awful.util.spawn( ".local/bin/setvolume.sh decrease" ) end),
    awful.key({}, "F9" , function() awful.util.spawn( ".local/bin/setvolume.sh increase" ) end),
    awful.key({}, "F10", function() awful.util.spawn( ".local/bin/setvolume.sh mute" ) end),
-   awful.key({}, "F11", function() awful.util.spawn( "cmus-remote -u" ) end),
+   awful.key({}, "F11", function()
+       awful.util.spawn_with_shell( "cmus-remote -u; notify-send $(cmus-remote -Q |grep status)" )
+       awful.util.spawn_with_shell( "notify-send $(vlc-toggle)" )
+   end),
 
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
@@ -350,6 +331,34 @@ globalkeys = awful.util.table.join(
              awful.tag.viewprev()
          end
         end),
+    awful.key({ modkey, "Shift" }, "k",
+        function()
+          if client.focus then
+             local screen = client.focus.screen
+             local tag = client.focus:tags()[1]
+             local c = client.focus
+
+             awful.tag.viewnext()
+             awful.client.movetotag(awful.tag.selected(screen), c)
+             client.focus = c
+             c:raise()
+         else
+             awful.tag.viewnext()
+         end
+        end),
+    awful.key({ modkey, "Shift" }, "j",
+        function()
+          if client.focus then
+             local screen = client.focus.screen
+             local c = client.focus
+             awful.tag.viewprev()
+             awful.client.movetotag(awful.tag.selected(screen), c)
+             client.focus = c
+             c:raise()
+          else
+             awful.tag.viewprev()
+         end
+        end),
 
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
 
@@ -365,8 +374,8 @@ globalkeys = awful.util.table.join(
         end),
 
     -- Layout manipulation
-    awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end),
-    awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
+    --awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end),
+    --awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
     awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
     awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
@@ -412,13 +421,13 @@ globalkeys = awful.util.table.join(
     awful.key({ }, "XF86AudioMute",function () awful.util.spawn( ".local/bin/setvolume.sh mute" ) end),
 
 
-   awful.key(
-       { modkey },
-       "F1",
-       function()
-           awful.util.spawn(".local/bin/change_headphones_speakers.py", false)
-       end
-   ),
+   --awful.key(
+   --    { modkey },
+   --    "F1",
+   --    function()
+   --        awful.util.spawn(".local/bin/change_headphones_speakers.py", false)
+   --    end
+   --),
 
    awful.key(
        { modkey },
@@ -443,7 +452,7 @@ globalkeys = awful.util.table.join(
        { modkey },
        "F12",
        function()
-           awful.util.spawn("xlock",false)
+           awful.util.spawn("xlock -mode blank -echokeys -echokey '*' +description -info ' ' -username ' ' -password ' ' -validate ' ' +showdate", false)
        end
    ),
 
@@ -564,6 +573,11 @@ awful.rules.rules = {
     { rule = { class = "Orage" },
       properties = { floating = true } },
 
+    { rule = { class = "thunderbird" },
+      properties = { floating = true } },
+    { rule = { class = "Thunderbird" },
+      properties = { floating = true } },
+
     { rule = { class = "VirtualBox" },
       properties = { border_width = 0 } },
     { rule = { class = "rdesktop" },
@@ -579,6 +593,7 @@ awful.rules.rules = {
     -- wine doesn't like borders
     { rule = { class = "Wine" },
       properties = { border_width = 0 } },
+
 
      --{ rule = { class = "Firefox" },
       -- properties = { tag = tags[1][2] } },
@@ -633,4 +648,4 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- run xflux/redshift
 -- oh noes, you know where I live
-awful.util.spawn_with_shell("redshift -l 20.6:-87.0")
+awful.util.spawn_with_shell("killall redshift; redshift -l 20.6:-87.0")
