@@ -4,21 +4,25 @@ PS1='%B%n %~%% %b'
 RPS1='%?'
 
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/.zsh/fabric.plugin.zsh
+source ~/.zsh/better-npm-completion/zsh-better-npm-completion.plugin.zsh
 
 # set terminal title
 precmd () {print -Pn "\e]0;%n@%m: %d\a"}
 
-
-
-alias -g ...='../..'
-alias -g ....='../../..'
-alias -g .....='../../../..'
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "$terminfo[kcuu1]" up-line-or-beginning-search
+bindkey "$terminfo[kcud1]" down-line-or-beginning-search
 
 unsetopt listambiguous
-
 unsetopt share_history
+setopt noclobber
 
-alias webserver='python2 -m SimpleHTTPServer'
+#alias webserver='python2 -m SimpleHTTPServer'
+alias webserver='echo Webserver is bad, since it is open to the network. Use devd instead.'
 alias longest="awk 'length > m { m = length; a = NR } END { print a }'"
 
 function google { Q="$@"; GOOG_URL='https://www.google.de/search?tbs=li:1&q='; AGENT="Mozilla/4.0"; stream=$(curl -A "$AGENT" -skLm 10 "${GOOG_URL}${Q//\ /+}" | grep -oP '\/url\?q=.+?&amp' | sed 's|/url?q=||; s|&amp||'); echo -e "${stream//\%/\x}"; }
@@ -26,7 +30,8 @@ function google { Q="$@"; GOOG_URL='https://www.google.de/search?tbs=li:1&q='; A
 alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])"'
 alias urldecode='python -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])"'
 
-# OPAM configuration
-. ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+alias vim='nvim -p'
+#alias vim='vim -p'
 
-source ~/.zsh/fabric.plugin.zsh
+# OPAM configuration
+. /home/fabian/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
