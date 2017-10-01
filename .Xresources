@@ -1,78 +1,12 @@
 !Xcursor.theme:    Vanilla-DMZ-AA
 
-!urxvt color scheme:
-
-#if 0
-URxvt*background: #2B2B2B
-URxvt*foreground: #DEDEDE
-
-URxvt*colorUL: #86a2b0
-
-! black
-URxvt*color0  : #2E3436
-URxvt*color8  : #555753
-! red
-URxvt*color1  : #CC0000
-URxvt*color9  : #EF2929
-! green
-URxvt*color2  : #4E9A06
-URxvt*color10 : #8AE234
-! yellow
-URxvt*color3  : #C4A000
-URxvt*color11 : #FCE94F
-! blue
-URxvt*color4  : #3465A4
-URxvt*color12 : #729FCF
-! magenta
-URxvt*color5  : #75507B
-URxvt*color13 : #AD7FA8
-! cyan
-URxvt*color6  : #06989A
-URxvt*color14 : #34E2E2
-! white
-URxvt*color7  : #D3D7CF
-URxvt*color15 : #EEEEEC
-#endif
-
-
-!urxvt fonts: 
-
-!URxvt*font: xft:Inconsolata:pixelsize=15
-!URxvt*boldFont: xft:Inconsolata:bold:pixelsize=15
-
-URxvt.font: xft:Bitstream Vera Sans Mono:pixelsize=15
-
-
-!urxvt extensions:
-
-URxvt.perl-ext-common:  default,matcher,tabbedex
-
-!enabling clickable links:
-
-URxvt.urlLauncher:      /usr/bin/firefox
-URxvt.matcher.button:   1 
-
-!urxvt scrolling options and cursor style:
-
-URxvt*saveLines: 12000
-URxvt*scrollstyle:plain
-URxvt*scrollBar: false
-URxvt*cursorBlink: true
-URxvt*cursorUnderline: true
-
-! urxvt tabs settings:
-
-URxvt.tabbed.tabbar-fg: 2
-URxvt.tabbed.tabbar-bg: 0
-URxvt.tabbed.tab-fg: 2
-URxvt.tabbed.tab-bg: 8
-URxvt.tabbed.autohide:  yes
-URxvt.tabbed.new-button:  no
-URxvt.tabbed.title: no
-
-
-
-
+Xft.dpi: 130
+Xft.autohint: 0
+Xft.lcdfilter:  lcddefault
+Xft.hintstyle:  hintfull
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
 
 XTerm*scrollBar: off
 XTerm*rightScrollBar: off
@@ -85,7 +19,7 @@ XTerm*termName: xterm-256color
 !XTerm*colorMode:  on
 !XTerm*dynamicColors:  on
 !XTerm*pointerColor: #000000
-!XTerm*cursorColor: #000000 
+!XTerm*cursorColor: #000000
 XTerm*underLine:  off
 !XTerm*colorBDMode: on
 !XTerm*colorBD: cyan
@@ -98,18 +32,22 @@ XTerm*reverseWrap: true
 !XTerm*faceName:         Terminus:pixelsize=14
 !XTerm*faceName:     Inconsolata
 !XTerm*faceName:     Bitstream Vera Sans Mono
-XTerm*faceName: Liberation Mono     
 !Xterm*iconPixmap: /usr/share/icons/gnome/32x32/apps/terminal.png
 
-XTerm*faceSize:     14
+! This works:
+!XTerm*faceName: Liberation Mono
+!XTerm*faceName: Bitstream Vera Sans Mono
+XTerm*faceName: DejaVu Sans Mono
+XTerm*faceSize: 13
+
+!XTerm*font: -*-terminus-medium-*-*-*-28-*-*-*-*-*-iso10646-1
+
 !XTerm*font: -*-terminus-medium-*-*-*-*-150-*-*-*-*-iso8859-1
 !XTerm*font: -*-fixed-medium-r-*-*-18-*-*-*-*-*-iso8859-*
 !XTerm*font:             -*-courier new-medium-r-*-*-19-*-*-*-*-*-iso8859-2
 !XTerm*boldFont:         -*-courier new-medium-r-*-*-19-*-*-*-*-*-iso8859-2
 !XTerm*italicFont:       -*-courier new-medium-r-*-*-19-*-*-*-*-*-iso8859-2
 !XTerm*boldItalicFont:   -*-courier new-medium-r-*-*-19-*-*-*-*-*-iso8859-2
-
-
 
 
 !! drop in Solarized colorscheme for Xresources/Xdefaults
