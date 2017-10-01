@@ -2,6 +2,7 @@
 !  American keyboard layout
 !  Umlaute with right Alt and ;'[   (as on German keyboards)
 !  No caps lock
+!  Greek letters and some mathematical symbols with Alt
 
 
 keycode   8 =
