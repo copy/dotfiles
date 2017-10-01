@@ -2,7 +2,10 @@
 -- change the startup scripts at the bottom of this file
 
 
-local interfaces = {"wlp112s0", "enp109s0"}
+local interfaces = {
+    "wlp112s0", "enp109s0",
+    "es3",                      -- qemu
+}
 
 -- Standard awesome library
 local gears = require("gears")
@@ -27,7 +30,7 @@ function run_once(prg, args)
   if not args then
     args=""
   end
-  awful.util.spawn_with_shell('pgrep -f -u $USER -x ' .. prg .. ' || (' .. prg .. ' ' .. args ..')')
+  awful.spawn.with_shell('pgrep -f -u $USER -x ' .. prg .. ' || (' .. prg .. ' ' .. args ..')')
 end
 
 
@@ -69,6 +72,22 @@ editor_cmd = terminal .. " -e " .. editor
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 
 
+mymainmenu = awful.menu({
+    items = {
+        { "open terminal", terminal },
+        --{ "hotkeys", function() return false, hotkeys_popup.show_help end},
+        { "manual", terminal .. " -e man awesome" },
+        { "dmesg", terminal .. " -e 'dmesg | tee /home/fabian/dmesg | tac | vim -'" },
+        { "edit config", editor_cmd .. " " .. awesome.conffile },
+        { "restart", awesome.restart },
+        { "quit", function() awesome.quit() end}
+    }
+})
+
+mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
+                                     menu = mymainmenu })
+
+
 -- modkey: alt
 modkey = "Mod1"
 
@@ -88,6 +107,7 @@ layouts =
     awful.layout.suit.max,
     --awful.layout.suit.max.fullscreen,
     --awful.layout.suit.magnifier
+    --awful.layout.suit.corner.nw,
 }
 -- }}}
 
@@ -129,15 +149,6 @@ for s = 1, screen.count() do
 end
 -- }}}
 
-awful.screen.connect_for_each_screen(function(s)
-end)
-
--- something magic should happen ...  :-)
-mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
-                                     command = './magic.sh' })
--- }}}
-
-
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
@@ -145,7 +156,7 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- {{{ Wibox
 -- Create a textclock widget
-mytextclock = awful.widget.textclock(" %a %b %d, %H:%M:%S ", 1)
+mytextclock = wibox.widget.textclock(" %a %b %d, %H:%M:%S ", 1)
 
 -- Initialize widgets
 memwidget = wibox.widget.textbox()
@@ -159,7 +170,8 @@ vicious.register(netwidget, vicious.widgets.net, function (widget, args)
     for i, name in ipairs(interfaces) do
         local up = tonumber(args["{" .. name .. " up_kb}"])
         local down = tonumber(args["{" .. name .. " down_kb}"])
-        if down ~= 0 and up ~= 0 or args["{" .. name .. " carrier}"] ~= 0 then
+        local carrier = args["{" .. name .. " carrier}"]
+        if down ~= 0 and up ~= 0 and down ~= nil or carrier ~= 0 and carrier ~= nil then
             widget_text = string.format("↓%4s ↑%4s", down, up)
             break
         end
@@ -169,12 +181,17 @@ end, 3)
 
 batterywidget = wibox.widget.textbox()
 batterywidget:set_text("")
-batterywidgettimer = timer({ timeout = 60 })
+batterywidgettimer = gears.timer({ timeout = 60 })
 batterywidgettimer:connect_signal("timeout",
   function()
     fh = assert(io.popen("acpi | cut -d, -f 2,3 - |sed 's/, discharging at zero rate - will never fully discharge.//' | sed 's/ 100%//' " ..
                          " | sed 's/..:..:.. until charged/charging/' | sed 's/\\s*$//' ", "r"))
-    batterywidget:set_text(" " .. fh:read("*l"))
+    local text = fh:read("*l")
+    if text then
+        batterywidget:set_text(" " .. text)
+    else
+        batterywidget:set_text("")
+    end
     fh:close()
   end
 )
@@ -183,11 +200,16 @@ batterywidgettimer:emit_signal("timeout")
 
 temperaturewidget = wibox.widget.textbox()
 temperaturewidget:set_text("")
-temperaturewidgetimer = timer({ timeout = 5 })
+temperaturewidgetimer = gears.timer({ timeout = 5 })
 temperaturewidgetimer:connect_signal("timeout",
   function()
     fh = assert(io.popen("sensors coretemp-isa-0000 |cut -d' ' -f5-6 - |sed 's/+//' | sed 's/\\.0//' |grep C |head -n1", "r"))
-    temperaturewidget:set_text("  " .. fh:read("*l"))
+    local text = fh:read("*l")
+    if text then
+        temperaturewidget:set_text(" " .. text)
+    else
+        temperaturewidget:set_text()
+    end
     fh:close()
   end
 )
@@ -198,12 +220,12 @@ temperaturewidgetimer:emit_signal("timeout")
 -- Create a wibox for each screen and add it
 local mytaglist_buttons = awful.util.table.join(
                     awful.button({ }, 1, awful.tag.viewonly),
-                    awful.button({ modkey }, 1, awful.client.movetotag),
+                    --awful.button({ modkey }, 1, function(t,c) c:move_to_tag(t) end),
                     awful.button({ }, 3, awful.tag.viewtoggle),
                     awful.button({ modkey }, 3, awful.client.toggletag),
 
-                    awful.button({ }, 4, function(t) awful.tag.viewnext(awful.tag.getscreen(t)) end),
-                    awful.button({ }, 5, function(t) awful.tag.viewprev(awful.tag.getscreen(t)) end)
+                    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
+                    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
                     )
 local mytasklist_buttons = awful.util.table.join(
     awful.button({ }, 1, function (c)
@@ -221,7 +243,7 @@ local mytasklist_buttons = awful.util.table.join(
     end),
     awful.button({ }, 3, function (c)
         -- right mouse button closes
-        c:kill()
+        if not c.no_kill then c:kill() end
     end),
     awful.button({ }, 4, function (c)
         -- mouse wheel set/removes focus
@@ -290,12 +312,12 @@ root.buttons(awful.util.table.join(
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
 
-   awful.key({}, "F8" , function() awful.util.spawn( ".local/bin/setvolume.sh decrease" ) end),
-   awful.key({}, "F9" , function() awful.util.spawn( ".local/bin/setvolume.sh increase" ) end),
-   awful.key({}, "F10", function() awful.util.spawn( ".local/bin/setvolume.sh mute" ) end),
+   awful.key({}, "F8" , function() awful.spawn( ".local/bin/setvolume.sh decrease" ) end),
+   awful.key({}, "F9" , function() awful.spawn( ".local/bin/setvolume.sh increase" ) end),
+   awful.key({}, "F10", function() awful.spawn( ".local/bin/setvolume.sh mute" ) end),
    awful.key({}, "F11", function()
-       awful.util.spawn_with_shell( "cmus-remote -u; notify-send $(cmus-remote -Q |grep status)" )
-       awful.util.spawn_with_shell( "notify-send $(vlc-toggle)" )
+       awful.spawn.with_shell( "cmus-remote -u; notify-send $(cmus-remote -Q |grep status)" )
+       awful.spawn.with_shell( "notify-send $(vlc-toggle)" )
    end),
 
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
@@ -311,7 +333,7 @@ globalkeys = awful.util.table.join(
              local c = client.focus
 
              awful.tag.viewnext()
-             awful.client.movetotag(awful.tag.selected(screen), c)
+             c:move_to_tag(screen.selected_tag)
              client.focus = c
              c:raise()
          else
@@ -324,7 +346,7 @@ globalkeys = awful.util.table.join(
              local screen = client.focus.screen
              local c = client.focus
              awful.tag.viewprev()
-             awful.client.movetotag(awful.tag.selected(screen), c)
+             c:move_to_tag(screen.selected_tag)
              client.focus = c
              c:raise()
           else
@@ -339,7 +361,7 @@ globalkeys = awful.util.table.join(
              local c = client.focus
 
              awful.tag.viewnext()
-             awful.client.movetotag(awful.tag.selected(screen), c)
+             c:move_to_tag(screen.selected_tag)
              client.focus = c
              c:raise()
          else
@@ -352,7 +374,7 @@ globalkeys = awful.util.table.join(
              local screen = client.focus.screen
              local c = client.focus
              awful.tag.viewprev()
-             awful.client.movetotag(awful.tag.selected(screen), c)
+             c:move_to_tag(screen.selected_tag)
              client.focus = c
              c:raise()
           else
@@ -388,7 +410,7 @@ globalkeys = awful.util.table.join(
         end),
 
     -- Standard program
-    awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
+    awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit),
 
@@ -410,22 +432,22 @@ globalkeys = awful.util.table.join(
               end),
 
     -- multimedia keys
-    awful.key({ }, "XF86AudioNext",function () awful.util.spawn( "cmus-remote -n" ) end),
-    awful.key({ }, "XF86Tools",function () awful.util.spawn( "cmus-remote -n" ) end), -- the button looks like a next key anyways
-    awful.key({ }, "XF86AudioPrev",function () awful.util.spawn( "cmus-remote -r" ) end),
-    awful.key({ }, "XF86AudioPlay",function () awful.util.spawn( "cmus-remote -u" ) end),
+    awful.key({ }, "XF86AudioNext",function () awful.spawn( "cmus-remote -n" ) end),
+    awful.key({ }, "XF86Tools",function () awful.spawn( "cmus-remote -n" ) end), -- the button looks like a next key anyways
+    awful.key({ }, "XF86AudioPrev",function () awful.spawn( "cmus-remote -r" ) end),
+    awful.key({ }, "XF86AudioPlay",function () awful.spawn( "cmus-remote -u" ) end),
     --awful.key({ }, "XF86AudioStop",function () awful.util.spawn( "mpc pause" ) end),
 
-    awful.key({ }, "XF86AudioRaiseVolume",function () awful.util.spawn( ".local/bin/setvolume.sh increase" ) end),
-    awful.key({ }, "XF86AudioLowerVolume",function () awful.util.spawn( ".local/bin/setvolume.sh decrease" ) end),
-    awful.key({ }, "XF86AudioMute",function () awful.util.spawn( ".local/bin/setvolume.sh mute" ) end),
+    awful.key({ }, "XF86AudioRaiseVolume",function () awful.spawn( ".local/bin/setvolume.sh increase" ) end),
+    awful.key({ }, "XF86AudioLowerVolume",function () awful.spawn( ".local/bin/setvolume.sh decrease" ) end),
+    awful.key({ }, "XF86AudioMute",function () awful.spawn( ".local/bin/setvolume.sh mute" ) end),
 
 
    --awful.key(
    --    { modkey },
    --    "F1",
    --    function()
-   --        awful.util.spawn(".local/bin/change_headphones_speakers.py", false)
+   --        awful.spawn(".local/bin/change_headphones_speakers.py", false)
    --    end
    --),
 
@@ -433,7 +455,7 @@ globalkeys = awful.util.table.join(
        { modkey },
        "F2",
        function()
-           awful.util.spawn("pavucontrol", false)
+           awful.spawn("pavucontrol", false)
        end
    ),
 
@@ -441,7 +463,7 @@ globalkeys = awful.util.table.join(
        { modkey },
        "F3",
        function()
-           awful.util.spawn(".local/bin/notify-ip.sh", false)
+           awful.spawn(".local/bin/notify-ip.sh", false)
        end
    ),
 
@@ -452,7 +474,7 @@ globalkeys = awful.util.table.join(
        { modkey },
        "F12",
        function()
-           awful.util.spawn("xlock -mode blank -echokeys -echokey '*' +description -info ' ' -username ' ' -password ' ' -validate ' ' +showdate", false)
+           awful.spawn("xlock -mode blank -echokeys -echokey '*' +description -info ' ' -username ' ' -password ' ' -validate ' ' +showdate", false)
        end
    ),
 
@@ -461,7 +483,7 @@ globalkeys = awful.util.table.join(
        {},
        "Print",
        function()
-           awful.util.spawn("xfce4-screenshooter -f -s /tmp/",false)
+           awful.spawn("xfce4-screenshooter -f -s /tmp/",false)
        end
    ),
 
@@ -469,7 +491,7 @@ globalkeys = awful.util.table.join(
        { "Shift" },
        "Print",
        function()
-           awful.util.spawn("xfce4-screenshooter -r -s /tmp/",false)
+           awful.spawn("xfce4-screenshooter -r -s /tmp/",false)
        end
    )
 
@@ -478,9 +500,7 @@ globalkeys = awful.util.table.join(
 
 clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
-    --awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end),
-    -- alias for mod+shift+c
-    awful.key({ modkey,           }, "q",      function (c) c:kill()                         end),
+    awful.key({ modkey,           }, "q",      function (c) if not c.no_kill then c:kill() end  end),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
     awful.key({ modkey,           }, "o",
@@ -578,10 +598,20 @@ awful.rules.rules = {
     { rule = { class = "Thunderbird" },
       properties = { floating = true } },
 
+    { rule = { class = "feh" },
+      properties = { floating = true } },
+
     { rule = { class = "VirtualBox" },
       properties = { border_width = 0 } },
     { rule = { class = "rdesktop" },
       properties = { border_width = 0 } },
+
+    { rule = { class = "Qemu-system-x86_64" },
+      --properties = { border_width = 0 },
+      callback = function(c)
+          c.no_kill = true
+      end
+    },
 
     --{ rule = { class = "Audacious" },
     --  callback = function( c )
@@ -648,4 +678,4 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- run xflux/redshift
 -- oh noes, you know where I live
-awful.util.spawn_with_shell("killall redshift; redshift -l 20.6:-87.0")
+awful.spawn.with_shell("pidof redshift || redshift -l 20.6:-87.0")
