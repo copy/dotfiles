@@ -11,7 +11,7 @@ Xft.rgba: rgb
 XTerm*scrollBar: off
 XTerm*rightScrollBar: off
 XTerm*title: XTerm
-XTerm*savelines: 5000
+XTerm*savelines: 10000
 !Xterm*geometry: 80x40
 !XTerm*background: #000000
 XTerm*termName: xterm-256color
@@ -40,6 +40,20 @@ XTerm*reverseWrap: true
 XTerm*faceName: DejaVu Sans Mono
 XTerm*faceSize: 13
 
+
+! unreadable
+XTerm*font1: -*-terminus-medium-*-*-*-10-*-*-*-*-*-iso10646-1
+! tiny
+XTerm*font2: -*-terminus-medium-*-*-*-14-*-*-*-*-*-iso10646-1
+! small
+XTerm*font3: -*-terminus-medium-*-*-*-18-*-*-*-*-*-iso10646-1
+! medium
+XTerm*font4: -*-terminus-medium-*-*-*-22-*-*-*-*-*-iso10646-1
+! large
+XTerm*font5: -*-terminus-medium-*-*-*-26-*-*-*-*-*-iso10646-1
+! huge
+XTerm*font6: -*-terminus-medium-*-*-*-36-*-*-*-*-*-iso10646-1
+
 !XTerm*font: -*-terminus-medium-*-*-*-28-*-*-*-*-*-iso10646-1
 
 !XTerm*font: -*-terminus-medium-*-*-*-*-150-*-*-*-*-iso8859-1
@@ -49,6 +63,12 @@ XTerm*faceSize: 13
 !XTerm*italicFont:       -*-courier new-medium-r-*-*-19-*-*-*-*-*-iso8859-2
 !XTerm*boldItalicFont:   -*-courier new-medium-r-*-*-19-*-*-*-*-*-iso8859-2
 
+
+! select urls and file paths by clicking thrice
+XTerm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
+XTerm*on3Clicks: regex ([[:alpha:]]+://)?([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
+! open url from clipboard in firefox using shift click
+*VT100*translations: #override Shift <Btn1Up>: exec-formatted("firefox '%t'", CLIPBOARD)
 
 !! drop in Solarized colorscheme for Xresources/Xdefaults
 
