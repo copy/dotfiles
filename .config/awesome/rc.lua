@@ -219,7 +219,7 @@ temperaturewidgetimer:emit_signal("timeout")
 
 -- Create a wibox for each screen and add it
 local mytaglist_buttons = awful.util.table.join(
-                    awful.button({ }, 1, awful.tag.viewonly),
+                    awful.button({ }, 1, function(t) t:view_only() end),
                     --awful.button({ modkey }, 1, function(t,c) c:move_to_tag(t) end),
                     awful.button({ }, 3, awful.tag.viewtoggle),
                     awful.button({ modkey }, 3, awful.client.toggletag),
@@ -509,7 +509,7 @@ clientkeys = awful.util.table.join(
             local old_maximized = c.maximized_horizontal
             c.maximized_horizontal = false
             c.maximized_vertical   = false
-            awful.client.movetoscreen()
+            c:move_to_screen()
             c.maximized_horizontal = old_maximized
             c.maximized_vertical   = old_maximized
         end),
@@ -522,8 +522,9 @@ clientkeys = awful.util.table.join(
         end),
     awful.key({ modkey,           }, "m",
         function (c)
-            c.maximized_horizontal = not c.maximized_horizontal
-            c.maximized_vertical   = not c.maximized_vertical
+            c.maximized = not c.maximized
+            c.maximized_horizontal = c.maximized
+            c.maximized_vertical   = c.maximized
         end)
 )
 
@@ -678,4 +679,4 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- run xflux/redshift
 -- oh noes, you know where I live
-awful.spawn.with_shell("pidof redshift || redshift -l 20.6:-87.0")
+awful.spawn.with_shell("pidof redshift || redshift -l 47.5:19.0")
