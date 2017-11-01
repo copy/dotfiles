@@ -472,10 +472,29 @@ globalkeys = awful.util.table.join(
 
    awful.key(
        { modkey },
+       "F11",
+       function()
+           awful.spawn.easy_async_with_shell("wa weather | stripcolorcodes", function(stdout, stderr, reason, exit_code)
+               naughty.notify { text = stdout, timeout = 30 }
+           end)
+       end
+   ),
+
+   awful.key(
+       { modkey },
        "F12",
        function()
-           awful.spawn("xlock -mode blank -echokeys -echokey '*' +description -info ' ' -username ' ' -password ' ' -validate ' ' +showdate", false)
+           local info = "" -- TODO: Insert something useful here
+           awful.spawn("xlock -mode blank -echokeys -echokey '*' +description -info '" .. info .. "' -username ' ' -password ' ' -validate ' ' +showdate", false)
        end
+   ),
+
+   awful.key(
+        { modkey },
+        "w",
+        function()
+            naughty.destroy_all_notifications()
+        end
    ),
 
    -- bind PrintScrn to capture a screen
