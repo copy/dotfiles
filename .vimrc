@@ -434,6 +434,7 @@ vnoremap gf <C-W>gf
 
 if has('nvim')
     noremap <f7> :tabe<cr>:term<cr>
+    au TermOpen * setlocal number relativenumber
     autocmd BufEnter term://* startinsert
     command TT :tabe | :term
 endif
