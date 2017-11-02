@@ -1,3 +1,5 @@
+" TODO: Avoid global mappings, set per filetype
+
 execute pathogen#infect()
 
 " allow ctrl+c, ctrl+v with x clipboard
@@ -28,6 +30,16 @@ endif
 
 map <silent> <cr> :noh<cr><c-cr>
 
+if exists("vimpager")
+    " less.vim is annoying since it can't select text
+    let g:less = { 'enabled': 0 }
+    " emulate the useful less.vim features
+    noremap <buffer> d <C-d>
+    noremap <buffer> u <C-u>
+    noremap <buffer> q :q<cr>
+    " Prevent delay when pressing d https://github.com/rkitover/vimpager/issues/131
+    let g:loaded_surround = 1
+endif
 
 autocmd FileType ocaml let g:completor_disable_filename = 1
 
@@ -271,7 +283,7 @@ let g:ale_sign_warning = '--'
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_javascript_jshint_executable = "jshint-default"
 let g:ale_c_clang_options = '-Wno-bitwise-op-parentheses -Wno-gnu-binary-literal'
-let g:ale_python_mypy_options = '--ignore-missing-imports --allow-untyped-defs --cache-dir /home/fabian/.mypy-cache'
+let g:ale_python_mypy_options = '--ignore-missing-imports --allow-untyped-defs --cache-dir /home/fabian/.cache/mypy'
 let g:ale_linters = {
 \   'c': ['clang'],
 \   'python': ['mypy'],
@@ -287,6 +299,7 @@ else
     execute "set rtp+=" . g:opamshare . "/merlin/vim"
 end
 execute "set rtp^=" . g:opamshare . "/ocp-indent/vim"
+
 
 augroup setup_ocaml
     autocmd!
@@ -347,6 +360,8 @@ function SetOcamlOptions()
     setlocal softtabstop=2 shiftwidth=2
     setlocal autowrite
     setlocal iskeyword+=`
+
+    " TODO: Make use of nvim's terminal for tests and compilation
 endfunction
 
 
@@ -354,7 +369,7 @@ augroup vimrc
     autocmd!
 
     autocmd BufNewFile,BufRead *.go set nowrap tabstop=4 shiftwidth=4 expandtab
-    autocmd BufNewFile,BufRead jbuild set ft=lisp
+    "autocmd BufNewFile,BufRead jbuild set ft=lisp
 
     " Maps Coquille commands to <F2> (Undo), <F3> (Next), <F4> (ToCursor)
     autocmd FileType coq call coquille#FNMapping()
@@ -420,6 +435,7 @@ vnoremap gf <C-W>gf
 if has('nvim')
     noremap <f7> :tabe<cr>:term<cr>
     autocmd BufEnter term://* startinsert
+    command TT :tabe | :term
 endif
 
 "autocmd BufNewFile,BufRead /home/fabian/some-folder/* set cc=99
@@ -429,4 +445,10 @@ endif
 augroup qf
     autocmd!
     autocmd FileType qf set nobuflisted
+augroup END
+
+augroup templates
+    autocmd!
+    autocmd BufNewFile jbuild silent! 0r $HOME/ocaml/templates/jbuild.template
+    autocmd BufNewFile opam* silent! 0r $HOME/ocaml/templates/opam.template
 augroup END
