@@ -484,7 +484,7 @@ globalkeys = awful.util.table.join(
        { modkey },
        "F12",
        function()
-           local info = "" -- TODO: Insert something useful here
+           local info = " " -- TODO: Insert something useful here
            awful.spawn("xlock -mode blank -echokeys -echokey '*' +description -info '" .. info .. "' -username ' ' -password ' ' -validate ' ' +showdate", false)
        end
    ),
