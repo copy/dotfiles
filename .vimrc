@@ -422,7 +422,8 @@ let g:ctrlp_prompt_mappings = {
     \ 'AcceptSelection("e")': ['<2-LeftMouse>'],
     \ 'AcceptSelection("t")': ['<cr>'],
     \ }
-let g:ctrlp_map = '<c-t>'
+"let g:ctrlp_map = '<c-t>'
+let g:ctrlp_map = '<nop>'
 
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|\.git\|\.o$\|_build\/\|.pyc$\|.png$'
 let g:ctrlp_show_hidden = 1
@@ -431,6 +432,14 @@ let g:ctrlp_root_markers = [".merlin"]
 
 " Use regexp mode instead of fuzzy
 let g:ctrlp_regexp = 1
+
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'enter': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+nmap <c-t> :FZF<cr>
 
 " open file/url under cursor in new tab
 nnoremap gf <C-W>gf
