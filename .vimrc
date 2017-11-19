@@ -92,6 +92,15 @@ endif
 "let g:deoplete#omni#input_patterns.ocaml = '[^. *\t]\.\w*|\s\w*|#'
 "let g:deoplete#omni#input_patterns.ocaml = '.*'
 
+let g:deoplete#enable_ignore_case = 0
+let g:deoplete#enable_smart_case = 0
+let g:deoplete#max_menu_width = 62
+let g:deoplete#max_abbr_width = 60
+let g:deoplete#max_list = 0
+
+let g:deoplete#ignore_sources = {}
+let g:deoplete#ignore_sources.ocaml = ['buffer', 'around']
+
 "let g:SuperTabDefaultCompletionType = "context"
 ""let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
 ""let g:SuperTabContextTextOmniPrecedence = ['&completefunc', '&omnifunc']
