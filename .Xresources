@@ -65,8 +65,13 @@ XTerm*font6: -*-terminus-medium-*-*-*-36-*-*-*-*-*-iso10646-1
 
 
 ! select urls and file paths by clicking thrice
-XTerm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
-XTerm*on3Clicks: regex ([[:alpha:]]+://)?([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
+!XTerm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
+xterm*on2Clicks:  word
+!xterm*on3Clicks: regex ([[:alpha:]]+://)?([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
+xterm*on3Clicks:  regex [^ \n]+
+xterm*on4Clicks:  line
+!xterm*on5Clicks:  line
+
 ! open url from clipboard in firefox using shift click
 *VT100*translations: #override Shift <Btn1Up>: exec-formatted("firefox '%t'", CLIPBOARD)
 
