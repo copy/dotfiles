@@ -1,5 +1,5 @@
-
-
+COMPDUMPFILE=.cache/zcompdump
+zstyle ':grml:chpwd:dirstack' enable false
 zstyle ':completion:*:*:(v|vim|nvim):*:*files' ignored-patterns '*.(a|dylib|so|o|pyc)'
 
 setopt EXTENDED_GLOB
@@ -59,10 +59,10 @@ alias restored='cd `xclip -o`'
 
 alias "cd-"=cd
 
-alias strace="strace -tt"
+alias strace="strace -tt -yy"
 
-alias devdl="devd -l -x '**{.bak,.txt,.ml,.cmt,.cmx,.cmi,.cmo,.native,_digests,_log,.depends,.o,.byte,.where}' . > /tmp/devd.log & ; sleep 0.1; cat /tmp/devd.log"
-alias devdd="devd . > /tmp/devd.log & ; sleep 0.1; cat /tmp/devd.log"
+alias devdl="devd -l -x '**{.bak,.txt,.ml,.cmt,.cmx,.cmi,.cmo,.native,_digests,_log,.depends,.o,.byte,.where}' . >! /tmp/devd.log & ; sleep 0.1; cat /tmp/devd.log"
+alias devdd="devd . >! /tmp/devd.log & ; sleep 0.1; cat /tmp/devd.log"
 
 alias disass="objdump -M intel -d"
 
@@ -75,6 +75,8 @@ export PYTHONPATH=/usr/local/lib/python3.5/site-packages:$PYTHONPATH
 
 export LD_LIBRARY_PATH=/usr/local/lib
 
+export FZF_DEFAULT_COMMAND="rg --files -g '!node_modules' -g '!_build' -g '!*.cmx' -g '!*.cmi' -g '!*.cmj' -g '!*.cmt'"
+
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
@@ -82,14 +84,14 @@ alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
 alias .......='cd ../../../../../..'
 
-alias utop='utop -implicit-bindings'
+alias utop='utop-full -implicit-bindings'
 
 # keep sources when using opam and compile it with bin-annot in order to
 # browser opam packages with merlin
 export OPAMKEEPBUILDDIR=true
 export OCAMLPARAM="_,bin-annot=1"
 
-export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
+#export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
 
 export NOCRYPTO_ACCELERATE=false
 

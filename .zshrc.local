@@ -3,6 +3,8 @@ PS1='%B%n %~%% %b'
 #colors local returncode="%(?..%{$fg[red]%} %? \n%{$resetcolor%})"
 RPS1='%?'
 
+MAILCHECK=0
+
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/.zsh/fabric.plugin.zsh
 source ~/.zsh/better-npm-completion/zsh-better-npm-completion.plugin.zsh
@@ -29,6 +31,9 @@ function google { Q="$@"; GOOG_URL='https://www.google.de/search?tbs=li:1&q='; A
 
 alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])"'
 alias urldecode='python -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])"'
+
+export PAGER=vimpager
+export VIMPAGER_VIM=nvim
 
 alias vim='nvim -p'
 #alias vim='vim -p'
