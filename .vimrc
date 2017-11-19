@@ -133,11 +133,6 @@ map <c-a-p> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> tra
 let g:GPGUseAgent = 0
 let g:GPGPreferSymmetric = 1
 
-" nvim specific stuff
-if has('nvim')
-    tnoremap <Esc> <C-\><C-n>
-endif
-
 set backspace=indent,eol,start
 
 syntax enable
@@ -358,10 +353,10 @@ function SetOcamlOptions()
     "noremap <f4> :MerlinILocate<cr>
     noremap <f4> :MerlinDocument<cr>
     noremap <f3> :MerlinLocate<cr>
-    "noremap <f2> :MerlinTypeOf<cr>
     noremap <f2> :MerlinTypeOf<cr>
     vnoremap <f2> :'<,'>:MerlinTypeOfSel<cr>gv
     noremap <f5> :MerlinOutline<cr>
+    "noremap <f5> :FZFMerlinOutline<cr>
     "noremap <f6> :let g:syntastic_auto_loc_list = 0<cr>:MerlinOccurrences<cr>
     noremap <f6> :call ToggleOccurences()<cr>
     noremap <f7> :MerlinToggleTypeHistory<cr><c-w>w
@@ -441,11 +436,19 @@ let g:ctrlp_regexp = 1
 nnoremap gf <C-W>gf
 vnoremap gf <C-W>gf
 
+" neovim specific stuff
 if has('nvim')
+    tnoremap <Esc> <C-\><C-n>
+    tnoremap <c-\> <Esc>
+    nnoremap <c-\> i<Esc><c-\><c-n>
     noremap <f7> :tabe<cr>:term<cr>
-    au TermOpen * setlocal number relativenumber
-    autocmd BufEnter term://* startinsert
+    augroup terminal
+        autocmd TermOpen * setlocal number relativenumber
+        autocmd BufEnter term://* startinsert
+        autocmd TermOpen term://* startinsert
+    augroup END
     command TT :tabe | :term
+    command Test :tabe | :term jbuilder runtest
 endif
 
 "autocmd BufNewFile,BufRead /home/fabian/some-folder/* set cc=99
