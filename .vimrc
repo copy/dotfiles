@@ -354,7 +354,7 @@ function SetOcamlOptions()
     noremap <f4> :MerlinDocument<cr>
     noremap <f3> :MerlinLocate<cr>
     noremap <f2> :MerlinTypeOf<cr>
-    vnoremap <f2> :'<,'>:MerlinTypeOfSel<cr>gv
+    vnoremap <f2> <esc>:'<,'>:MerlinTypeOfSel<cr>gv
     noremap <f5> :MerlinOutline<cr>
     "noremap <f5> :FZFMerlinOutline<cr>
     "noremap <f6> :let g:syntastic_auto_loc_list = 0<cr>:MerlinOccurrences<cr>
