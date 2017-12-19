@@ -30,6 +30,9 @@ endif
 
 map <silent> <cr> :noh<cr><c-cr>
 
+" https://github.com/Shougo/deoplete.nvim/issues/492#issuecomment-306751415
+inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+
 if exists("vimpager")
     " less.vim is annoying since it can't select text
     let g:less = { 'enabled': 0 }
