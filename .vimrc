@@ -454,10 +454,18 @@ if has('nvim')
     tnoremap <c-\> <Esc>
     nnoremap <c-\> i<Esc><c-\><c-n>
     noremap <f7> :tabe<cr>:term<cr>
+
+    function! UndoEscMappingFzf()
+        if exists('b:fzf')
+            tnoremap <buffer> <Esc> <Esc>
+        endif
+    endfunction
+
     augroup terminal
         autocmd TermOpen * setlocal number relativenumber
         autocmd BufEnter term://* startinsert
         autocmd TermOpen term://* startinsert
+        autocmd TermOpen term://* call UndoEscMappingFzf()
     augroup END
     command TT :tabe | :term
     command Test :tabe | :term jbuilder runtest
