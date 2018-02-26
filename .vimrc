@@ -288,6 +288,9 @@ command! PrettyJavaScript :call JsBeautify()
 " reload file
 map <F5> <Esc>:edit<Return>
 
+" n always moves forward
+nnoremap <expr> n (v:searchforward ? 'n' : 'N')
+nnoremap <expr> N (v:searchforward ? 'N' : 'n')
 
 augroup autoAleLint
     autocmd!
