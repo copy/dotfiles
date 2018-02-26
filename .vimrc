@@ -383,6 +383,14 @@ function! SetOcamlOptions()
     setlocal autowrite
     setlocal iskeyword+=`
 
+    command! MerlinLocateIntf call Merlin_locate_intf()
+
+    function! Merlin_locate_intf()
+        let g:merlin_locate_preference = 'mli'
+        MerlinLocate
+        let g:merlin_locate_preference = 'ml'
+    endfunction
+
     " TODO: Make use of nvim's terminal for tests and compilation
 endfunction
 
