@@ -163,6 +163,11 @@ set laststatus=2
 set ignorecase smartcase
 set autoread
 
+augroup focusgained
+    autocmd!
+    au FocusGained * :checktime
+augroup END
+
 " For more: https://bluz71.github.io/2017/05/15/vim-tips-tricks.html
 set breakindent
 set showbreak=\\\\\
