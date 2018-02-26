@@ -300,16 +300,19 @@ augroup END
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
 let g:ale_lint_on_text_changed = 'never'
-let g:ale_javascript_jshint_executable = "jshint-default"
-let g:ale_c_clang_options = '-Wno-bitwise-op-parentheses -Wno-gnu-binary-literal'
+let g:ale_jshint_config_loc = "/home/fabian/.jshint-vim.json"
+let g:ale_c_clang_options = '-Wall -std=c11 -Wno-bitwise-op-parentheses -Wno-gnu-binary-literal'
+let g:ale_c_clangtidy_options = '-Wall -std=c11 -Wno-bitwise-op-parentheses -Wno-gnu-binary-literal'
 let g:ale_python_mypy_options = '--ignore-missing-imports --allow-untyped-defs --cache-dir /home/fabian/.cache/mypy'
+" TODO: clangtidy
 let g:ale_linters = {
 \   'c': ['clang'],
+\   'cpp': ['clang'],
 \   'python': ['mypy'],
+\   'javascript': ['jshint'],
 \}
 
 
-" TODO: Only execute for OCaml files (merlin breaks when this is moved below)
 let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
 if !empty(glob(getcwd() . "/bsconfig.json")) || !empty(glob(expand('%:p:h') . "/bsconfig.json"))
     execute "set rtp+=/home/fabian/.opam/4.02.3+buckle-master/share/merlin/vim/"
