@@ -272,9 +272,9 @@ augroup resCur
 augroup END
 
 
-"command PrettyJSON :%!python -m json.tool
-command PrettyJSON :call JsonBeautify()
-command PrettyJavaScript :call JsBeautify()
+"command! PrettyJSON :%!python -m json.tool
+command! PrettyJSON :call JsonBeautify()
+command! PrettyJavaScript :call JsBeautify()
 
 " reload file
 map <F5> <Esc>:edit<Return>
@@ -312,7 +312,7 @@ augroup setup_ocaml
     autocmd!
     autocmd Filetype ocaml call SetOcamlOptions()
 augroup END
-function SetOcamlOptions()
+function! SetOcamlOptions()
 
     highlight link ALEError Error
     highlight link ALEWarning Error
@@ -462,13 +462,14 @@ if has('nvim')
     endfunction
 
     augroup terminal
+        autocmd!
         autocmd TermOpen * setlocal number relativenumber
         autocmd BufEnter term://* startinsert
         autocmd TermOpen term://* startinsert
         autocmd TermOpen term://* call UndoEscMappingFzf()
     augroup END
-    command TT :tabe | :term
-    command Test :tabe | :term jbuilder runtest
+    command! TT :tabe | :term
+    command! Test :tabe | :term jbuilder runtest
 endif
 
 "autocmd BufNewFile,BufRead /home/fabian/some-folder/* set cc=99
