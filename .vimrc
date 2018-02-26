@@ -168,6 +168,10 @@ augroup focusgained
     au FocusGained * :checktime
 augroup END
 
+if has('nvim')
+    set inccommand=nosplit " show substitution live
+endif
+
 " For more: https://bluz71.github.io/2017/05/15/vim-tips-tricks.html
 set breakindent
 set showbreak=\\\\\
