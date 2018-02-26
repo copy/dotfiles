@@ -435,13 +435,18 @@ augroup END
 " tabs setup
 map <c-j> :tabp<cr>
 map <c-k> :tabn<cr>
+map <c-l> <c-w>w
+"map <c-h> <c-w>W
 imap <c-j> <ESC><c-j>
 imap <c-k> <ESC><c-k>
+imap <c-l> <ESC><c-l>
+"imap <c-h> <ESC><c-h>
 imap <c-t> <ESC><c-t>
 if has('nvim')
     tmap <c-j> <ESC><c-j>
     tmap <c-k> <ESC><c-k>
     tmap <c-t> <ESC><c-t>
+    tmap <c-l> <ESC><c-l>
 endif
 
 let g:ctrlp_prompt_mappings = {
