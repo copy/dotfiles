@@ -16,5 +16,4 @@ LTerm_read_line.bind
   [ UTop.end_and_accept_current_phrase ]
 ;;
 
-#require "bos.setup";;
 #require "ocp-index-top";;
