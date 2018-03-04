@@ -310,6 +310,7 @@ let g:ale_linters = {
 \   'cpp': ['clang'],
 \   'python': ['mypy'],
 \   'javascript': ['jshint'],
+\   'asm': [],
 \}
 
 
