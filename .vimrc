@@ -294,7 +294,7 @@ nnoremap <expr> N (v:searchforward ? 'N' : 'n')
 
 augroup autoAleLint
     autocmd!
-    autocmd TextChanged,InsertLeave,FocusLost * silent! ALELint
+    autocmd TabEnter,FocusGained,TextChanged,InsertLeave,FocusLost * silent! ALELint
 augroup END
 "let g:ale_open_list = 1
 let g:ale_sign_error = '>>'
