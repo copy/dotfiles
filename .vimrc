@@ -411,13 +411,13 @@ augroup vimrc
 
     autocmd BufRead,BufNewFile *.ml,*.mli compiler ocaml
 
-    autocmd FileType rust map <F5> :make<enter>
+    autocmd FileType rust map <buffer> <F5> :make<enter>
 
-    autocmd FileType python map <F5> :!./%<enter>
-    "autocmd FileType python map <F4> :! ipython -i %<enter>
-    autocmd FileType python map <f2> <s-k>
-    autocmd FileType python map <f3> <leader>g
-    autocmd FileType python map <f4> <leader>n
+    autocmd FileType python map <buffer> <F5> :!./%<enter>
+    "autocmd FileType python map <buffer> <F4> :! ipython -i %<enter>
+    autocmd FileType python map <buffer> <f2> <s-k>
+    autocmd FileType python map <buffer> <f3> <leader>g
+    autocmd FileType python map <buffer> <f4> <leader>n
 
     autocmd BufNewFile,BufRead *.ejs set filetype=javascript
 augroup END
