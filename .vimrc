@@ -105,7 +105,8 @@ let g:deoplete#max_abbr_width = 60
 let g:deoplete#max_list = 0
 
 let g:deoplete#ignore_sources = {}
-let g:deoplete#ignore_sources.ocaml = ['buffer', 'around', 'member']
+let g:deoplete#ignore_sources.ocaml = ['buffer', 'around', 'member', 'tag']
+let g:deoplete#ignore_sources._ = ['tag']
 
 "let g:SuperTabDefaultCompletionType = "context"
 ""let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
