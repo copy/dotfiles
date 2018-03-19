@@ -44,6 +44,7 @@ if exists("vimpager")
     noremap <buffer> q :q<cr>
     " Prevent delay when pressing d https://github.com/rkitover/vimpager/issues/131
     let g:loaded_surround = 1
+    let g:vimpager.ansiesc = 0 " yanking shouldn't include colour escapes, use built-in highlighting
 endif
 
 autocmd FileType ocaml let g:completor_disable_filename = 1
