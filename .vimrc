@@ -18,10 +18,12 @@ autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 
+" the default is too similar to diff's red, reset it
+autocmd FileType diff highlight diffSubname ctermfg=Gray
+
 
 let g:python_host_prog = "/usr/bin/python2.7"
 let g:python3_host_prog = "/usr/bin/python3"
-
 
 if !has('nvim')
     " required for ocaml-vim to handle jumping between let/in etc.
