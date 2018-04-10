@@ -308,6 +308,7 @@ let g:ale_jshint_config_loc = "/home/fabian/.jshint-vim.json"
 let g:ale_c_clang_options = '-Wall -std=c11 -Wno-bitwise-op-parentheses -Wno-gnu-binary-literal'
 let g:ale_c_clangtidy_options = '-Wall -std=c11 -Wno-bitwise-op-parentheses -Wno-gnu-binary-literal'
 let g:ale_python_mypy_options = '--ignore-missing-imports --allow-untyped-defs --cache-dir /home/fabian/.cache/mypy'
+let g:ale_maximum_file_size = 1000000
 " TODO: clangtidy
 let g:ale_linters = {
 \   'c': ['clang'],
