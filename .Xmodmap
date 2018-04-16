@@ -1,7 +1,9 @@
+! XXX: This file is not used anymore. See .xkbcomp.xkb
+
 ! This file does:
 !  American keyboard layout
 !  Umlaute with right Alt and ;'[   (as on German keyboards)
-!  No caps lock
+!  caps lock -> escape
 !  Greek letters and some mathematical symbols with Alt
 
 
@@ -69,7 +71,8 @@ keycode  65 = space NoSymbol space
 
 !keycode  66 = Caps_Lock NoSymbol Caps_Lock
 ! use shift instead of capslock
-keycode  66 = Shift_L NoSymbol Shift_L
+clear Lock
+keycode  66 = Escape NoSymbol Escape
 
 keycode  67 = F1 F1 F1 F1 F1 F1 XF86Switch_VT_1
 keycode  68 = F2 F2 F2 F2 F2 F2 XF86Switch_VT_2
@@ -140,8 +143,10 @@ keycode 130 = Hangul NoSymbol Hangul
 keycode 131 = Hangul_Hanja NoSymbol Hangul_Hanja
 keycode 132 =
 keycode 133 = Super_L NoSymbol Super_L
-remove mod4 = Super_L
-add control = Super_L
+
+!remove mod4 = Super_L
+! XXX: Breaks ctrl key in qt applications
+!add control = Super_L
 
 keycode 134 = Super_R NoSymbol Super_R
 keycode 135 = Menu NoSymbol Menu
