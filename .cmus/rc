@@ -4,11 +4,21 @@ cd ~/Music/
 # Don't play anything after play queue
 set play_library=false
 set repeat=false
+set repeat_current=false
 set aaa_mode=album
 set shuffle=false
-
+set format_treewin=  %l%= %y
 
 unbind common ^U
 unbind common ^D
 bind common ^U win-page-up
 bind common ^D win-page-down
+
+unbind common u
+unbind common d
+bind common u win-page-up
+bind common d win-page-down
+
+unbind common l
+# note: trailing space is important
+bind common l push live-filter 
