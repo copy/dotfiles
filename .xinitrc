@@ -10,7 +10,7 @@ xkbcomp .xkbcomp.xkb $DISPLAY &
 xrdb -merge .Xresources &
 #u1sdtool --connect &
 xset b off
-xcompmgr -c&
-devilspie -a &
+#xcompmgr -c&
+#devilspie -a &
 #urxvd -f&
 exec awesome 2> ~/.awesome-log
