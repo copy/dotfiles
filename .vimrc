@@ -47,49 +47,6 @@ if exists("vimpager")
     let g:vimpager.ansiesc = 0 " yanking shouldn't include colour escapes, use built-in highlighting
 endif
 
-autocmd FileType ocaml let g:completor_disable_filename = 1
-
-"call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-"\ 'name': 'omni',
-"\ 'whitelist': ['*'],
-"\ 'completor': function('asyncomplete#sources#omni#completor')
-"\  }))
-
-let g:completor_python_omni_trigger = '.*'
-let g:completor_ocaml_omni_trigger = '.*'
-"let g:completor_ocaml_omni_trigger = '([\w-]+|@[\w-]*|[\w-]+:\s*[\w-]*)$'
-"let g:completor_javascript_omni_trigger = '.*'
-let g:completor_min_chars = 1
-let g:completor_completion_delay = 90
-
-let g:completor_disable_buffer = ['ocaml', 'javascript']
-
-"let g:completor_js_omni_trigger = '.*'
-let g:completor_node_binary = '/usr/bin/node'
-
-
-" Use neocomplete.
-let g:neocomplete#enable_at_startup = 1
-" Set minimum syntax keyword length.
-let g:neocomplete#sources#syntax#min_keyword_length = 1
-let g:neocomplete#enable_refresh_always = 1
-
-if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns = {}
-endif
-let g:neocomplete#sources#omni#input_patterns.ocaml = '[^. *\t]\.\w*\|\h\w*|#'
-"let g:neocomplete#sources#omni#input_patterns.ocaml = '.*'
-
-if !exists('g:neocomplete#delimiter_patterns')
-    let g:neocomplete#delimiter_patterns= {}
-endif
-let g:neocomplete#delimiter_patterns.ocaml = ['#', '##', '.']
-
-if !exists('g:neocomplete#keyword_patterns')
-    let g:neocomplete#keyword_patterns = {}
-endif
-"let g:neocomplete#keyword_patterns.ocaml = '[''`#.]\?\h[[:alnum:]_'']*'
-
 
 let g:deoplete#enable_at_startup = 1
 if !exists('g:deoplete#omni_patterns')
@@ -107,29 +64,6 @@ let g:deoplete#max_list = 0
 let g:deoplete#ignore_sources = {}
 let g:deoplete#ignore_sources.ocaml = ['buffer', 'around', 'member', 'tag']
 let g:deoplete#ignore_sources._ = ['tag']
-
-"let g:SuperTabDefaultCompletionType = "context"
-""let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
-""let g:SuperTabContextTextOmniPrecedence = ['&completefunc', '&omnifunc']
-"let g:SuperTabContextTextOmniPrecedence = ['&omnifunc']
-"autocmd FileType ocaml let b:SuperTabCompletionContexts = ['ClojureContext', 's:ContextText']
-"    function! ClojureContext()
-"      let curline = getline('.')
-"      let cnum = col('.')
-"      let synname = synIDattr(synID(line('.'), cnum - 1, 1), 'name')
-"      if curline =~ '<\@<!/\.\?\w*\%' . cnum . 'c'
-"          return "\<c-x>\<c-f>"
-"      elseif synname !~ '\(String\|Comment\)'
-"          return "\<c-x>\<c-o>"
-"      endif
-"    endfunction
-"    "let g:SuperTabRetainCompletionDuration = "session"
-"autocmd FileType javascript let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
-
-"let g:jedi#show_call_signatures = 2
-
-" Super-tab is cool and nicely document, but doesn't provide auto-open
-"let g:SuperTabDefaultCompletionType = "<c-x><c-o>"
 
 
 " show highlighting name for debugging highlight scripts
