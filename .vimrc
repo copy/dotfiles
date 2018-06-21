@@ -192,7 +192,7 @@ vnoremap <silent> # :<C-U>
 
 
 function! RestoreCursor()
-    if line("'\"") <= line("$")
+    if &ft != 'gitcommit' && line("'\"") > 1 && line("'\"") <= line("$")
         normal! g`"
         return 1
     endif
