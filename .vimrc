@@ -1,23 +1,5 @@
 execute pathogen#infect()
 
-" allow ctrl+c, ctrl+v with x clipboard
-vmap <C-c> y:call system("xclip -i -selection clipboard", getreg("\""))<CR>:call system("xclip -i", getreg("\""))<CR>
-nmap <C-p> :call setreg("\"",system("xclip -o -selection clipboard"))<CR>p
-
-" Highlight trailing whitespace
-"highlight ExtraWhitespace ctermbg=red guibg=red
-"autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
-"match ExtraWhitespace /\s\+\%#\@<!$/
-highlight ExtraWhitespace ctermbg=darkred guibg=#382424
-autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-" the above flashes annoyingly while typing, be calmer in insert mode
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-
-" the default is too similar to diff's red, reset it
-autocmd FileType diff highlight diffSubname ctermfg=Gray
-
 let g:python_host_prog = "/usr/bin/python2.7"
 let g:python3_host_prog = "/usr/bin/python3"
 
@@ -25,49 +7,6 @@ if !has('nvim')
     " required for ocaml-vim to handle jumping between let/in etc.
     packadd! matchit
 endif
-
-map <silent> <cr> :noh<cr><c-cr>
-
-" https://github.com/Shougo/deoplete.nvim/issues/492#issuecomment-306751415
-inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
-
-if exists("vimpager")
-    " less.vim is annoying since it can't select text
-    let g:less = { 'enabled': 0 }
-    " emulate the useful less.vim features
-    noremap <buffer> d <C-d>
-    noremap <buffer> u <C-u>
-    noremap <buffer> q :q<cr>
-    " Prevent delay when pressing d https://github.com/rkitover/vimpager/issues/131
-    "let g:loaded_surround = 1
-
-    let g:vimpager.ansiesc = 0 " yanking shouldn't include colour escapes, use built-in highlighting
-                               " this breaks word-diff highlighting
-endif
-
-
-let g:deoplete#enable_at_startup = 1
-if !exists('g:deoplete#omni_patterns')
-  let g:deoplete#omni#input_patterns = {}
-endif
-
-let g:deoplete#enable_ignore_case = 0
-let g:deoplete#enable_smart_case = 0
-let g:deoplete#max_menu_width = 62
-let g:deoplete#max_abbr_width = 60
-let g:deoplete#max_list = 0
-
-let g:deoplete#ignore_sources = {}
-let g:deoplete#ignore_sources.ocaml = ['buffer', 'around', 'member', 'tag']
-let g:deoplete#ignore_sources._ = ['tag']
-
-" show highlighting name for debugging highlight scripts
-map <c-a-p> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
-
-let g:GPGUseAgent = 0
-let g:GPGPreferSymmetric = 1
 
 set backspace=indent,eol,start
 
@@ -122,8 +61,6 @@ set wildmode=longest,list
 set encoding=utf-8
 set termencoding=utf-8
 
-highlight ColorColumn ctermbg=darkred
-call matchadd('ColorColumn', '\%101v', 500)
 "set cc=100
 " tw causes automatic wraps -- turns out to be painful in practice
 "set cc=100 tw=100
@@ -163,13 +100,31 @@ else
     colorscheme solarized8
 endif
 
-
 if has('gui_running')
   set guifont=Monospace\ 13
 endif
 
 " Show invisible characters
 "set list
+
+" don't fold sections
+set foldmethod=manual
+set nofoldenable
+
+
+" allow ctrl+c, ctrl+v with x clipboard
+vmap <C-c> y:call system("xclip -i -selection clipboard", getreg("\""))<CR>:call system("xclip -i", getreg("\""))<CR>
+nmap <C-p> :call setreg("\"",system("xclip -o -selection clipboard"))<CR>p
+
+map <silent> <cr> :noh<cr><c-cr>
+
+" https://github.com/Shougo/deoplete.nvim/issues/492#issuecomment-306751415
+inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+
+" show highlighting name for debugging highlight scripts
+map <c-a-p> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 
 " disable cursor keys
 map <Left>  <nop>
@@ -186,10 +141,6 @@ map Q <Nop>
 map <f1> <Nop>
 imap <f1> <Nop>
 
-" don't fold sections
-set foldmethod=manual
-set nofoldenable
-
 " Search for selected text, forwards or backwards.
 " In visual mode using * and #
 vnoremap <silent> * :<C-U>
@@ -203,6 +154,32 @@ vnoremap <silent> # :<C-U>
   \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 
+" n always moves forward
+nnoremap <expr> n (v:searchforward ? 'n' : 'N')
+nnoremap <expr> N (v:searchforward ? 'N' : 'n')
+
+" tabs setup
+map <c-j> :tabp<cr>
+map <c-k> :tabn<cr>
+"map <c-s-j> :tabmove -1<cr> " can't be mapped
+"map <c-s-k> :tabmove +1<cr>
+map <c-l> <c-w>w
+"map <c-h> <c-w>W
+imap <c-j> <ESC><c-j>
+imap <c-k> <ESC><c-k>
+imap <c-l> <ESC><c-l>
+"imap <c-h> <ESC><c-h>
+imap <c-t> <ESC><c-t>
+if has('nvim')
+    tmap <c-j> <ESC><c-j>
+    tmap <c-k> <ESC><c-k>
+    tmap <c-t> <ESC><c-t>
+    tmap <c-l> <ESC><c-l>
+endif
+
+" open file/url under cursor in new tab
+nnoremap gf <C-W>gf
+vnoremap gf <C-W>gf
 
 function! RestoreCursor()
     if &ft != 'gitcommit' && line("'\"") > 1 && line("'\"") <= line("$")
@@ -214,11 +191,6 @@ augroup resCur
     autocmd!
     autocmd BufWinEnter * call RestoreCursor()
 augroup END
-
-
-" n always moves forward
-nnoremap <expr> n (v:searchforward ? 'n' : 'N')
-nnoremap <expr> N (v:searchforward ? 'N' : 'n')
 
 augroup autoAleLint
     autocmd!
@@ -339,7 +311,6 @@ function! SetOcamlOptions()
     " TODO: Make use of nvim's terminal for tests and compilation
 endfunction
 
-
 augroup vimrc
     autocmd!
 
@@ -367,25 +338,6 @@ augroup Binary
     autocmd BufWritePost *.bin if &bin | %!xxd -g 1
     autocmd BufWritePost *.bin set nomod | endif
 augroup END
-
-" tabs setup
-map <c-j> :tabp<cr>
-map <c-k> :tabn<cr>
-"map <c-s-j> :tabmove -1<cr> " can't be mapped
-"map <c-s-k> :tabmove +1<cr>
-map <c-l> <c-w>w
-"map <c-h> <c-w>W
-imap <c-j> <ESC><c-j>
-imap <c-k> <ESC><c-k>
-imap <c-l> <ESC><c-l>
-"imap <c-h> <ESC><c-h>
-imap <c-t> <ESC><c-t>
-if has('nvim')
-    tmap <c-j> <ESC><c-j>
-    tmap <c-k> <ESC><c-k>
-    tmap <c-t> <ESC><c-t>
-    tmap <c-l> <ESC><c-l>
-endif
 
 let g:ctrlp_prompt_mappings = {
     \ 'AcceptSelection("e")': ['<2-LeftMouse>'],
@@ -419,10 +371,6 @@ let g:fzf_buffers_jump = 1
 
 nmap <c-t> :FZF<cr>
 nmap <c-b> :Windows<cr>
-
-" open file/url under cursor in new tab
-nnoremap gf <C-W>gf
-vnoremap gf <C-W>gf
 
 " neovim specific stuff
 if has('nvim')
@@ -459,3 +407,56 @@ augroup templates
     autocmd BufNewFile jbuild silent! 0r $HOME/ocaml/templates/jbuild.template
     autocmd BufNewFile opam* silent! 0r $HOME/ocaml/templates/opam.template
 augroup END
+
+if exists("vimpager")
+    " less.vim is annoying since it can't select text
+    let g:less = { 'enabled': 0 }
+    " emulate the useful less.vim features
+    noremap <buffer> d <C-d>
+    noremap <buffer> u <C-u>
+    noremap <buffer> q :q<cr>
+    " Prevent delay when pressing d https://github.com/rkitover/vimpager/issues/131
+    "let g:loaded_surround = 1
+
+    " yanking shouldn't include colour escapes, use built-in highlighting
+    " this breaks word-diff highlighting
+    let g:vimpager.ansiesc = 0
+endif
+
+
+let g:deoplete#enable_at_startup = 1
+if !exists('g:deoplete#omni_patterns')
+  let g:deoplete#omni#input_patterns = {}
+endif
+
+let g:deoplete#enable_ignore_case = 0
+let g:deoplete#enable_smart_case = 0
+let g:deoplete#max_menu_width = 62
+let g:deoplete#max_abbr_width = 60
+let g:deoplete#max_list = 0
+
+let g:deoplete#ignore_sources = {}
+let g:deoplete#ignore_sources.ocaml = ['buffer', 'around', 'member', 'tag']
+let g:deoplete#ignore_sources._ = ['tag']
+
+let g:GPGUseAgent = 0
+let g:GPGPreferSymmetric = 1
+
+
+" Highlight trailing whitespace
+"highlight ExtraWhitespace ctermbg=red guibg=red
+"autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+"match ExtraWhitespace /\s\+\%#\@<!$/
+highlight ExtraWhitespace ctermbg=darkred guibg=#382424
+autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+" the above flashes annoyingly while typing, be calmer in insert mode
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+
+" the default is too similar to diff's red, reset it
+autocmd FileType diff highlight diffSubname ctermfg=Gray
+
+" Highlight character at column 100
+highlight ColorColumn ctermbg=darkred
+call matchadd('ColorColumn', '\%101v', 500)
