@@ -230,15 +230,17 @@ let g:ale_linters = {
 \}
 
 
-let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
 if !empty(glob(getcwd() . "/bsconfig.json")) || !empty(glob(expand('%:p:h') . "/bsconfig.json"))
-    execute "set rtp+=/home/fabian/.opam/4.02.3+buckle-master/share/merlin/vim/"
-    autocmd BufReadPost * let b:merlin_path = "/home/fabian/.opam/4.02.3+buckle-master/bin/ocamlmerlin"
+    let g:opamshare = substitute(system('OPAMSWITCH=4.02.3+buckle-master opam config var share'),'\n$','','''')
+    autocmd BufWritePre,BufWritePost,BufEnter * let b:merlin_path = "/home/fabian/.opam2/4.02.3+buckle-master/bin/ocamlmerlin"
+    "let g:merlin = {'ocamlmerlin_path': '/home/fabian/.opam2/4.02.3+buckle-master/bin/ocamlmerlin'}
 else
-    execute "set rtp+=" . g:opamshare . "/merlin/vim"
+    let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
 end
-execute "set rtp^=" . g:opamshare . "/ocp-indent/vim"
-
+if v:shell_error == 0
+    execute "set rtp+=" . g:opamshare . "/merlin/vim"
+    execute "set rtp^=" . g:opamshare . "/ocp-indent/vim"
+end
 
 augroup setup_ocaml
     autocmd!
@@ -297,12 +299,28 @@ function! SetOcamlOptions()
     setlocal autowrite
     setlocal iskeyword+=`
 
+    function! JbuilderTest()
+        "setlocal errorformat=%E%f\ line\ %l\ in\ %m,%C%m,%Z
+        setlocal errorformat=File\ \"%f\"\\,\ line\ %l\\,\ characters\ %c-%*\\d:\ %m
+        "setlocal errorformat+=%*[\ ]%m\ \"%f\"\\,\ line\ %l\\,\ characters\ %c-%*\\d
+        setlocal makeprg=jbuilder
+        make runtest
+        copen
+        "Dispatch jbuilder runtest
+    endfunction
+
     command! MerlinLocateIntf call Merlin_locate_intf()
 
     function! Merlin_locate_intf()
         let g:merlin_locate_preference = 'mli'
         MerlinLocate
         let g:merlin_locate_preference = 'ml'
+    endfunction
+
+    command! Exec call Exec()
+
+    function! Exec()
+        execute "!jbuilder exec ./" . expand("%:r") . ".exe"
     endfunction
 
     " TODO: Make use of nvim's terminal for tests and compilation
