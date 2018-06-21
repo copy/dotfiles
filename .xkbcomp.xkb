@@ -1,7 +1,8 @@
 # Base for this file: setxkbmap -layout us -variant altgr-intl -option caps:none
 # Modifications:
 # - caps -> Shift_L
-# - ;'[-  -> öäöß  (as printed on german layouts)
+# - alt + ;'[-  -> öäöß  (as printed on german layouts)
+# - alt + ./    -> …—    (ellipsis / m-width dash)
 
 # TODO: greek letters
 
@@ -1322,7 +1323,7 @@ xkb_symbols "pc_us(altgr-intl)_inet(evdev)_capslock(none)" {
     };
     key <AC09> {
         type= "FOUR_LEVEL_ALPHABETIC",
-        symbols[Group1]= [               l,               L,          oslash,          Oslash ]
+        symbols[Group1]= [               l,               L,          Greek_lambda, Greek_LAMBDA ]
     };
     key <AC10> {
         type= "FOUR_LEVEL",
@@ -1373,15 +1374,18 @@ xkb_symbols "pc_us(altgr-intl)_inet(evdev)_capslock(none)" {
     };
     key <AB08> {
         type= "FOUR_LEVEL",
-        symbols[Group1]= [           comma,            less,        ccedilla,        Ccedilla ]
+        #symbols[Group1]= [           comma,            less,        ccedilla,        Ccedilla ]
+        symbols[Group1]= [           comma,            less,        comma,        lessthanequal ]
     };
     key <AB09> {
         type= "FOUR_LEVEL",
-        symbols[Group1]= [          period,         greater,   dead_abovedot,      dead_caron ]
+        #symbols[Group1]= [          period,         greater,   dead_abovedot,      dead_caron ]
+        symbols[Group1]= [          period,         greater,   ellipsis,      greaterthanequal ]
     };
     key <AB10> {
         type= "FOUR_LEVEL",
-        symbols[Group1]= [           slash,        question,    questiondown,       dead_hook ]
+        #symbols[Group1]= [           slash,        question,    questiondown,       dead_hook ]
+        symbols[Group1]= [           slash,        question,    emdash,       questiondown ]
     };
     key <RTSH> {         [         Shift_R ] };
     key <KPMU> {
