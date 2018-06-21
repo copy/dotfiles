@@ -37,12 +37,6 @@ set autoread
 set switchbuf=usetab,newtab
 set splitright splitbelow
 
-augroup focusgained
-    autocmd!
-    " Reload file if it hasn't changed in the buffer
-    au FocusGained * :checktime
-augroup END
-
 if has('nvim')
     set inccommand=nosplit " show substitution live
 endif
@@ -50,11 +44,6 @@ endif
 " For more: https://bluz71.github.io/2017/05/15/vim-tips-tricks.html
 set breakindent
 set showbreak=\\\\\
-
-augroup vimresized
-    autocmd!
-    autocmd VimResized * wincmd =
-augroup END
 
 set wildmode=longest,list
 
@@ -192,29 +181,56 @@ augroup resCur
     autocmd BufWinEnter * call RestoreCursor()
 augroup END
 
-augroup autoAleLint
+augroup focusgained
     autocmd!
-    autocmd TabEnter,FocusGained,TextChanged,InsertLeave,FocusLost * silent! ALELint
+    " Reload file if it hasn't changed in the buffer
+    au FocusGained * :checktime
 augroup END
-"let g:ale_open_list = 1
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '--'
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_jshint_config_loc = "/home/fabian/.jshint-vim.json"
-let g:ale_c_clang_options = '-Wall -std=c11 -Wno-bitwise-op-parentheses -Wno-gnu-binary-literal'
-let g:ale_c_clangtidy_options = '-Wall -std=c11 -Wno-bitwise-op-parentheses -Wno-gnu-binary-literal'
-let g:ale_python_mypy_options = '--ignore-missing-imports --check-untyped-defs ' .
-            \'--disallow-untyped-calls --warn-return-any --no-implicit-optional ' .
-            \'--cache-dir /home/fabian/.cache/mypy'
-let g:ale_maximum_file_size = 1000000
-" TODO: clangtidy
-let g:ale_linters = {
-\   'c': ['clang'],
-\   'cpp': ['clang'],
-\   'python': ['mypy'],
-\   'javascript': ['jshint'],
-\   'asm': [],
-\}
+
+augroup vimresized
+    autocmd!
+    autocmd VimResized * wincmd =
+augroup END
+
+augroup vimrc
+    autocmd!
+
+    " Maps Coquille commands to <F2> (Undo), <F3> (Next), <F4> (ToCursor)
+    autocmd FileType coq call coquille#FNMapping()
+    autocmd FileType coq setlocal iskeyword+='
+
+    " Close scratch window automatically
+    autocmd CompleteDone * pclose
+
+    autocmd FileType python map <buffer> <f5> :!./%<enter>
+    autocmd FileType python map <buffer> <f3> <leader>g
+    autocmd FileType python map <buffer> <f4> <leader>n
+
+    autocmd BufNewFile,BufRead *.ejs set filetype=javascript
+augroup END
+
+augroup Binary
+    autocmd!
+    autocmd BufReadPre  *.bin let &bin=1
+    autocmd BufReadPost *.bin if &bin | %!xxd -g 1
+    autocmd BufReadPost *.bin set ft=xxd | endif
+    autocmd BufWritePre *.bin if &bin | %!xxd -r
+    autocmd BufWritePre *.bin endif
+    autocmd BufWritePost *.bin if &bin | %!xxd -g 1
+    autocmd BufWritePost *.bin set nomod | endif
+augroup END
+
+" Exclude quickfix list from buffers
+augroup qf
+    autocmd!
+    autocmd FileType qf set nobuflisted
+augroup END
+
+augroup templates
+    autocmd!
+    autocmd BufNewFile jbuild silent! 0r $HOME/ocaml/templates/jbuild.template
+    autocmd BufNewFile opam* silent! 0r $HOME/ocaml/templates/opam.template
+augroup END
 
 
 if !empty(glob(getcwd() . "/bsconfig.json")) || !empty(glob(expand('%:p:h') . "/bsconfig.json"))
@@ -313,33 +329,29 @@ function! SetOcamlOptions()
     " TODO: Make use of nvim's terminal for tests and compilation
 endfunction
 
-augroup vimrc
+augroup autoAleLint
     autocmd!
-
-    " Maps Coquille commands to <F2> (Undo), <F3> (Next), <F4> (ToCursor)
-    autocmd FileType coq call coquille#FNMapping()
-    autocmd FileType coq setlocal iskeyword+='
-
-    " Close scratch window automatically
-    autocmd CompleteDone * pclose
-
-    autocmd FileType python map <buffer> <f5> :!./%<enter>
-    autocmd FileType python map <buffer> <f3> <leader>g
-    autocmd FileType python map <buffer> <f4> <leader>n
-
-    autocmd BufNewFile,BufRead *.ejs set filetype=javascript
+    autocmd TabEnter,FocusGained,TextChanged,InsertLeave,FocusLost * silent! ALELint
 augroup END
-
-augroup Binary
-    autocmd!
-    autocmd BufReadPre  *.bin let &bin=1
-    autocmd BufReadPost *.bin if &bin | %!xxd -g 1
-    autocmd BufReadPost *.bin set ft=xxd | endif
-    autocmd BufWritePre *.bin if &bin | %!xxd -r
-    autocmd BufWritePre *.bin endif
-    autocmd BufWritePost *.bin if &bin | %!xxd -g 1
-    autocmd BufWritePost *.bin set nomod | endif
-augroup END
+"let g:ale_open_list = 1
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_jshint_config_loc = "/home/fabian/.jshint-vim.json"
+let g:ale_c_clang_options = '-Wall -std=c11 -Wno-bitwise-op-parentheses -Wno-gnu-binary-literal'
+let g:ale_c_clangtidy_options = '-Wall -std=c11 -Wno-bitwise-op-parentheses -Wno-gnu-binary-literal'
+let g:ale_python_mypy_options = '--ignore-missing-imports --check-untyped-defs ' .
+            \'--disallow-untyped-calls --warn-return-any --no-implicit-optional ' .
+            \'--cache-dir /home/fabian/.cache/mypy'
+let g:ale_maximum_file_size = 1000000
+" TODO: clangtidy
+let g:ale_linters = {
+\   'c': ['clang'],
+\   'cpp': ['clang'],
+\   'python': ['mypy'],
+\   'javascript': ['jshint'],
+\   'asm': [],
+\}
 
 let g:ctrlp_prompt_mappings = {
     \ 'AcceptSelection("e")': ['<2-LeftMouse>'],
@@ -397,18 +409,6 @@ if has('nvim')
     command! TT :tabe | :term
     command! Test :tabe | :term jbuilder runtest
 endif
-
-" Exclude quickfix list from buffers
-augroup qf
-    autocmd!
-    autocmd FileType qf set nobuflisted
-augroup END
-
-augroup templates
-    autocmd!
-    autocmd BufNewFile jbuild silent! 0r $HOME/ocaml/templates/jbuild.template
-    autocmd BufNewFile opam* silent! 0r $HOME/ocaml/templates/opam.template
-augroup END
 
 if exists("vimpager")
     " less.vim is annoying since it can't select text
