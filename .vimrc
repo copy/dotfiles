@@ -1,11 +1,8 @@
-" TODO: Avoid global mappings, set per filetype
-
 execute pathogen#infect()
 
 " allow ctrl+c, ctrl+v with x clipboard
 vmap <C-c> y:call system("xclip -i -selection clipboard", getreg("\""))<CR>:call system("xclip -i", getreg("\""))<CR>
 nmap <C-p> :call setreg("\"",system("xclip -o -selection clipboard"))<CR>p
-
 
 " Highlight trailing whitespace
 "highlight ExtraWhitespace ctermbg=red guibg=red
@@ -20,7 +17,6 @@ autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 
 " the default is too similar to diff's red, reset it
 autocmd FileType diff highlight diffSubname ctermfg=Gray
-
 
 let g:python_host_prog = "/usr/bin/python2.7"
 let g:python3_host_prog = "/usr/bin/python3"
@@ -43,8 +39,10 @@ if exists("vimpager")
     noremap <buffer> u <C-u>
     noremap <buffer> q :q<cr>
     " Prevent delay when pressing d https://github.com/rkitover/vimpager/issues/131
-    let g:loaded_surround = 1
+    "let g:loaded_surround = 1
+
     let g:vimpager.ansiesc = 0 " yanking shouldn't include colour escapes, use built-in highlighting
+                               " this breaks word-diff highlighting
 endif
 
 
@@ -52,8 +50,6 @@ let g:deoplete#enable_at_startup = 1
 if !exists('g:deoplete#omni_patterns')
   let g:deoplete#omni#input_patterns = {}
 endif
-"let g:deoplete#omni#input_patterns.ocaml = '[^. *\t]\.\w*|\s\w*|#'
-"let g:deoplete#omni#input_patterns.ocaml = '.*'
 
 let g:deoplete#enable_ignore_case = 0
 let g:deoplete#enable_smart_case = 0
@@ -64,7 +60,6 @@ let g:deoplete#max_list = 0
 let g:deoplete#ignore_sources = {}
 let g:deoplete#ignore_sources.ocaml = ['buffer', 'around', 'member', 'tag']
 let g:deoplete#ignore_sources._ = ['tag']
-
 
 " show highlighting name for debugging highlight scripts
 map <c-a-p> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
@@ -81,16 +76,14 @@ set showcmd
 set softtabstop=4 shiftwidth=4 expandtab
 set nocompatible
 set autoindent
-" disabled, doesn't indent '#' in Python properly
-"set smartindent
+"set smartindent " disabled, doesn't indent '#' in Python properly
 set selectmode=mouse
-set statusline=[%02n]\ %f\ %(\[%M%R%H]%)%=\ %4l,%02c%2V\ %P%*
 set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
 set number
 set relativenumber
-set cursorline
+"set cursorline " disabled: screen noise
 set mouse=a
-set scrolloff=12
+set scrolloff=10
 set nohidden " unload buffer when closing all tabs/splits with this buffer
 "set synmaxcol=100
 "set maxmempattern=100000
@@ -103,6 +96,7 @@ set autoread
 
 augroup focusgained
     autocmd!
+    " Reload file if it hasn't changed in the buffer
     au FocusGained * :checktime
 augroup END
 
@@ -124,12 +118,13 @@ set wildmode=longest,list
 set encoding=utf-8
 set termencoding=utf-8
 
-set cc=100
+highlight ColorColumn ctermbg=darkred
+call matchadd('ColorColumn', '\%101v', 500)
+"set cc=100
 " tw causes automatic wraps -- turns out to be painful in practice
 "set cc=100 tw=100
 
 filetype plugin indent on
-
 
 if has('nvim')
     set dir=~/.nvimdir/
@@ -179,19 +174,8 @@ map <f1> <Nop>
 imap <f1> <Nop>
 
 " don't fold sections
-let Tex_FoldedSections=""
-let Tex_FoldedEnvironments=""
-let Tex_FoldedMisc=""
-let g:vim_markdown_folding_disabled = 1
 set foldmethod=manual
 set nofoldenable
-
-" grep will sometimes skip displaying the file name if you
-" search in a singe file. This will confuse Latex-Suite. Set your grep
-" program to always generate a file-name.
-set grepprg=grep\ -nH\ $*
-let g:tex_flavor = "latex"
-
 
 " Search for selected text, forwards or backwards.
 " In visual mode using * and #
@@ -218,13 +202,6 @@ augroup resCur
     autocmd BufWinEnter * call RestoreCursor()
 augroup END
 
-
-"command! PrettyJSON :%!python -m json.tool
-command! PrettyJSON :call JsonBeautify()
-command! PrettyJavaScript :call JsBeautify()
-
-" reload file
-map <F5> <Esc>:edit<Return>
 
 " n always moves forward
 nnoremap <expr> n (v:searchforward ? 'n' : 'N')
@@ -273,9 +250,6 @@ function! SetOcamlOptions()
     highlight link ALEWarning Error
 
     let g:merlin_ignore_warnings = 'true'
-
-    "Also run the following line in vim to index the documentation:
-    ":execute "helptags " . g:opamshare . "/merlin/vim/doc"
 
     "let g:merlin_display_occurrence_list = 0
     "nmap <LocalLeader>*  <Plug>(MerlinSearchOccurrencesForward)
@@ -338,9 +312,6 @@ endfunction
 augroup vimrc
     autocmd!
 
-    autocmd BufNewFile,BufRead *.go set nowrap tabstop=4 shiftwidth=4 expandtab
-    "autocmd BufNewFile,BufRead jbuild set ft=lisp
-
     " Maps Coquille commands to <F2> (Undo), <F3> (Next), <F4> (ToCursor)
     autocmd FileType coq call coquille#FNMapping()
     autocmd FileType coq setlocal iskeyword+='
@@ -348,13 +319,7 @@ augroup vimrc
     " Close scratch window automatically
     autocmd CompleteDone * pclose
 
-    autocmd BufRead,BufNewFile *.ml,*.mli compiler ocaml
-
-    autocmd FileType rust map <buffer> <F5> :make<enter>
-
-    autocmd FileType python map <buffer> <F5> :!./%<enter>
-    "autocmd FileType python map <buffer> <F4> :! ipython -i %<enter>
-    autocmd FileType python map <buffer> <f2> <s-k>
+    autocmd FileType python map <buffer> <f5> :!./%<enter>
     autocmd FileType python map <buffer> <f3> <leader>g
     autocmd FileType python map <buffer> <f4> <leader>n
 
@@ -439,9 +404,6 @@ if has('nvim')
     command! TT :tabe | :term
     command! Test :tabe | :term jbuilder runtest
 endif
-
-"autocmd BufNewFile,BufRead /home/fabian/some-folder/* set cc=99
-"autocmd BufNewFile,BufRead /home/fabian/some-folder/* let g:syntastic_python_python_exec = g:python_host_prog
 
 " Exclude quickfix list from buffers
 augroup qf
