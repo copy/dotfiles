@@ -72,6 +72,7 @@ let g:GPGPreferSymmetric = 1
 set backspace=indent,eol,start
 
 syntax enable
+set virtualedit=block
 set showcmd
 set softtabstop=4 shiftwidth=4 expandtab
 set nocompatible
@@ -93,6 +94,9 @@ set incsearch
 set laststatus=2
 set ignorecase smartcase
 set autoread
+" open quickfix items in existing tab / new tab
+set switchbuf=usetab,newtab
+set splitright splitbelow
 
 augroup focusgained
     autocmd!
@@ -144,12 +148,21 @@ set undolevels=1000
 
 set cmdheight=2
 
-set hls
+set hlsearch
 set wildmenu
+
+set title " Set terminal title (required for st)
 
 " solarized theme
 set background=dark
-colorscheme solarized
+
+if 1
+    colorscheme solarized
+else
+    set termguicolors
+    colorscheme solarized8
+endif
+
 
 if has('gui_running')
   set guifont=Monospace\ 13
@@ -218,7 +231,7 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_jshint_config_loc = "/home/fabian/.jshint-vim.json"
 let g:ale_c_clang_options = '-Wall -std=c11 -Wno-bitwise-op-parentheses -Wno-gnu-binary-literal'
 let g:ale_c_clangtidy_options = '-Wall -std=c11 -Wno-bitwise-op-parentheses -Wno-gnu-binary-literal'
-let g:ale_python_mypy_options = '--ignore-missing-imports --allow-untyped-defs --cache-dir /home/fabian/.cache/mypy'
+let g:ale_python_mypy_options = '--ignore-missing-imports --check-untyped-defs --disallow-untyped-calls --warn-return-any --no-implicit-optional --cache-dir /home/fabian/.cache/mypy'
 let g:ale_maximum_file_size = 1000000
 " TODO: clangtidy
 let g:ale_linters = {
@@ -358,6 +371,8 @@ augroup END
 " tabs setup
 map <c-j> :tabp<cr>
 map <c-k> :tabn<cr>
+"map <c-s-j> :tabmove -1<cr> " can't be mapped
+"map <c-s-k> :tabmove +1<cr>
 map <c-l> <c-w>w
 "map <c-h> <c-w>W
 imap <c-j> <ESC><c-j>
@@ -388,12 +403,22 @@ let g:ctrlp_root_markers = [".merlin"]
 let g:ctrlp_regexp = 1
 
 let g:fzf_action = {
-  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-t': '',
   \ 'enter': 'tab split',
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 
+command! -bang -nargs=* RgFZF
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+
+let g:fzf_buffers_jump = 1
+
 nmap <c-t> :FZF<cr>
+nmap <c-b> :Windows<cr>
 
 " open file/url under cursor in new tab
 nnoremap gf <C-W>gf
