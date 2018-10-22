@@ -61,8 +61,7 @@ alias "cd-"=cd
 
 alias strace="strace -tt -yy"
 
-alias devdl="devd -l -x '**{.bak,.txt,.ml,.cmt,.cmx,.cmi,.cmo,.native,_digests,_log,.depends,.o,.byte,.where}' . >! /tmp/devd.log & ; sleep 0.1; cat /tmp/devd.log"
-alias devdd="devd . >! /tmp/devd.log & ; sleep 0.1; cat /tmp/devd.log"
+alias devdl="devd -l -x '**/*{.bak,.txt,.ml,.cmt,.cmx,.cmi,.cmo,.native,_digests,_log,.depends,.o,.byte,.where,.db,.digest-db,.to-delete-in-source-tree,.universe-state,log}' ."
 
 alias disass="objdump -M intel -d"
 
