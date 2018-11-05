@@ -50,6 +50,8 @@ set wildmode=longest,list
 set encoding=utf-8
 set termencoding=utf-8
 
+set clipboard=unnamedplus
+
 "set cc=100
 " tw causes automatic wraps -- turns out to be painful in practice
 "set cc=100 tw=100
@@ -220,15 +222,37 @@ augroup Binary
     autocmd BufWritePost *.bin set nomod | endif
 augroup END
 
+autocmd BufReadPost *.wast set ft=lisp
+
 " Exclude quickfix list from buffers
 augroup qf
     autocmd!
     autocmd FileType qf set nobuflisted
 augroup END
 
+
+" Rust
+autocmd Filetype rust call SetRustOptions()
+function! SetRustOptions()
+    let g:racer_experimental_completer = 1 " show full definition during completion
+    "let g:rustfmt_autosave = 1 " breaks undo
+    "let g:rustfmt_command = "rustfmt +nightly "
+    "let g:racer_cmd = "/home/fabian/.cargo/bin/racer"
+    let g:deoplete#sources#rust#racer_binary = "/home/fabian/.cargo/bin/racer"
+    let g:deoplete#sources#rust#rust_source_path = "/home/fabian/DL/rust/src"
+    nmap <buffer> <f2> <plug>DeopleteRustShowDocumentation
+    nmap <buffer> <f3> <plug>DeopleteRustGoToDefinitionDefault
+    augroup rust
+        autocmd!
+        "autocmd BufWritePre * undojoin | Neoformat
+        autocmd BufWritePre *.rs try | undojoin | Neoformat | catch /^Vim\%((\a\+)\)\=:E790/ | finally | silent Neoformat | endtry
+    augroup END
+endfunction
+
+
 augroup templates
     autocmd!
-    autocmd BufNewFile jbuild silent! 0r $HOME/ocaml/templates/jbuild.template
+    autocmd BufNewFile dune silent! 0r $HOME/ocaml/templates/dune.template
     autocmd BufNewFile opam* silent! 0r $HOME/ocaml/templates/opam.template
 augroup END
 
@@ -287,16 +311,16 @@ function! SetOcamlOptions()
     " This also fixes the problem
     let g:merlin_type_history_auto_open = 0
 
-    "noremap <f4> :MerlinILocate<cr>
-    noremap <f4> :MerlinDocument<cr>
-    noremap <f3> :MerlinLocate<cr>
-    noremap <f2> :MerlinTypeOf<cr>
-    vnoremap <f2> <esc>:'<,'>:MerlinTypeOfSel<cr>gv
-    noremap <f5> :MerlinOutline<cr>
-    "noremap <f5> :FZFMerlinOutline<cr>
-    "noremap <f6> :let g:syntastic_auto_loc_list = 0<cr>:MerlinOccurrences<cr>
-    noremap <f6> :call ToggleOccurences()<cr>
-    noremap <f7> :MerlinToggleTypeHistory<cr><c-w>w
+    "noremap <buffer> <f4> :MerlinILocate<cr>
+    noremap <buffer> <f4> :MerlinDocument<cr>
+    noremap <buffer> <f3> :MerlinLocate<cr>
+    noremap <buffer> <f2> :MerlinTypeOf<cr>
+    vnoremap <buffer> <f2> <esc>:'<,'>:MerlinTypeOfSel<cr>gv
+    noremap <buffer> <f5> :MerlinOutline<cr>
+    "noremap <buffer> <f5> :FZFMerlinOutline<cr>
+    "noremap <buffer> <f6> :let g:syntastic_auto_loc_list = 0<cr>:MerlinOccurrences<cr>
+    noremap <buffer> <f6> :call ToggleOccurences()<cr>
+    noremap <buffer> <f7> :MerlinToggleTypeHistory<cr><c-w>w
 
     setlocal softtabstop=2 shiftwidth=2
     setlocal autowrite
@@ -327,12 +351,13 @@ function! SetOcamlOptions()
     endfunction
 
     " TODO: Make use of nvim's terminal for tests and compilation
+
+    augroup autoAleLint
+        autocmd!
+        autocmd TabEnter,FocusGained,TextChanged,InsertLeave,FocusLost * silent! ALELint
+    augroup END
 endfunction
 
-augroup autoAleLint
-    autocmd!
-    autocmd TabEnter,FocusGained,TextChanged,InsertLeave,FocusLost * silent! ALELint
-augroup END
 "let g:ale_open_list = 1
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
@@ -350,6 +375,7 @@ let g:ale_linters = {
 \   'cpp': ['clang'],
 \   'python': ['mypy'],
 \   'javascript': ['jshint'],
+\   'rust': ['cargo'],
 \   'asm': [],
 \}
 
