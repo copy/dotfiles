@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+DIR=/tmp/qute-$RANDOM-$RANDOM
+mkdir -p $DIR/config/
+cp ~/.config/qutebrowser/{config.py,*.css} $DIR/config/
+ln -s ~/.local/share/qutebrowser/blocked-hosts $DIR/config/
+# --set content.private_browsing true # disables completion
+QT_SCALE_FACTOR=1.4 qutebrowser --set auto_save.interval 1000000 --basedir $DIR "$@"
