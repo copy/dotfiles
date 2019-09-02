@@ -217,6 +217,24 @@ temperaturewidgetimer:start()
 temperaturewidgetimer:emit_signal("timeout")
 
 
+temperaturewidget2 = wibox.widget.textbox()
+temperaturewidget2:set_text("")
+temperaturewidgetimer2 = gears.timer({ timeout = 5 })
+temperaturewidgetimer2:connect_signal("timeout",
+  function()
+    fh = assert(io.popen("nvidia-smi -q |grep 'GPU Current Temp' | sed 's/\\s*GPU Current Temp\\s*: //' | sed 's/ /°/'", "r"))
+    local text = fh:read("*l")
+    if text then
+        temperaturewidget2:set_text(" " .. text)
+    else
+        temperaturewidget2:set_text()
+    end
+    fh:close()
+  end
+)
+temperaturewidgetimer2:start()
+temperaturewidgetimer2:emit_signal("timeout")
+
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
@@ -291,6 +309,7 @@ awful.screen.connect_for_each_screen(function(s)
             wibox.widget.systray(),
             batterywidget,
             temperaturewidget,
+            temperaturewidget2,
             netwidget,
             cpuwidget,
             memwidget,
