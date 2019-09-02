@@ -164,21 +164,6 @@ vicious.register(memwidget, vicious.widgets.mem, function (widget, args) return 
 cpuwidget = wibox.widget.textbox()
 vicious.register(cpuwidget, vicious.widgets.cpu, function (widget, args) return string.format(" %02d%% ", args[1]) end, 15)
 
-netwidget = wibox.widget.textbox()
-vicious.register(netwidget, vicious.widgets.net, function (widget, args)
-    local widget_text = ""
-    for i, name in ipairs(interfaces) do
-        local up = tonumber(args["{" .. name .. " up_kb}"])
-        local down = tonumber(args["{" .. name .. " down_kb}"])
-        local carrier = args["{" .. name .. " carrier}"]
-        if down ~= 0 and up ~= 0 and down ~= nil or carrier ~= 0 and carrier ~= nil then
-            widget_text = string.format("↓%4s ↑%4s", down, up)
-            break
-        end
-    end
-    netwidget:set_text(widget_text)
-end, 3)
-
 batterywidget = wibox.widget.textbox()
 batterywidget:set_text("")
 batterywidgettimer = gears.timer({ timeout = 60 })
@@ -310,7 +295,6 @@ awful.screen.connect_for_each_screen(function(s)
             batterywidget,
             temperaturewidget,
             temperaturewidget2,
-            netwidget,
             cpuwidget,
             memwidget,
             mytextclock,
