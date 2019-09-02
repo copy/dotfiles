@@ -380,6 +380,14 @@ function! SetDuneOptions()
     augroup END
 endfunction
 
+autocmd Filetype typescript call SetTypescriptOptions()
+function! SetTypescriptOptions()
+    augroup typescript
+        autocmd!
+        autocmd BufWritePre *.ts try | undojoin | Neoformat | catch /^Vim\%((\a\+)\)\=:E790/ | finally | silent Neoformat | endtry
+    augroup END
+endfunction
+
 "let g:ale_open_list = 1
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
