@@ -53,7 +53,7 @@ do
 
         naughty.notify({ preset = naughty.config.presets.critical,
                          title = "Oops, an error happened!",
-                         text = err })
+                         text = tostring(err) })
         in_error = false
     end)
 end
@@ -218,7 +218,7 @@ temperaturewidgetimer:emit_signal("timeout")
 
 
 -- Create a wibox for each screen and add it
-local mytaglist_buttons = awful.util.table.join(
+local taglist_buttons = gears.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
                     --awful.button({ modkey }, 1, function(t,c) c:move_to_tag(t) end),
                     awful.button({ }, 3, awful.tag.viewtoggle),
@@ -227,7 +227,7 @@ local mytaglist_buttons = awful.util.table.join(
                     awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
                     awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
                     )
-local mytasklist_buttons = awful.util.table.join(
+local tasklist_buttons = gears.table.join(
     awful.button({ }, 1, function (c)
         if c == client.focus then
             c.minimized = true
@@ -263,16 +263,16 @@ awful.screen.connect_for_each_screen(function(s)
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     s.mylayoutbox = awful.widget.layoutbox(s)
-    s.mylayoutbox:buttons(awful.util.table.join(
+    s.mylayoutbox:buttons(gears.table.join(
                            awful.button({ }, 1, function () awful.layout.inc(layouts, 1) end),
                            awful.button({ }, 3, function () awful.layout.inc(layouts, -1) end),
                            awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)))
     -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist_buttons)
+    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
 
     -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist_buttons)
+    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
 
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s })
@@ -288,21 +288,21 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist,
         {
             layout = wibox.layout.fixed.horizontal,
-            (wibox.widget.systray()),
-            (batterywidget),
-            (temperaturewidget),
-            (netwidget),
-            (cpuwidget),
-            (memwidget),
-            (mytextclock),
-            (mylayoutbox),
-        }
+            wibox.widget.systray(),
+            batterywidget,
+            temperaturewidget,
+            netwidget,
+            cpuwidget,
+            memwidget,
+            mytextclock,
+            s.mylayoutbox,
+        },
     }
 end)
 -- }}}
 
 -- {{{ Mouse bindings
-root.buttons(awful.util.table.join(
+root.buttons(gears.table.join(
     --awful.button({ }, 3, function () mymainmenu:toggle() end),
     awful.button({ }, 4, awful.tag.viewnext),
     awful.button({ }, 5, awful.tag.viewprev)
@@ -310,7 +310,7 @@ root.buttons(awful.util.table.join(
 -- }}}
 
 -- {{{ Key bindings
-globalkeys = awful.util.table.join(
+globalkeys = gears.table.join(
 
    awful.key({}, "F8" , function() awful.spawn( ".local/bin/setvolume.sh decrease" ) end),
    awful.key({}, "F9" , function() awful.spawn( ".local/bin/setvolume.sh increase" ) end),
@@ -436,7 +436,7 @@ globalkeys = awful.util.table.join(
     awful.key({ }, "XF86Tools",function () awful.spawn( "cmus-remote -n" ) end), -- the button looks like a next key anyways
     awful.key({ }, "XF86AudioPrev",function () awful.spawn( "cmus-remote -r" ) end),
     awful.key({ }, "XF86AudioPlay",function () awful.spawn( "cmus-remote -u" ) end),
-    --awful.key({ }, "XF86AudioStop",function () awful.util.spawn( "mpc pause" ) end),
+    --awful.key({ }, "XF86AudioStop",function () awful.spawn( "mpc pause" ) end),
 
     awful.key({ }, "XF86AudioRaiseVolume",function () awful.spawn( ".local/bin/setvolume.sh increase" ) end),
     awful.key({ }, "XF86AudioLowerVolume",function () awful.spawn( ".local/bin/setvolume.sh decrease" ) end),
@@ -517,7 +517,7 @@ globalkeys = awful.util.table.join(
 
 )
 
-clientkeys = awful.util.table.join(
+clientkeys = gears.table.join(
     awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
     awful.key({ modkey,           }, "q",      function (c) if not c.no_kill then c:kill() end  end),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
@@ -557,13 +557,13 @@ end
 -- Be careful: we use keycodes to make it works on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
 for i = 1, keynumber do
-    globalkeys = awful.util.table.join(globalkeys,
+    globalkeys = gears.table.join(globalkeys,
         awful.key({ modkey }, "#" .. i + 9,
                   function ()
                         local screen = awful.screen.focused()
                         local tag = screen.tags[i]
                         if tag then
-                            tag:view_only()
+                           tag:view_only()
                         end
                   end),
         awful.key({ modkey, "Control" }, "#" .. i + 9,
@@ -587,7 +587,7 @@ for i = 1, keynumber do
           )
 end
 
-clientbuttons = awful.util.table.join(
+clientbuttons = gears.table.join(
     awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
     awful.button({ modkey }, 1, awful.mouse.client.move),
     awful.button({ modkey }, 3, awful.mouse.client.resize))
