@@ -402,8 +402,6 @@ globalkeys = gears.table.join(
          end
         end),
 
-    awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
-
     awful.key({ modkey,           }, "h",
         function ()
             awful.client.focus.byidx(-1)
@@ -564,6 +562,10 @@ clientkeys = gears.table.join(
             c.maximized = not c.maximized
             c.maximized_horizontal = c.maximized
             c.maximized_vertical   = c.maximized
+        end),
+    awful.key({ modkey,           }, "v",
+        function (c)
+            awful.tag.history.restore(awful.screen.focused())
         end)
 )
 
