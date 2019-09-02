@@ -522,20 +522,11 @@ let g:deoplete#ignore_sources._ = ['tag']
 let g:GPGUseAgent = 0
 let g:GPGPreferSymmetric = 1
 
-
-" Highlight trailing whitespace
-"highlight ExtraWhitespace ctermbg=red guibg=red
-"autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
-"match ExtraWhitespace /\s\+\%#\@<!$/
-highlight ExtraWhitespace ctermbg=darkred guibg=#382424
-autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-" the above flashes annoyingly while typing, be calmer in insert mode
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-
 " the default is too similar to diff's red, reset it
 autocmd FileType diff highlight diffSubname ctermfg=Gray
 
-" Highlight character at column 100
-call matchadd('ColorColumn', '\%101v', 500)
+" Highlight character at column 100 and trailing spaces
+hi Bangy ctermbg=red guibg=#2824b4 ctermbg=blue
+autocmd BufWinEnter * match Bangy /\%100v.\|\s\+$/
+autocmd InsertLeave * match Bangy /\%100v.\|\s\+$/
+autocmd InsertEnter * match Bangy /\%100v./
