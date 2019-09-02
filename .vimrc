@@ -111,11 +111,6 @@ endif
 set foldmethod=manual
 set nofoldenable
 
-
-" allow ctrl+c, ctrl+v with x clipboard
-vmap <C-c> y:call system("xclip -i -selection clipboard", getreg("\""))<CR>:call system("xclip -i", getreg("\""))<CR>
-nmap <C-p> :call setreg("\"",system("xclip -o -selection clipboard"))<CR>p
-
 map <silent> <cr> :noh<cr><c-cr>
 
 " https://github.com/Shougo/deoplete.nvim/issues/492#issuecomment-306751415
@@ -378,7 +373,6 @@ let g:ale_python_mypy_options = '--ignore-missing-imports --check-untyped-defs '
             \'--disallow-untyped-calls --warn-return-any --no-implicit-optional ' .
             \'--cache-dir /home/fabian/.cache/mypy'
 let g:ale_maximum_file_size = 1000000
-" TODO: clangtidy
 let g:ale_linters = {
 \   'c': ['clang'],
 \   'cpp': ['clang'],
@@ -388,20 +382,7 @@ let g:ale_linters = {
 \   'asm': [],
 \}
 
-let g:ctrlp_prompt_mappings = {
-    \ 'AcceptSelection("e")': ['<2-LeftMouse>'],
-    \ 'AcceptSelection("t")': ['<cr>'],
-    \ }
-"let g:ctrlp_map = '<c-t>'
-let g:ctrlp_map = '<nop>'
 
-let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|\.git\|\.o$\|_build\/\|.pyc$\|.png$'
-let g:ctrlp_show_hidden = 1
-let g:ctrlp_working_path_mode = 'a'
-let g:ctrlp_root_markers = [".merlin"]
-
-" Use regexp mode instead of fuzzy
-let g:ctrlp_regexp = 1
 
 let g:fzf_action = {
   \ 'ctrl-t': '',
