@@ -611,8 +611,8 @@ end
 
 clientbuttons = gears.table.join(
     awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
-    awful.button({ modkey }, 1, awful.mouse.client.move),
-    awful.button({ modkey }, 3, awful.mouse.client.resize))
+    awful.button({ modkey }, 1, function(c) if not c.no_mouse then awful.mouse.client.move(c) end end),
+    awful.button({ modkey }, 3, function(c) if not c.no_mouse then awful.mouse.client.resize(c) end end))
 
 -- Set keys
 root.keys(globalkeys)
@@ -655,12 +655,13 @@ awful.rules.rules = {
       end
     },
 
-    --{ rule = { class = "Audacious" },
-    --  callback = function( c )
-    --      -- set layout to floating for audacious
-    --      awful.layout.set(awful.layout.suit.floating, c.tags(c)[0])
-    --  end
-    --},
+    { rule = { class = "Wine" },
+      --properties = { border_width = 0 },
+      callback = function(c)
+          c.no_kill = true
+          c.no_mouse = true
+      end
+    },
 
     -- wine doesn't like borders
     { rule = { class = "Wine" },
