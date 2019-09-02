@@ -278,11 +278,14 @@ augroup setup_ocaml
     autocmd Filetype ocaml call SetOcamlOptions()
 augroup END
 function! SetOcamlOptions()
+    "highlight ocamlComment ctermfg=white guifg=white
+    "highlight link ocamlComment NONE
 
-    highlight link ALEError Error
-    highlight link ALEWarning Error
+    let g:ocaml_highlight_operators = 1
 
     let g:merlin_ignore_warnings = 'true'
+
+    command! MerlinToggleWarnings if g:merlin_ignore_warnings == 'true' | let g:merlin_ignore_warnings = 'false' | ALELint | else | let g:merlin_ignore_warnings = 'true' | ALELint | end
 
     "let g:merlin_display_occurrence_list = 0
     "nmap <LocalLeader>*  <Plug>(MerlinSearchOccurrencesForward)
@@ -291,13 +294,7 @@ function! SetOcamlOptions()
     let g:merlin_split_method = "tab"
     "let g:merlin_completion_arg_type = "always"
     let g:merlin_completion_arg_type = "never"
-    let g:merlin_completion_with_doc = "true"
-
-    let g:deoplete#auto_complete_delay = 0
-
-    "let g:deoplete#enable_profile = 1
-    "call deoplete#enable_logging('DEBUG', '/tmp/deoplete.log')
-    "call deoplete#custom#source('ocaml', 'debug_enabled', 1)
+    "let g:merlin_completion_with_doc = "true" " Note: https://github.com/ocaml/merlin/issues/726
 
     function! ToggleOccurences()
         let old_last_winnr = winnr('$')
@@ -313,14 +310,14 @@ function! SetOcamlOptions()
     "let g:merlin_type_history_height = 0
 
     " This also fixes the problem
-    let g:merlin_type_history_auto_open = 0
+    "let g:merlin_type_history_auto_open = 0
 
     "noremap <buffer> <f4> :MerlinILocate<cr>
     noremap <buffer> <f4> :MerlinDocument<cr>
     noremap <buffer> <f3> :MerlinLocate<cr>
     noremap <buffer> <f2> :MerlinTypeOf<cr>
     vnoremap <buffer> <f2> <esc>:'<,'>:MerlinTypeOfSel<cr>gv
-    noremap <buffer> <f5> :MerlinOutline<cr>
+    noremap <buffer> <f5> :FZFMerlinOutline<cr>
     "noremap <buffer> <f5> :FZFMerlinOutline<cr>
     "noremap <buffer> <f6> :let g:syntastic_auto_loc_list = 0<cr>:MerlinOccurrences<cr>
     noremap <buffer> <f6> :call ToggleOccurences()<cr>
@@ -328,16 +325,23 @@ function! SetOcamlOptions()
 
     setlocal softtabstop=2 shiftwidth=2
     setlocal autowrite
-    setlocal iskeyword+=`
 
-    function! JbuilderTest()
+    " Don't add leading * to multiline comments, i.e. do this:
+    " (* foo
+    "    bar *)
+    " but not:
+    " (* foo
+    "  * bar *)
+    setlocal formatoptions-=c formatoptions-=o formatoptions-=r
+
+    function! DuneTest()
         "setlocal errorformat=%E%f\ line\ %l\ in\ %m,%C%m,%Z
         setlocal errorformat=File\ \"%f\"\\,\ line\ %l\\,\ characters\ %c-%*\\d:\ %m
         "setlocal errorformat+=%*[\ ]%m\ \"%f\"\\,\ line\ %l\\,\ characters\ %c-%*\\d
-        setlocal makeprg=jbuilder
+        setlocal makeprg=dune
         make runtest
         copen
-        "Dispatch jbuilder runtest
+        "Dispatch dune runtest
     endfunction
 
     command! MerlinLocateIntf call Merlin_locate_intf()
@@ -351,14 +355,28 @@ function! SetOcamlOptions()
     command! Exec call Exec()
 
     function! Exec()
-        execute "!jbuilder exec ./" . expand("%:r") . ".exe"
+        execute "!dune exec ./" . expand("%:r") . ".exe"
     endfunction
 
     " TODO: Make use of nvim's terminal for tests and compilation
 
+    function! MaybeALELint()
+        if expand('%:t') != ":merlin-type-history:"
+            ALELint
+        end
+    endfunction
+
     augroup autoAleLint
         autocmd!
-        autocmd TabEnter,FocusGained,TextChanged,InsertLeave,FocusLost * silent! ALELint
+        autocmd TabEnter,FocusGained,TextChanged,InsertLeave,FocusLost * silent! call MaybeALELint()
+    augroup END
+endfunction
+
+autocmd Filetype dune call SetDuneOptions()
+function! SetDuneOptions()
+    augroup dune
+        autocmd!
+        autocmd BufWritePre dune try | undojoin | Neoformat | catch /^Vim\%((\a\+)\)\=:E790/ | finally | silent Neoformat | endtry
     augroup END
 endfunction
 
