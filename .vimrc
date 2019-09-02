@@ -133,8 +133,8 @@ imap <Down>  <nop>
 " remove ex mode
 map Q <Nop>
 " remove help
-map <f1> <Nop>
-imap <f1> <Nop>
+map <f1> <Esc>
+imap <f1> <Esc>
 
 " Search for selected text, forwards or backwards.
 " In visual mode using * and #
