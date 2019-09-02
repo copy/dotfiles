@@ -609,6 +609,35 @@ for i = 1, keynumber do
           )
 end
 
+globalkeys = gears.table.join(globalkeys,
+awful.key({ modkey }, "#" .. 19,
+function ()
+    local screen = awful.screen.focused()
+    local tag = screen.tags[#screen.tags]
+    if tag then
+        tag:view_only()
+    end
+end),
+awful.key({ modkey, "Control" }, "#" .. 19,
+function ()
+    local screen = awful.screen.focused()
+    local tag = screen.tags[#screen.tags]
+    if tag then
+        awful.tag.viewtoggle(tag)
+    end
+end),
+awful.key({ modkey, "Shift" }, "#" .. 19,
+function ()
+    if client.focus then
+        local tag = client.focus.screen.tags[#client.focus.screen.tags]
+        if tag then
+            client.focus:move_to_tag(tag)
+            tag:view_only()
+        end
+    end
+end)
+)
+
 clientbuttons = gears.table.join(
     awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
     awful.button({ modkey }, 1, function(c) if not c.no_mouse then awful.mouse.client.move(c) end end),
