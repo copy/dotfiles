@@ -442,7 +442,7 @@ nmap <silent> <Leader>p <Plug>(ale_previous_wrap)
 nmap <silent> <Leader>n <Plug>(ale_next_wrap)
 
 let g:fzf_action = {
-  \ 'ctrl-t': '',
+  \ 'ctrl-t': 'tab split',
   \ 'enter': 'tab split',
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
@@ -469,6 +469,8 @@ if has('nvim')
     function! UndoEscMappingFzf()
         if exists('b:fzf')
             tnoremap <buffer> <Esc> <Esc>
+            " Otherwise fzf hangs with 100% cpu usage
+            tnoremap <buffer> <c-t> <Esc> <Esc>
         endif
     endfunction
 
@@ -480,7 +482,10 @@ if has('nvim')
         autocmd TermOpen term://* call UndoEscMappingFzf()
     augroup END
     command! TT :tabe | :term
-    command! Test :tabe | :term jbuilder runtest
+    command! VT :vs | :term
+    command! HT :hs | :term
+
+    command! Test :tabe | :term dune runtest
 endif
 
 if exists("vimpager")
