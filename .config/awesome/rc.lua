@@ -337,6 +337,7 @@ globalkeys = gears.table.join(
    awful.key({}, "F11", function()
        awful.spawn.with_shell( "cmus-remote -u; notify-send $(cmus-remote -Q |grep status)" )
        awful.spawn.with_shell( "notify-send $(vlc-toggle)" )
+       awful.spawn.with_shell( "echo 'cycle pause' | socat - /tmp/mpasocket" )
    end),
 
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
