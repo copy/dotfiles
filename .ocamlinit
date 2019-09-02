@@ -4,6 +4,11 @@ let () =
   with Not_found -> ()
 ;;
 
+
+#utop_prompt_simple;;
+
+UTop.set_topfind_verbose false;;
+
 #use "topfind";;
 #thread;;
 
