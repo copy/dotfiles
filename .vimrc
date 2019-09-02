@@ -37,6 +37,8 @@ set autoread
 set switchbuf=usetab,newtab
 set splitright splitbelow
 
+au FileType go setlocal noexpandtab shiftwidth=4 softtabstop=4 tabstop=4
+
 if has('nvim')
     set inccommand=nosplit " show substitution live
 endif
