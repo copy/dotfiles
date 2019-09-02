@@ -86,11 +86,18 @@ set title " Set terminal title (required for st)
 " solarized theme
 set background=dark
 
-if 1
+if 0
     colorscheme solarized
 else
     set termguicolors
-    colorscheme solarized8
+    "let g:solarized_diffmode = "low"
+    colorscheme solarized8_flat
+
+    " Remove background
+    hi TabLine ctermfg=247 ctermbg=236 guifg=#93a1a1 guibg=NONE guisp=NONE cterm=NONE gui=NONE
+    hi TabLineFill ctermfg=247 ctermbg=236 guifg=#93a1a1 guibg=NONE guisp=NONE cterm=NONE gui=NONE
+    " slightly brighter than the default (#586e75)
+    hi Comment ctermfg=242 ctermbg=NONE guifg=#6e8991 guibg=NONE guisp=NONE cterm=NONE gui=NONE,italic
 endif
 
 if has('gui_running')
