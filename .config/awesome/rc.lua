@@ -525,7 +525,7 @@ globalkeys = gears.table.join(
    ),
 
    awful.key(
-       { "Shift" },
+       { modkey },
        "Print",
        function()
            awful.spawn("xfce4-screenshooter -r -s /tmp/",false)
