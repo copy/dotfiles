@@ -388,6 +388,24 @@ function! SetTypescriptOptions()
     augroup END
 endfunction
 
+let g:LanguageClient_serverCommands = { 'haskell': ['hie-wrapper'] }
+let g:LanguageClient_autoStart = 1
+let g:LanguageClient_rootMarkers = {
+            \ 'javascript': ['project.json'],
+            \ 'rust': ['Cargo.toml'],
+            \ 'haskell': ['stack.yaml'],
+            \ }
+let g:LanguageClient_hoverPreview = "Never"
+
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+map <f2> :call LanguageClient#textDocument_hover()<CR>
+map <f3> :call LanguageClient#textDocument_definition()<CR>
+"map <Leader>lr :call LanguageClient#textDocument_rename()<CR>
+map <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
+"map <Leader>lb :call LanguageClient#textDocument_references()<CR>
+map <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
+map <f4> :call LanguageClient#textDocument_documentSymbol()<CR>
+
 "let g:ale_open_list = 1
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
