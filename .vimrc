@@ -417,13 +417,18 @@ let g:ale_python_mypy_options = '--ignore-missing-imports --check-untyped-defs '
             \'--disallow-untyped-calls --warn-return-any --no-implicit-optional ' .
             \'--cache-dir /home/fabian/.cache/mypy'
 let g:ale_maximum_file_size = 1000000
+let g:ale_virtualtext_cursor = 1
+let g:ale_virtualtext_delay = 0
+let g:ale_echo_cursor = 0 " interferes with MerlinTypeOf
+"g:ale_virtualtext_prefix
 let g:ale_linters = {
 \   'c': ['clang'],
 \   'cpp': ['clang'],
 \   'python': ['mypy'],
 \   'javascript': ['jshint'],
-\   'rust': ['cargo'],
+\   'rust': ['rls'],
 \   'asm': [],
+\   'java': [],
 \}
 
 hi Error guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
@@ -432,6 +437,9 @@ hi ALEWarning guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
 hi ALEErrorSign guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
 hi ALEWarningSign guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
 
+let g:merlin_disable_default_keybindings = 1 " otherwise merlin takes \n and \p
+nmap <silent> <Leader>p <Plug>(ale_previous_wrap)
+nmap <silent> <Leader>n <Plug>(ale_next_wrap)
 
 let g:fzf_action = {
   \ 'ctrl-t': '',
