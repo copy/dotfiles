@@ -400,6 +400,11 @@ let g:ale_linters = {
 \   'asm': [],
 \}
 
+hi Error guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
+hi ALEError guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
+hi ALEWarning guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
+hi ALEErrorSign guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
+hi ALEWarningSign guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
 
 
 let g:fzf_action = {
