@@ -1,0 +1,51 @@
+#!/usr/bin/env ocaml
+
+Topdirs.dir_directory (Sys.getenv "OCAML_TOPLEVEL_PATH");;
+#use "topfind";;
+#require "extunix";;
+
+module U = ExtUnix.Specific
+
+let bwrap = "bwrap"
+let home = Sys.getenv "HOME"
+
+let () =
+  let args =
+    Array.sub Sys.argv 1 (Array.length Sys.argv - 1)
+    |> Array.to_list
+  in
+  let args =
+    [
+      bwrap;
+      "--proc"; "/proc";
+      "--dev"; "/dev";
+      "--dev-bind-try"; "/dev/snd"; "/dev/snd";
+      "--dev-bind-try"; "/dev/nvidia-modeset"; "/dev/nvidia-modeset";
+      "--dev-bind-try"; "/dev/nvidia0"; "/dev/nvidia0";
+      "--dev-bind-try"; "/dev/nvidiactl"; "/dev/nvidiactl";
+      "--dev-bind-try"; "/dev/dri"; "/dev/dri";
+      "--tmpfs"; "/tmp";
+      "--ro-bind"; "/tmp/.X11-unix"; "/tmp/.X11-unix";
+      "--ro-bind"; "/usr"; "/usr";
+      "--symlink"; "usr/lib"; "/lib";
+      "--symlink"; "usr/lib64"; "/lib64";
+      "--symlink"; "usr/bin"; "/bin";
+      "--symlink"; "usr/sbin"; "/sbin";
+      "--ro-bind"; "/etc"; "/etc";
+      "--ro-bind"; Filename.concat home "Music"; Filename.concat home "Music";
+      "--ro-bind"; "/media/samsung/Music"; "/media/samsung/Music";
+      "--bind"; Filename.concat home ".config/mpv"; Filename.concat home ".config/mpv";
+      "--tmpfs"; "/run";
+      "--bind"; "/run/user/1000/pulse"; "/run/user/1000/pulse";
+      "--ro-bind"; "/run/user/1000/Xauthority"; "/run/user/1000/Xauthority";
+      "--unshare-all";
+      (* "--new-session"; *)
+    ]
+    @
+    List.concat_map (fun x -> if Sys.file_exists x then ["--ro-bind"; U.realpath x; U.realpath x] else []) args
+    @
+    ["/usr/bin/mpv"]
+    @
+    List.map (fun x -> if Sys.file_exists x then U.realpath x else x) args
+  in
+  Unix.execvp bwrap (Array.of_list args)

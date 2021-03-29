@@ -1,0 +1,6 @@
+#!/bin/sh
+set -ve
+nix-channel --update
+nix-env --upgrade
+#home-manager switch
+nix-collect-garbage

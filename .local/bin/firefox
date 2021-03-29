@@ -1,6 +1,12 @@
 #!/bin/sh
 
-mkdir -p /run/user/1000/qutebrowser
+    # This is after, but I prefer sharing files through /tmp
+    #--tmpfs /tmp \
+    #--ro-bind /tmp/.X11-unix /tmp/.X11-unix \
+
+    # /dev/nvidia*, /dev/dri*: Only necessary for WebGL
+    #--bind /media/samsung/xp /media/samsung/xp \
+
 
 exec bwrap \
     --proc /proc \
@@ -9,8 +15,6 @@ exec bwrap \
     --dev-bind-try /dev/nvidia-modeset /dev/nvidia-modeset \
     --dev-bind-try /dev/nvidia0 /dev/nvidia0 \
     --dev-bind-try /dev/nvidiactl /dev/nvidiactl \
-    --dev-bind-try /dev/video0 /dev/video0 \
-    --dev-bind-try /dev/video1 /dev/video1 \
     --dev-bind-try /dev/dri /dev/dri \
     --bind /tmp /tmp \
     --ro-bind /usr /usr \
@@ -21,21 +25,16 @@ exec bwrap \
     --ro-bind /etc /etc \
     --bind /media/samsung/Downloads /media/samsung/Downloads \
     --symlink /media/samsung/Downloads ~/Downloads \
-    --bind ~/.cache/qutebrowser ~/.cache/qutebrowser \
-    --bind ~/.config/qutebrowser ~/.config/qutebrowser \
-    --bind ~/.local/share/qutebrowser ~/.local/share/qutebrowser \
-    --bind ~/.cache/fontconfig ~/.cache/fontconfig \
-    --bind ~/.config/fontconfig ~/.config/fontconfig \
-    --bind ~/.local/share/fonts ~/.local/share/fonts \
-    --ro-bind ~/ocaml ~/ocaml \
+    --bind ~/.cache/mozilla ~/.cache/mozilla \
+    --bind ~/.mozilla ~/.mozilla \
+    --bind ~/.cache/pki ~/.pki \
+    --ro-bind ~/.opam ~/.opam \
     --tmpfs /run \
     --bind /run/user/1000/pulse /run/user/1000/pulse \
     --ro-bind /run/user/1000/Xauthority /run/user/1000/Xauthority \
-    --bind /run/user/1000/qutebrowser /run/user/1000/qutebrowser \
     --unshare-user \
     --unshare-pid \
     --unshare-uts \
     --unshare-cgroup \
     --new-session \
-    --setenv QT_SCALE_FACTOR 1.4 \
-    /usr/bin/qutebrowser "$@"
+    /usr/bin/firefox "$@"

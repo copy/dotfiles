@@ -1,0 +1,51 @@
+#!/usr/bin/env ocaml
+
+#use "topfind";;
+#require "unix";;
+
+let home = Sys.getenv "HOME"
+
+let read_file name =
+  match open_in_bin name with
+  | exception Sys_error _ -> None
+  | f ->
+    let result = Buffer.create 4096 in
+    let buf = Bytes.create 4096 in
+    let rec go () =
+      match input f buf 0 (Bytes.length buf) with
+      | 0 ->
+        close_in_noerr f;
+        Buffer.contents result
+      | len ->
+        Buffer.add_subbytes result buf 0 len;
+        go ()
+    in
+    Some (go ())
+
+let write_file name permissions contents =
+  let f = open_out_gen [Open_binary; Open_wronly; Open_creat] permissions name in
+  output_string f contents;
+  close_out_noerr f
+
+let install f =
+  let source = (* XXX: dirname $0 *) f in
+  let dest = Filename.concat home f in
+  let source_contents = read_file source |> Option.get in
+  let source_perms = (Unix.stat source).st_perm in
+  let dest_contents = read_file dest in
+  let dest_perms = try (Unix.stat dest).st_perm with Unix.Unix_error _ -> 0 in
+  match dest_contents with
+  | None ->
+    Printf.eprintf "cp %s %s\n%!" source dest;
+    write_file dest source_perms source_contents
+  | Some dest_contents when String.equal source_contents dest_contents ->
+    if source_perms = dest_perms then
+      Printf.eprintf "Already matches: %s %s\n%!" source dest
+    else (
+      Printf.eprintf "Update permissions: %s %s\n%!" source dest;
+      Unix.chmod dest source_perms
+    )
+  | Some _dest_contents ->
+    Printf.eprintf "Not overwriting: %s %s\n%!" source dest
+
+let () = install Sys.argv.(1)

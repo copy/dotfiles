@@ -1,0 +1,20 @@
+#!/bin/sh
+
+exec bwrap \
+    --proc /proc \
+    --dev /dev \
+    --ro-bind /home /home \
+    --ro-bind /media /media \
+    --ro-bind /tmp /tmp \
+    --ro-bind /usr /usr \
+    --symlink usr/lib /lib \
+    --symlink usr/lib64 /lib64 \
+    --symlink usr/bin /bin \
+    --symlink usr/sbin /sbin \
+    --ro-bind /etc /etc \
+    --ro-bind /opt /opt \
+    --tmpfs /run \
+    --ro-bind /run/user/1000/Xauthority /run/user/1000/Xauthority \
+    --unshare-all \
+    --new-session \
+    /usr/bin/evince "$@"

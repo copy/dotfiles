@@ -1,0 +1,20 @@
+export __GL_SHADER_DISK_CACHE_PATH=~/.cache/nv
+
+#eval $(gpg-agent --daemon) &
+
+xkbcomp .config/xkbcomp $DISPLAY &
+
+xrandr --dpi 150 &
+xrdb -merge .config/Xresources &
+xset b off
+xset s off
+
+if [ -d /etc/X11/xinit/xinitrc.d ] ; then
+ for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
+  [ -x "$f" ] && . "$f"
+ done
+ unset f
+fi
+
+export PATH=~/.local/bin:$PATH
+exec awesome --no-argb 2> /tmp/awesome.log

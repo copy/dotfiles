@@ -1,16 +1,138 @@
-PS1='%B%n %~%% %b'
+zstyle ':completion:*:*:(v|vim|nvim):*:*files' ignored-patterns '*.(a|dylib|so|o|pyc)'
 
-#colors local returncode="%(?..%{$fg[red]%} %? \n%{$resetcolor%})"
-RPS1='%?'
+setopt EXTENDED_GLOB
+
+# show the destination of symbolic links instead of its name
+setopt CHASE_LINKS
+
+# don't remove trailing slash after completing a dir
+#setopt no_auto_remove_slash
+
+LESSHISTFILE=/dev/null
+
+unsetopt beep
+
+zmodload zsh/complist
+
+# colors for file completion
+#eval `gdircolors`
+#zstyle ':completion:*' list-colors ''
+#zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
+# Note: When adding to PATH here, make sure files are on the SSD to speed up
+#       executable lookups
+
+export PATH=~/.local/bin:$PATH
+
+# breaks xdg-open
+#export BROWSER=qutebrowser
+#export BROWSER=firefox
+
+export WINEPREFIX=/media/samsung/wine/
+
+#export EDITOR=gvim
+export EDITOR=nvim
+export PAGER=nvimpager
+
+# confirm deleting files
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+alias dmesg='dmesg -T'
+
+alias hexdump='hexdump -C'
+
+alias grepi='grep -i'
+
+alias xtermhere='xterm -e "cd `pwd` && zsh"'
+
+alias saved='pwd|xclip'
+alias restored='cd `xclip -o`'
+
+alias strace="strace -tt -yy"
+
+alias devdl="devd -l -x '**/*{.bak,.txt,.ml,.cmt,.cmx,.cmi,.cmo,.native,_digests,_log,.depends,.o,.byte,.where,.db,.digest-db,.to-delete-in-source-tree,.universe-state,log}' ."
+
+alias disass="objdump -M intel -d"
+
+# print page number
+alias pdfgrep="pdfgrep -n"
+
+alias icat="kitty +kitten icat"
+#alias esy=~/Samsung/node_modules/.bin/esy
+alias netstatty="netstat -lpute --numeric-ports"
+
+export PYTHONPATH=/usr/local/lib/python3.5/site-packages:$PYTHONPATH
+
+export LD_LIBRARY_PATH=/usr/local/lib
+
+export FZF_DEFAULT_COMMAND="rg --files -g '!node_modules' -g '!_build' -g '!*.cm[ijtx]' -g '!*.mlast{,.d}'"
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+alias .......='cd ../../../../../..'
+
+alias utop='utop-full -implicit-bindings'
+
+alias reboot="echo 'su -c reboot'"
+alias shutdown="echo 'su -c shutdown'"
+
+alias gl="git log"
+alias gs="git status"
+alias gd="git diff"
+
+# keep sources when using opam and compile it with bin-annot in order to
+# browser opam packages with merlin
+#export OPAMKEEPBUILDDIR=true
+#export OPAMBUILDDOC=true # not used, requires to compile odoc before anything else: https://github.com/ocaml/opam-repository/issues/15710
+export OPAMKEEPBUILDDIR=true
+export OPAMPINKINDAUTO=0
+#export OCAMLPARAM="_,bin-annot=1"
+export TOPKG_CONF_DEBUGGER_SUPPORT=true # install sources, may break nocrypto compilation
+#export NOCRYPTO_ACCELERATE=false # let's hope hosthatch can fix this
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk
+
+export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
+
+###
+
+#prompt off
+#PS1='%B%n %~%% %b'
+#RPS1='%?'
 
 MAILCHECK=0
 
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source ~/.zsh/fabric.plugin.zsh
-source ~/.zsh/better-npm-completion/zsh-better-npm-completion.plugin.zsh
+source ~/.config/fabric.plugin.zsh
+#source ~/.zsh/better-npm-completion/zsh-better-npm-completion.plugin.zsh
 
 # set terminal title
 precmd () {print -Pn "\e]0;%n@%m: %d\a"}
+
+# ctrl+enter to accept from menu but stay in menu
+#bind2maps menuselect -- -s '^M' accept-and-menu-complete
+
+# ctrl+n to run mkdir -p on the directory under the cursor
+bind2maps emacs viins       -- -s '^n' inplaceMkDirs
+
+bindkey -v
+bindkey ';5D' emacs-backward-word
+bindkey ';5C' emacs-forward-word
+
+WORDCHARS=${WORDCHARS//[&=\/;!#%\{]}
+
+eval $(dircolors ~/.config/dircolours)
+
+export KEYTIMEOUT=1
+bindkey "^W" backward-kill-word
+bindkey "^H" backward-delete-char      # Control-h also deletes the previous char
+bindkey "^U" backward-kill-line
+bindkey "^?" backward-delete-char
 
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
@@ -21,22 +143,63 @@ bindkey "$terminfo[kcud1]" down-line-or-beginning-search
 
 unsetopt listambiguous
 unsetopt share_history
+setopt incappendhistory # write to .zsh_history file immediately
 setopt noclobber
 
 #alias webserver='python2 -m SimpleHTTPServer'
 alias webserver='echo Webserver is bad, since it is open to the network. Use devd instead.'
 alias longest="awk 'length > m { m = length; a = NR } END { print a }'"
 
-function google { Q="$@"; GOOG_URL='https://www.google.de/search?tbs=li:1&q='; AGENT="Mozilla/4.0"; stream=$(curl -A "$AGENT" -skLm 10 "${GOOG_URL}${Q//\ /+}" | grep -oP '\/url\?q=.+?&amp' | sed 's|/url?q=||; s|&amp||'); echo -e "${stream//\%/\x}"; }
-
-alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])"'
-alias urldecode='python -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])"'
-
-export PAGER=vimpager
-export VIMPAGER_VIM=nvim
+alias fab='fab --fabfile=~/ocaml/honeypot/controller/fabfile.py'
+#alias fab='python -m fabric --fabfile=~/ocaml/honeypot/controller/fabfile.py'
 
 alias vim='nvim -p'
-#alias vim='vim -p'
+alias vimdiff='nvim -d'
 
-# OPAM configuration
-. /home/fabian/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+alias mutt='neomutt'
+
+alias objdump='objdump -M intel'
+
+test -r $HOME/.opam/opam-init/init.zsh && . $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+
+unsetopt histignorealldups # record complete history
+
+# kinda annoying to do this here, but they keep coming back
+#find ~/.local/share/mime -name \*wine\*.xml -delete
+#find ~/.local/share/applications/ -name \*wine\*.desktop -delete
+#find ~/.local/share/desktop-directories -name \*wine\*.directory -delete
+
+#ZSH_HIGHLIGHT_STYLES[path]=none
+#ZSH_HIGHLIGHT_STYLES[path_prefix]=none
+
+export WGETRC=~/.config/wgetrc
+#export XDG_CONFIG_HOME=~/.config
+#export VIMINIT='let $MYVIMRC="/home/fabian/.config/vim/vimrc" | source $MYVIMRC'
+export GNUPGHOME=~/.config/gnupg
+export ELINKS_CONFDIR=~/.config/elinks
+export IPYTHONDIR=~/.config/ipython
+export GOPATH=~/.local/go
+export NODE_REPL_HISTORY=~/.cache/node_repl_history
+export PYTHONSTARTUP=~/.config/pythonrc.py
+export NPM_CONFIG_USERCONFIG=~/.config/npm/npmrc
+export DOCKER_CONFIG=~/.config/docker
+export RANDFILE=~/.cache/randfile
+export MBLAZE=~/.config/mblaze
+export RUSTUP_HOME=~/.cache/rustup
+export SQLITE_HISTORY=/tmp/sqlite_history
+export CARGO_HOME=~/.cache/cargo
+export PACKER_CONFIG_DIR=~/.config/packer
+export PACKER_CACHE_DIR=~/.cache/packer
+
+export AQBANKING_HOME=~/.config/aqbanking
+
+rm -rf ~/.aqbanking # aqbanking creates empty config dir
+rm -rf ~/.xournalpp # remove when xournal>1.0.18 is released
+rm -rf ~/.debug # perf
+
+alias gdb='gdb -q -nh -x ~/.config/gdb/init'
+
+# this is not necessary when using the bind mount
+#export NIX_IGNORE_SYMLINK_STORE=1
+
+export ESY__PREFIX=/media/samsung/esy

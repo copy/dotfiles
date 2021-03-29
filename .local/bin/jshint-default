@@ -1,1 +1,0 @@
-jshint -c ~/.jshint-vim.json "$@"

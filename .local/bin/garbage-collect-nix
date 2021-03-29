@@ -1,0 +1,5 @@
+#!/bin/sh
+set -ve
+#home-manager expire-generations 5
+nix-env --delete-generations +5
+nix-collect-garbage

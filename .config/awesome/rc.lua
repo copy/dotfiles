@@ -60,13 +60,19 @@ end
 -- }}}
 
 -- {{{ Variable definitions
--- Themes define colours, icons, and wallpapers
-beautiful.init("/home/fabian/.config/awesome/theme.lua")
+-- Themes define colours, icons
+beautiful.init("~/.config/awesome/theme.lua")
+
+--beautiful.wallpaper = "~/.config/wallpaper.jpg"
+
+for s = 1, screen.count() do
+    --gears.wallpaper.maximized(beautiful.wallpaper, s, true)
+end
 
 -- This is used later as the default terminal and editor to run.
 terminal = "xterm"
 
-editor = os.getenv("EDITOR") or "nano"
+editor = os.getenv("EDITOR") or "nvim"
 editor_cmd = terminal .. " -e " .. editor
 
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
@@ -76,8 +82,7 @@ mymainmenu = awful.menu({
     items = {
         { "open terminal", terminal },
         --{ "hotkeys", function() return false, hotkeys_popup.show_help end},
-        { "manual", terminal .. " -e man awesome" },
-        { "dmesg", terminal .. " -e 'dmesg | tee /home/fabian/dmesg | tac | vim -'" },
+        --{ "manual", terminal .. " -e man awesome" },
         { "edit config", editor_cmd .. " " .. awesome.conffile },
         { "restart", awesome.restart },
         { "quit", function() awesome.quit() end}
@@ -89,7 +94,8 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 
 
 -- modkey: alt
-modkey = "Mod1"
+--modkey = "Mod1"
+modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 layouts =
@@ -162,22 +168,53 @@ mytextclock = wibox.widget.textclock(" %a %b %d, %H:%M:%S ", 1)
 memwidget = wibox.widget.textbox()
 vicious.register(memwidget, vicious.widgets.mem, function (widget, args) return string.format(" M%02d%%", args[1]) end, 13)
 cpuwidget = wibox.widget.textbox()
-vicious.register(cpuwidget, vicious.widgets.cpu, function (widget, args) return string.format(" %02d%% ", args[1]) end, 15)
+vicious.register(cpuwidget, vicious.widgets.cpu, function (widget, args) return string.format(" %02d%%", args[1]) end, 15)
 
+last_charging_state = nil
 batterywidget = wibox.widget.textbox()
 batterywidget:set_text("")
-batterywidgettimer = gears.timer({ timeout = 60 })
+batterywidgettimer = gears.timer({ timeout = 5 })
 batterywidgettimer:connect_signal("timeout",
   function()
-    fh = assert(io.popen("acpi | cut -d, -f 2,3 - |sed 's/, discharging at zero rate - will never fully discharge.//' | sed 's/ 100%//' " ..
-                         " | sed 's/..:..:.. until charged/charging/' | sed 's/\\s*$//' ", "r"))
-    local text = fh:read("*l")
-    if text then
-        batterywidget:set_text(" " .. text)
-    else
-        batterywidget:set_text("")
+    --local fh = assert(io.popen("acpi | cut -d, -f 2,3 - |sed 's/, discharging at zero rate - will never fully discharge.//' | sed 's/ 100%//' " ..
+    --                     " | sed 's/..:..:.. until charged/charging/' | sed 's/\\s*$//' ", "r"))
+    local fh = io.open("/sys/class/power_supply/AC/online")
+    local charging = not fh or fh:read(1) == "1"
+
+    if last_charging_state ~= nil and last_charging_state ~= charging then
+       --awful.spawn.with_shell( "cmus-remote -u; notify-send $(cmus-remote -Q |grep status)" )
+       if not charging then
+           naughty.notify { text = "Discharging", timeout = 3000 }
+       end
     end
-    fh:close()
+    last_charging_state = charging
+    if fh then fh:close() end
+
+    local charge_full = 1
+    local fh = io.open("/sys/class/power_supply/BAT0/charge_full")
+    if fh then
+        charge_full = tonumber(fh:read("*l"))
+        fh:close()
+    else
+    end
+
+    local charge_now = 1
+    local fh = io.open("/sys/class/power_supply/BAT0/charge_now")
+    if fh then
+        charge_now = tonumber(fh:read("*l"))
+        fh:close()
+    end
+
+    if charge_now == charge_full then
+        batterywidget:set_text(" ")
+    else
+        local percent = math.floor(charge_now / charge_full * 100)
+        if charging then
+            batterywidget:set_text(" " .. percent .. "%, charging")
+        else
+            batterywidget:set_text(" " .. percent .. "%, discharging")
+        end
+    end
   end
 )
 batterywidgettimer:start()
@@ -188,31 +225,42 @@ temperaturewidget:set_text("")
 temperaturewidgetimer = gears.timer({ timeout = 5 })
 temperaturewidgetimer:connect_signal("timeout",
   function()
-    fh = assert(io.popen("sensors coretemp-isa-0000 |cut -d' ' -f5-6 - |sed 's/+//' | sed 's/\\.0//' |grep C |head -n1", "r"))
-    local text = fh:read("*l")
-    if text then
-        temperaturewidget:set_text(" " .. text)
-    else
-        temperaturewidget:set_text()
+    --fh = assert(io.popen("sensors coretemp-isa-0000 |cut -d' ' -f5-6 - |sed 's/+//' | sed 's/\\.0//' |grep C |head -n1", "r"))
+    --use `strace sensors` to find the right device
+    local fh = io.open("/sys/devices/platform/coretemp.0/hwmon/hwmon5/temp1_input")
+    if not fh then
+        fh = io.open("/sys/devices/platform/coretemp.0/hwmon/hwmon4/temp1_input")
     end
-    fh:close()
+    if fh then
+        local text = math.ceil(fh:read("*n") / 1000)
+        if text then
+            temperaturewidget:set_text(" " .. text .. "°")
+        else
+            temperaturewidget:set_text()
+        end
+        fh:close()
+    end
   end
 )
 temperaturewidgetimer:start()
 temperaturewidgetimer:emit_signal("timeout")
 
+--local fh = assert(io.popen("daysleft.py", "r"))
+--stupidwidget = wibox.widget.textbox()
+--stupidwidget:set_text(fh:read("*l"))
+--fh:close()
 
 temperaturewidget2 = wibox.widget.textbox()
 temperaturewidget2:set_text("")
 temperaturewidgetimer2 = gears.timer({ timeout = 5 })
 temperaturewidgetimer2:connect_signal("timeout",
   function()
-    fh = assert(io.popen("nvidia-smi -q |grep 'GPU Current Temp' | sed 's/\\s*GPU Current Temp\\s*: //' | sed 's/ /°/'", "r"))
+    local fh = assert(io.popen("nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader", "r"))
     local text = fh:read("*l")
     if text then
-        temperaturewidget2:set_text(" " .. text)
+        temperaturewidget2:set_text(" " .. text .. "°")
     else
-        temperaturewidget2:set_text()
+        temperaturewidget2:set_text("")
     end
     fh:close()
   end
@@ -250,8 +298,7 @@ local tasklist_buttons = gears.table.join(
     end),
     awful.button({ }, 4, function (c)
         -- mouse wheel set/removes focus
-        c.minimized = true
-
+        if c.valid then c.minimized = true end
     end),
     awful.button({ }, 5, function (c)
         c.minimized = false
@@ -298,6 +345,7 @@ awful.screen.connect_for_each_screen(function(s)
             cpuwidget,
             memwidget,
             mytextclock,
+            --stupidwidget,
             s.mylayoutbox,
         },
     }
@@ -320,7 +368,7 @@ globalkeys = gears.table.join(
    awful.key({}, "F10", function() awful.spawn( ".local/bin/setvolume.sh mute" ) end),
    awful.key({}, "F11", function()
        awful.spawn.with_shell( "cmus-remote -u; notify-send $(cmus-remote -Q |grep status)" )
-       awful.spawn.with_shell( "notify-send $(vlc-toggle)" )
+       --awful.spawn.with_shell( "notify-send $(vlc-toggle)" )
        awful.spawn.with_shell( "echo 'cycle pause' | socat - /tmp/mpasocket" )
    end),
 
@@ -461,15 +509,6 @@ globalkeys = gears.table.join(
        end
    ),
 
-   awful.key(
-       { modkey },
-       "F3",
-       function()
-           awful.spawn(".local/bin/notify-ip.sh", false)
-       end
-   ),
-
-
     --awful.key({ modkey }, "p", function() menubar.show() end),
 
    awful.key(
@@ -500,19 +539,20 @@ globalkeys = gears.table.join(
    ),
 
    -- bind PrintScrn to capture a screen
-   awful.key(
-       {},
-       "Print",
-       function()
-           awful.spawn("xfce4-screenshooter -f -s /tmp/",false)
-       end
-   ),
+   --awful.key(
+   --    {},
+   --    "Print",
+   --    function()
+   --        awful.spawn("scrot --select --freeze '/tmp/Screenshot_%Y-%m-%d_%H-%M-%S.png'",false)
+   --    end
+   --),
 
    awful.key(
        { modkey },
        "Print",
        function()
-           awful.spawn("xfce4-screenshooter -r -s /tmp/",false)
+           awful.spawn("scrot '/tmp/Screenshot_%Y-%m-%d_%H-%M-%S.png'", false)
+           naughty.notify { text = "Screenshot taken", timeout = 5 }
        end
    )
 
@@ -551,6 +591,12 @@ clientkeys = gears.table.join(
         function (c)
             awful.tag.history.restore(awful.screen.focused())
         end)
+
+    --awful.key({ "Control",           }, "f1",     function ()
+    --    root.fake_input("key_release", 37)
+    --    root.fake_input("key_press", 191)
+    --    root.fake_input("key_release", 191)
+    --end)
 )
 
 -- Compute the maximum number of digit we need, limited to 9
@@ -631,6 +677,71 @@ clientbuttons = gears.table.join(
 root.keys(globalkeys)
 -- }}}
 
+function send_ctrl_i(i)
+    local ctrl = 37
+    local tab = 23
+    --local alt = 64
+    local alt = 133 -- remapped in .config/xkbcomp
+    local old = root.keys()
+    root.keys({})
+    root.fake_input("key_release", ctrl)
+    root.fake_input("key_release", i)
+    root.fake_input("key_press", alt)
+    root.fake_input("key_press", i)
+    root.fake_input("key_release", i)
+    root.fake_input("key_release", alt)
+    root.fake_input("key_press", ctrl)
+    root.keys(old)
+end
+
+firefoxkeys = gears.table.join(
+    awful.key({ "Control",           }, "j",     function ()
+        root.fake_input("key_release", 37)
+        root.fake_input("key_release", 44)
+        root.fake_input("key_press", 37)
+        root.fake_input("key_press", 50)
+        root.fake_input("key_press", 23)
+        root.fake_input("key_release", 50)
+        root.fake_input("key_release", 23)
+        --root.fake_input("key_release", 37)
+    end),
+    awful.key({ "Control",           }, "k",     function ()
+        root.fake_input("key_release", 37)
+        root.fake_input("key_release", 45)
+        root.fake_input("key_press", 37)
+        root.fake_input("key_press", 23)
+        root.fake_input("key_release", 23)
+        --root.fake_input("key_release", 37)
+    end),
+    awful.key({ "Control",           }, "1",     function ()
+        send_ctrl_i(10)
+    end),
+    awful.key({ "Control",           }, "2",     function ()
+        send_ctrl_i(11)
+    end),
+    awful.key({ "Control",           }, "3",     function ()
+        send_ctrl_i(12)
+    end),
+    awful.key({ "Control",           }, "4",     function ()
+        send_ctrl_i(13)
+    end),
+    awful.key({ "Control",           }, "5",     function ()
+        send_ctrl_i(14)
+    end),
+    awful.key({ "Control",           }, "6",     function ()
+        send_ctrl_i(15)
+    end),
+    awful.key({ "Control",           }, "7",     function ()
+        send_ctrl_i(16)
+    end),
+    awful.key({ "Control",           }, "8",     function ()
+        send_ctrl_i(17)
+    end),
+    awful.key({ "Control",           }, "9",     function ()
+        send_ctrl_i(18)
+    end)
+)
+
 -- {{{ Rules
 awful.rules.rules = {
     -- All clients will match this rule.
@@ -660,6 +771,8 @@ awful.rules.rules = {
       properties = { border_width = 0 } },
     { rule = { class = "rdesktop" },
       properties = { border_width = 0 } },
+    { rule = { class = "hl2_linux" },
+      properties = { border_width = 0 } },
 
     { rule = { class = "Qemu-system-x86_64" },
       --properties = { border_width = 0 },
@@ -680,10 +793,10 @@ awful.rules.rules = {
     { rule = { class = "Wine" },
       properties = { border_width = 0 } },
 
-
-     --{ rule = { class = "Firefox" },
-      -- properties = { tag = tags[1][2] } },
-      --properties = { floating = false, border_width = 5, maximized_vertical = true } },
+      { rule = { class = "firefox" },
+      --properties = { border_width = 25 },
+      properties = { keys = gears.table.join(clientkeys, firefoxkeys) },
+  },
 
     --{ rule = { class = "Terminal" },
     --  --properties = { border_width = 0 },
@@ -734,4 +847,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- run xflux/redshift
 -- oh noes, you know where I live
-awful.spawn.with_shell("pidof redshift || redshift -l 47.5:19.0")
+--awful.spawn.with_shell("pidof redshift || redshift -l 20.6540285:-87.1068018")
+--awful.spawn.with_shell("pidof redshift || redshift -l -12.0262674:-77.1282075")
+--awful.spawn.with_shell("pidof redshift || redshift -l  51.477383:7.214244 ")
+awful.spawn.with_shell("pidof redshift || redshift") -- using geoclue

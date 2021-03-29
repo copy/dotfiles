@@ -1,0 +1,24 @@
+#!/bin/sh
+
+exec bwrap \
+    --bind ~/.config/mutt ~/.config/mutt \
+    --ro-bind ~/.config/nvim ~/.config/nvim \
+    --bind ~/.cache/mutt ~/.cache/mutt \
+    --bind ~/Documents/offlinemail ~/Documents/offlinemail \
+    --proc /proc \
+    --dev /dev \
+    --ro-bind /usr /usr \
+    --symlink usr/lib /lib \
+    --symlink usr/lib64 /lib64 \
+    --symlink usr/bin /bin \
+    --symlink usr/sbin /sbin \
+    --ro-bind /etc /etc \
+    --ro-bind /opt /opt \
+    --bind /tmp /tmp \
+    --tmpfs /run \
+    --bind /run/user/1000/gnupg /run/user/1000/gnupg \
+    --unshare-user \
+    --unshare-pid \
+    --unshare-uts \
+    --unshare-cgroup \
+    /usr/bin/neomutt "$@"

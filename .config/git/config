@@ -1,0 +1,39 @@
+[user]
+    email = copy@copy.sh
+    name = Fabian
+[push]
+    default = matching
+[core]
+    #editor = gvim -f
+    editor = nvim
+
+
+# add "--rebase" to git pull
+[branch]
+    autosetuprebase = always
+[color]
+    status = auto
+[merge]
+    ff = true
+
+[diff]
+    tool = nvimdiff
+    algorithm = patience
+
+[difftool]
+    prompt = true
+[format]
+    #pretty = format:%C(yellow)%h %Cblue%>(25)%ai %Cgreen%<(30)%aN %C(auto)%G?%Creset%<(16)%GK%C(auto)%d %Creset%s
+[help]
+    autocorrect = 0
+[alias]
+    co = checkout
+[gc]
+    pruneExpire = 2.years.ago
+    worktreePruneExpire = 2.years.ago
+    reflogExpire = 2.years.ago
+    reflogExpireUnreachable = 2.years.ago
+[difftool "nvimdiff"]
+    cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[pull]
+    ff = only
