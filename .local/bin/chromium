@@ -1,5 +1,7 @@
 #!/bin/sh
 
+mkdir -p ~/.cache/chromium ~/.config/chromium ~/.cache/pki
+
 exec bwrap \
     --proc /proc \
     --dev /dev \

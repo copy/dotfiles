@@ -7,6 +7,7 @@
     # /dev/nvidia*, /dev/dri*: Only necessary for WebGL
     #--bind /media/samsung/xp /media/samsung/xp \
 
+mkdir -p ~/.cache/mozilla ~/.mozilla ~/.cache/pki
 
 exec bwrap \
     --proc /proc \

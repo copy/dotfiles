@@ -1,6 +1,6 @@
 #!/bin/sh
 
-mkdir -p /run/user/1000/qutebrowser
+mkdir -p /run/user/1000/qutebrowser ~/{.config,.cache}/{qutebrowser,fontconfig} ~/.local/share/{fonts,qutebrowser}
 
 exec bwrap \
     --proc /proc \
@@ -22,10 +22,10 @@ exec bwrap \
     --bind-try /media/samsung/Downloads /media/samsung/Downloads \
     --symlink /media/samsung/Downloads ~/Downloads \
     --bind ~/.cache/qutebrowser ~/.cache/qutebrowser \
-    --bind ~/.config/qutebrowser ~/.config/qutebrowser \
-    --bind ~/.local/share/qutebrowser ~/.local/share/qutebrowser \
     --bind ~/.cache/fontconfig ~/.cache/fontconfig \
+    --bind ~/.config/qutebrowser ~/.config/qutebrowser \
     --bind ~/.config/fontconfig ~/.config/fontconfig \
+    --bind ~/.local/share/qutebrowser ~/.local/share/qutebrowser \
     --bind ~/.local/share/fonts ~/.local/share/fonts \
     --ro-bind ~/ocaml ~/ocaml \
     --tmpfs /run \
