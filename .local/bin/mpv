@@ -32,8 +32,8 @@ let () =
       "--symlink"; "usr/bin"; "/bin";
       "--symlink"; "usr/sbin"; "/sbin";
       "--ro-bind"; "/etc"; "/etc";
-      "--ro-bind"; Filename.concat home "Music"; Filename.concat home "Music";
-      "--ro-bind"; "/media/samsung/Music"; "/media/samsung/Music";
+      "--ro-bind-try"; Filename.concat home "Music"; Filename.concat home "Music";
+      "--ro-bind-try"; "/media/samsung/Music"; "/media/samsung/Music";
       "--bind"; Filename.concat home ".config/mpv"; Filename.concat home ".config/mpv";
       "--tmpfs"; "/run";
       "--bind"; "/run/user/1000/pulse"; "/run/user/1000/pulse";

@@ -17,7 +17,7 @@ exec bwrap \
     --symlink usr/bin /bin \
     --symlink usr/sbin /sbin \
     --ro-bind /etc /etc \
-    --bind /media/samsung/Downloads /media/samsung/Downloads \
+    --bind-try /media/samsung/Downloads /media/samsung/Downloads \
     --symlink /media/samsung/Downloads ~/Downloads \
     --bind ~/.cache/chromium ~/.cache/chromium \
     --bind ~/.config/chromium ~/.config/chromium \
