@@ -1,0 +1,5 @@
+" https://github.com/tridactyl/tridactyl/wiki/Exemplar-.tridactylrc-files
+" https://github.com/glacambre/.dotfiles/blob/master/default/.config/tridactyl/tridactylrc
+" https://gist.github.com/BurntSushi/393546a65db38d57cedcfd72c6d89bf3
+
+unbind <c-f>

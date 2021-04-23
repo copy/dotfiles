@@ -1,5 +1,11 @@
 #!/bin/bash
 
+notify-send () {
+    # to update:
+    # curl https://raw.githubusercontent.com/vlevit/notify-send.sh/master/notify-send.sh > ~/.local/bin/notify-send.sh
+
+    notify-send.sh --replace-file=/tmp/.setvolume-notification-id "$1"
+}
 
 SINKS=$(pactl list sinks|grep -oh 'Name: .*'|cut -d ' ' -f2)
 

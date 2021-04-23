@@ -18,3 +18,4 @@ Usage
 - `git clone https://copy.sh/dotfiles/dotfiles.git && cd dotfiles`
 - Verify that `install.sh` isn't malicious
 - `./install.sh`
+- Copy user.js to your Firefox profile directory manually

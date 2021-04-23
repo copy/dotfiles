@@ -24,7 +24,7 @@ let () =
       "--dev-bind-try"; "/dev/nvidia0"; "/dev/nvidia0";
       "--dev-bind-try"; "/dev/nvidiactl"; "/dev/nvidiactl";
       "--dev-bind-try"; "/dev/dri"; "/dev/dri";
-      "--tmpfs"; "/tmp";
+      "--bind"; "/tmp"; "/tmp"; (* for /tmp/mpasocket *)
       "--ro-bind"; "/tmp/.X11-unix"; "/tmp/.X11-unix";
       "--ro-bind"; "/usr"; "/usr";
       "--symlink"; "usr/lib"; "/lib";
@@ -33,14 +33,24 @@ let () =
       "--symlink"; "usr/sbin"; "/sbin";
       "--ro-bind"; "/etc"; "/etc";
       "--ro-bind-try"; Filename.concat home "Music"; Filename.concat home "Music";
-      "--ro-bind-try"; "/media/samsung/Music"; "/media/samsung/Music";
+      "--ro-bind-try"; "/media/zfspool/Music"; "/media/zfspool/Music";
       "--bind"; Filename.concat home ".config/mpv"; Filename.concat home ".config/mpv";
       "--tmpfs"; "/run";
       "--bind"; "/run/user/1000/pulse"; "/run/user/1000/pulse";
       "--ro-bind"; "/run/user/1000/Xauthority"; "/run/user/1000/Xauthority";
-      "--unshare-all";
-      (* "--new-session"; *)
+      "--unshare-user-try";
+      (* "--unshare-ipc"; *) (* needed for intel graphics driver *)
+      "--unshare-pid";
+      "--unshare-net";
+      "--unshare-uts";
+      "--unshare-cgroup-try";
+      (* "--unshare-all"; *)
     ]
+    @
+    (if List.exists (fun arg ->
+         let proto = List.hd (String.split_on_char ':' arg) in
+         proto = "http" || proto = "https" || proto = "rtmp") args
+     then ["--share-net"] else [])
     @
     List.concat_map (fun x -> if Sys.file_exists x then ["--ro-bind"; U.realpath x; U.realpath x] else []) args
     @

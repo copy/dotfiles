@@ -29,6 +29,7 @@ exec bwrap \
     --bind ~/.cache/mozilla ~/.cache/mozilla \
     --bind ~/.mozilla ~/.mozilla \
     --bind ~/.cache/pki ~/.pki \
+    --bind ~/.config/tridactyl ~/.config/tridactyl \
     --ro-bind ~/.opam ~/.opam \
     --tmpfs /run \
     --bind /run/user/1000/pulse /run/user/1000/pulse \

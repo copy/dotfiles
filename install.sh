@@ -13,6 +13,7 @@ mkdir -p ~/.config/nvim
 mkdir -p ~/.config/nvimpager
 mkdir -p ~/.config/ocaml
 mkdir -p ~/.config/qutebrowser
+mkdir -p ~/.config/tridactyl
 mkdir -p ~/.config/utop
 mkdir -p ~/.local/bin
 
@@ -36,6 +37,7 @@ mkdir -p ~/.local/bin
 ./install-dotfile .config/ocaml/init.ml
 ./install-dotfile .config/pythonrc.py
 ./install-dotfile .config/qutebrowser/config.py
+./install-dotfile .config/tridactyl/tridactylrc
 ./install-dotfile .config/utop/init.ml
 ./install-dotfile .config/wgetrc
 ./install-dotfile .config/xinitrc
