@@ -8,7 +8,7 @@ setopt CHASE_LINKS
 # don't remove trailing slash after completing a dir
 #setopt no_auto_remove_slash
 
-LESSHISTFILE=/dev/null
+export LESSHISTFILE=/dev/null
 
 unsetopt beep
 
@@ -44,8 +44,6 @@ alias dmesg='dmesg -T'
 alias hexdump='hexdump -C'
 
 alias grepi='grep -i'
-
-alias xtermhere='xterm -e "cd `pwd` && zsh"'
 
 alias saved='pwd|xclip'
 alias restored='cd `xclip -o`'

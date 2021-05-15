@@ -62,5 +62,3 @@ mkdir -p ~/.local/bin
 ./install-dotfile .local/bin/set-performance.sh
 ./install-dotfile .local/bin/update-dotfiles
 ./install-dotfile .local/bin/upgrade-nix
-
-ln -fs /usr/bin/kitty ~/.local/bin/xterm
