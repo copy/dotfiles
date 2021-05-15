@@ -8,7 +8,7 @@ packages=(
     #systemd-boot
     #intel-ucode
     firefox chromium
-    firefox-tridactyl firefox-ublock-origin firefox-extension-https-everywhere firefox-decentraleyes firefox-dark-reader
+    firefox-tridactyl firefox-ublock-origin firefox-extension-https-everywhere firefox-decentraleyes firefox-dark-reader firefox-clearurls
     kitty xterm
     wpa_supplicant dialog
     pavucontrol
@@ -23,7 +23,6 @@ packages=(
     pkgfile
     file
     alsa-utils
-    wavemon
     qemu
     bubblewrap
     neovim
@@ -52,7 +51,9 @@ packages=(
     qutebrowser pdfjs pdfgrep
     afl
     wireguard-tools openvpn
-    iftop iotop nethogs cmake make patch m4 wine
+    iftop nethogs gping wavemon
+    iotop
+    cmake make patch m4 wine
     obs-studio ffmpeg
     bash-completion fzf
     kmymoney aqbanking

@@ -15,13 +15,21 @@ user_pref("browser.tabs.closeWindowWithLastTab", false);
 user_pref("browser.tabs.crashReporting.sendReport", false);
 user_pref("browser.tabs.closeWindowWithLastTab", false);
 user_pref("browser.tabs.warnOnClose", false);
+user_pref("toolkit.tabbox.switchByScrolling", true);
 user_pref("browser.urlbar.clickSelectsAll", true);
 user_pref("browser.urlbar.delay", 0);
+user_pref("ui.key.menuAccessKeyFocuses", false);
 user_pref("browser.zoom.full", true); // false: Only zoom text
 user_pref("general.autoScroll", true);
 user_pref("middlemouse.paste", false);
 user_pref("browser.cache.disk.enable", false);
 user_pref("browser.sessionstore.max_tabs_undo", 1000);
+
+// smoother scrolling: https://twitter.com/tumult/status/1183452749171585024
+user_pref("general.smoothScroll.msdPhysics.enabled", true);
+user_pref("general.smoothScroll.msdPhysics.motionBeginSpringConstant", 2500);
+user_pref("general.smoothScroll.msdPhysics.regularSpringConstant", 2500);
+user_pref("general.smoothScroll.msdPhysics.slowdownSpringConstant", 2500);
 
 user_pref("browser.urlbar.ctrlCanonizesURLs", false);
 
