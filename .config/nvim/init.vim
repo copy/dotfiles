@@ -278,7 +278,6 @@ augroup qf
     autocmd FileType qf set nobuflisted
 augroup END
 
-
 " Rust
 augroup rust2
     autocmd!
@@ -299,11 +298,6 @@ function! SetRustOptions()
     " https://github.com/dense-analysis/ale/issues/3105
     "call deoplete#custom#buffer_option('auto_complete', v:false)
 
-    " This doesn't support .rustfmt.toml
-    "let g:rustfmt_options = '+nightly'
-    "let g:rustfmt_command = 'rustfmt +nightly '
-    "let g:rustfmt_autosave = 1
-
     augroup rust
         autocmd!
         "autocmd BufWritePre * undojoin | Neoformat
@@ -311,14 +305,12 @@ function! SetRustOptions()
     augroup END
 endfunction
 
-
 augroup templates
     autocmd!
     autocmd BufNewFile dune silent! 0r $HOME/ocaml/templates/dune.template
     autocmd BufNewFile opam* silent! 0r $HOME/ocaml/templates/opam.template
     autocmd BufNewFile *.sh silent! 0r $HOME/.config/shell.template | normal j
 augroup END
-
 
 let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
 if v:shell_error == 0
@@ -336,7 +328,7 @@ function! SetOcamlOptions()
 
     let g:ocaml_highlight_operators = 1
 
-    let g:merlin_ignore_warnings = 'true'
+    let g:merlin_ignore_warnings = 'false'
 
     command! MerlinToggleWarnings if g:merlin_ignore_warnings == 'true' | let g:merlin_ignore_warnings = 'false' | ALELint | else | let g:merlin_ignore_warnings = 'true' | ALELint | end
 
@@ -466,42 +458,6 @@ augroup autowrite
     autocmd Filetype k AutoWrite
 augroup END
 
-let g:agda_extraincpaths = ['/usr/share/agda/lib/stdlib']
-
-function! AutoExpectTests()
-    " See https://github.com/ocaml/dune/pull/1192
-    augroup autoExpectTests
-        autocmd!
-        "autocmd TextChanged,InsertLeave * call RunExpectTests()
-        autocmd TextChanged,InsertLeave * silent! write | call RunExpectTests()
-    augroup END
-
-    function! RunExpectTests()
-        "silent execute "!dune runtest --auto-promote ."
-        "Dispatch! dune runtest --auto-promote .
-        Dispatch! testy.sh
-    endfunction
-endfunction
-
-
-let g:LanguageClient_serverCommands = { 'haskell': ['hie-wrapper'] }
-let g:LanguageClient_autoStart = 1
-let g:LanguageClient_rootMarkers = {
-            \ 'javascript': ['project.json'],
-            \ 'rust': ['Cargo.toml'],
-            \ 'haskell': ['stack.yaml'],
-            \ }
-let g:LanguageClient_hoverPreview = 'Never'
-
-nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-map <f2> :call LanguageClient#textDocument_hover()<CR>
-map <f3> :call LanguageClient#textDocument_definition()<CR>
-"map <Leader>lr :call LanguageClient#textDocument_rename()<CR>
-map <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
-"map <Leader>lb :call LanguageClient#textDocument_references()<CR>
-map <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
-map <f4> :call LanguageClient#textDocument_documentSymbol()<CR>
-
 let g:ale_completion_enabled = 0
 "let g:ale_open_list = 1
 let g:ale_sign_error = '>>'
@@ -523,6 +479,7 @@ let g:ale_virtualtext_delay = 0
 let g:ale_echo_cursor = 0 " interferes with MerlinTypeOf
 let g:ale_html_htmlhint_options = '--config ~/.config/htmlhint.conf'
 let g:ale_hover_cursor = 0 " laggy
+let g:ale_rust_analyzer_config = { 'diagnostics': { 'disabled': ['incorrect-ident-case', 'inactive-code'] } }
 "g:ale_virtualtext_prefix
 let g:ale_linters = {
 \   'c': ['clang'],
@@ -537,19 +494,12 @@ let g:ale_linters = {
 \   'go': ['golint', 'gofmt'],
 \   'ocaml': ['merlin'],
 \}
-"\   'rust': ['rls'],
 
 hi Error guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
 hi ALEError guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
 hi ALEWarning guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
 hi ALEErrorSign guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
 hi ALEWarningSign guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
-
-"lua <<EOF
-"require'nvim_lsp'.rls.setup{
-"    engine = "rust-analyzer"
-"}
-"EOF
 
 let g:merlin_disable_default_keybindings = 1 " otherwise merlin takes \n and \p
 nmap <silent> <Leader>p <Plug>(ale_previous_wrap)
@@ -590,7 +540,7 @@ if has('nvim')
 
     augroup terminal
         autocmd!
-        autocmd TermOpen * setlocal number relativenumber
+        autocmd TermOpen * setlocal nonumber norelativenumber
         autocmd BufEnter term://* startinsert
         autocmd TermOpen term://* startinsert
         autocmd TermOpen term://* call UndoEscMappingFzf()
@@ -607,26 +557,7 @@ endif
 
 command! TS :tab split
 
-" Now merged into nvimpager, which is configued in ~/.config/nvimpager/init.vim
-"if exists("vimpager")
-"    "colorscheme solarized
-"    "set notermguicolors
-"
-"    " less.vim is annoying since it can't select text
-"    let g:less = { 'enabled': 0 }
-"    " emulate the useful less.vim features
-"    noremap <buffer> d <C-d>
-"    noremap <buffer> u <C-u>
-"    noremap <buffer> q :q<cr>
-"    " Prevent delay when pressing d https://github.com/rkitover/vimpager/issues/131
-"    "let g:loaded_surround = 1
-"
-"    " yanking shouldn't include colour escapes, use built-in highlighting
-"    " this breaks word-diff highlighting
-"    "let g:vimpager.ansiesc = 0
-"endif
-
-
+set runtimepath+=~/.config/nvim/pack/plugins/start/deoplete.nvim
 let g:deoplete#enable_at_startup = 1
 
 try
@@ -648,30 +579,24 @@ try
 
     call deoplete#custom#option('auto_complete_delay', 0)
     "let g:deoplete#auto_complete_delay = 0
-    call deoplete#custom#option('sources', {
-                \ 'rust': ['ale'],
-                \})
+    "call deoplete#custom#option('sources', {
+    "            \ 'rust': ['ale'],
+    "            \})
     "set omnifunc=ale#completion#OmniFunc
 catch /^Vim\%((\a\+)\)\=:E117/
 endtry
-
-let g:LanguageClient_serverCommands = {
-    \ 'haskell': ['hie', '--lsp', '-d', '-l', '/tmp/hie.log'],
-    \ }
-
 
 let g:GPGUseAgent = 0
 let g:GPGPreferSymmetric = 1
 
 " Highlight character at column 100 and trailing spaces
-" TODO: Only for code filetypes
 " TODO: Also after :tab split
-hi Bangy ctermbg=red guibg=#2824b4 ctermbg=blue
+hi Bangy guibg=#2824b4 ctermbg=blue
 augroup bangy
     autocmd!
-    autocmd BufWinEnter * match Bangy /\%100v.\|\s\+$/
-    autocmd InsertLeave * match Bangy /\%100v.\|\s\+$/
-    autocmd InsertEnter * match Bangy /\%100v./
+    autocmd BufWinEnter *.{ml,mli,c,h,ts,rs,js,py,go,sh,k,vim,hs} match Bangy /\%100v.\|\s\+$/
+    autocmd InsertLeave *.{ml,mli,c,h,ts,rs,js,py,go,sh,k,vim,hs} match Bangy /\%100v.\|\s\+$/
+    autocmd InsertEnter *.{ml,mli,c,h,ts,rs,js,py,go,sh,k,vim,hs} match Bangy /\%100v./
 augroup END
 
 augroup scrypt
@@ -688,44 +613,3 @@ augroup scrypt
   au BufWritePost *.scrypt silent! u
   au BufWritePost *.scrypt set nobin
 augroup END
-
-"lua <<EOF
-"local dap = require('dap')
-"dap.adapters.ocaml = {
-"  --type = 'executable';
-"  --command = 'ocamlearlybird';
-"  --args = { 'debug' };
-"
-"  type = 'server';
-"  port = 4711;
-"
-"  --args = { '-m', 'debugpy.adapter' };
-"}
-"dap.configurations.ocaml = {
-"  {
-"    type = 'ocaml';
-"    request = 'launch';
-"    --name = "Launch file";
-"    --program = "${file}";
-"    program = "${workspaceRoot}/_build/default/examples/interact/test_program.bc";
-"    cwd = "${workspaceRoot}";
-"    yieldSteps = 1024;
-"    onlyDebugGlob = "<${workspaceRoot}/_build/default/**/*>";
-"    stopOnEntry = true;
-"    name = "test_program";
-"    console = "integratedTerminal";
-"    --pythonPath = function()
-"    --  return '/usr/bin/python'
-"    --end;
-"            --"name": "test_program",
-"            --"type": "ocaml",
-"            --"request": "launch",
-"            --"stopOnEntry": true,
-"            --"console": "integratedTerminal",
-"            --"program": "${workspaceRoot}/_build/default/examples/interact/test_program.bc",
-"            --"onlyDebugGlob": "<${workspaceRoot}/_build/default/**/*>",
-"            --"yieldSteps": 1024,
-"            --"cwd": "${workspaceRoot}"
-"  },
-"}
-"EOF
