@@ -91,7 +91,7 @@ c.tabs.background = True
 # never let javascript ask for stupid features
 c.content.geolocation = False
 c.content.desktop_capture = False
-c.content.notifications = False
+c.content.notifications.enabled = False
 #c.content.media_capture = False
 c.content.register_protocol_handler = False
 c.content.pdfjs = True

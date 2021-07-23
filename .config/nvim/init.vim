@@ -57,7 +57,7 @@ endif
 
 " For more: https://bluz71.github.io/2017/05/15/vim-tips-tricks.html
 set breakindent
-set showbreak=\\\\\
+set showbreak=↪
 
 set wildmode=longest,list
 
@@ -594,9 +594,9 @@ let g:GPGPreferSymmetric = 1
 hi Bangy guibg=#2824b4 ctermbg=blue
 augroup bangy
     autocmd!
-    autocmd BufWinEnter *.{ml,mli,c,h,ts,rs,js,py,go,sh,k,vim,hs} match Bangy /\%100v.\|\s\+$/
-    autocmd InsertLeave *.{ml,mli,c,h,ts,rs,js,py,go,sh,k,vim,hs} match Bangy /\%100v.\|\s\+$/
-    autocmd InsertEnter *.{ml,mli,c,h,ts,rs,js,py,go,sh,k,vim,hs} match Bangy /\%100v./
+    autocmd BufWinEnter {makefile,Makefile,*.{ml,mli,c,h,ts,rs,js,html,css,py,go,sh,k,vim,hs}} match Bangy /\%100v.\|\s\+$/
+    autocmd InsertLeave {makefile,Makefile,*.{ml,mli,c,h,ts,rs,js,html,css,py,go,sh,k,vim,hs}} match Bangy /\%100v.\|\s\+$/
+    autocmd InsertEnter {makefile,Makefile,*.{ml,mli,c,h,ts,rs,js,html,css,py,go,sh,k,vim,hs}} match Bangy /\%100v./
 augroup END
 
 augroup scrypt

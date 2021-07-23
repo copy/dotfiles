@@ -1,2 +1,2 @@
 # mpa -- mpv for audio
-mpv --vid=no --input-ipc-server=/tmp/mpasocket "$@"
+exec mpv --vid=no --input-ipc-server=/tmp/mpasocket "$@"

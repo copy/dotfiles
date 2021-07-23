@@ -27,7 +27,7 @@ exec bwrap \
     --bind ~/.config/fontconfig ~/.config/fontconfig \
     --bind ~/.local/share/qutebrowser ~/.local/share/qutebrowser \
     --bind ~/.local/share/fonts ~/.local/share/fonts \
-    --ro-bind ~/ocaml ~/ocaml \
+    --ro-bind-try ~/ocaml ~/ocaml \
     --tmpfs /run \
     --bind /run/user/1000/pulse /run/user/1000/pulse \
     --ro-bind /run/user/1000/Xauthority /run/user/1000/Xauthority \

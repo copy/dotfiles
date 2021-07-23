@@ -4,11 +4,11 @@ packages=(
     awesome xorg-server vicious
     #nvidia
     netctl
-    xorg-xinit xorg-xinput xorg-xrandr xorg-xdpyinfo
+    xorg-xinit xorg-xinput xorg-xrandr xorg-xdpyinfo xorg-xev xdotool
     #systemd-boot
     #intel-ucode
     firefox chromium
-    firefox-tridactyl firefox-ublock-origin firefox-extension-https-everywhere firefox-decentraleyes firefox-dark-reader firefox-clearurls
+    firefox-tridactyl firefox-ublock-origin firefox-extension-https-everywhere firefox-decentraleyes firefox-dark-reader
     kitty xterm
     wpa_supplicant dialog
     pavucontrol
@@ -23,11 +23,12 @@ packages=(
     pkgfile
     file
     alsa-utils
+    wavemon
     qemu
     bubblewrap
     neovim
     python-neovim
-    net-tools bind-tools gnu-netcat
+    net-tools bind-tools gnu-netcat traceroute
     youtube-dl rtmpdump
     ocaml ocaml-findlib
     opam
@@ -51,9 +52,8 @@ packages=(
     qutebrowser pdfjs pdfgrep
     afl
     wireguard-tools openvpn
-    iftop nethogs gping wavemon
-    iotop
-    cmake make patch m4 wine
+    iftop iotop nethogs cmake make patch m4
+    wine winetricks
     obs-studio ffmpeg
     bash-completion fzf
     kmymoney aqbanking
@@ -144,3 +144,5 @@ echo "kernel.sysrq = 1" > /etc/sysctl.d/99-sysctl.conf
 echo "/opt/x86_64-linux-musl-native/lib" > /etc/ld-musl-x86_64.path
 
 systemctl mask systemd-binfmt.service # enabled by wine to execute windows executables
+
+# /etc/sysctl.d/*

@@ -20,6 +20,7 @@ exec bwrap \
     --symlink usr/sbin /sbin \
     --ro-bind /etc /etc \
     --bind-try /media/samsung/Downloads /media/samsung/Downloads \
+    --bind-try /media/zfspool/new /media/zfspool/new \
     --symlink /media/samsung/Downloads ~/Downloads \
     --bind ~/.cache/chromium ~/.cache/chromium \
     --bind ~/.config/chromium ~/.config/chromium \

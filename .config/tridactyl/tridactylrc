@@ -3,3 +3,27 @@
 " https://gist.github.com/BurntSushi/393546a65db38d57cedcfd72c6d89bf3
 
 unbind <c-f>
+unbind <F1>
+
+bind d scrollpage 0.5
+bind u scrollpage -0.5
+bind f hint
+bind s pin
+bind x tabclose
+bind e undo
+bind <c-o> back
+bind <c-i> forward
+bind m mute toggle
+bind <c-m> mute toggle
+
+" probably requires a patch
+bind --mode=insert <C-q> js alert("<C-q> is for quitters.")
+bind --mode=input  <C-q> js alert("<C-q> is for quitters.")
+bind --mode=normal <C-q> js alert("<C-q> is for quitters.")
+bind --mode=ex     <C-q> js alert("<C-q> is for quitters.")
+bind --mode=hint   <C-q> js alert("<C-q> is for quitters.")
+
+set newtab about:blank
+set smoothscroll true
+set theme dark
+set modeindicator false

@@ -1,0 +1,31 @@
+/* startpage ads */
+#adBlock { display: none !important; }
+
+/* stackoverflow distractions:
+   https://userstyles.org/styles/userjs/146704/undistractify-stackoverflow-enhanced.user.js */
+#hot-network-questions, /* not related to your work */
+.module.community-bulletin, /* never mind what's up on Meta */
+#chat-feature, /* no wasting your time in a semi-related chatroom */
+#footer-sites /* seriously, stop lookin gfor ways to waste your time */
+{
+    display: none;
+}
+/* Ads to join the site. */
+#herobox, .s-hero { display: none; }
+/* Ads for products. */
+.ad, .ad-container { display: none; }
+
+/* github */
+.signup-prompt-bg { display: none; }
+
+/* twitter */
+#signin-dropdown { display: none; }
+
+/* youtube */
+.ytd-watch-next-secondary-results-renderer.style-scope { display: none; }
+
+/* wikipedia */
+#frb-inline, #frb-nag { display: none; }
+
+/* medium */
+.js-stickyFooter { display: none; }
