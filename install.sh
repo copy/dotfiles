@@ -37,6 +37,7 @@ mkdir -p ~/.local/bin
 ./install-dotfile .config/ocaml/init.ml
 ./install-dotfile .config/pythonrc.py
 ./install-dotfile .config/qutebrowser/config.py
+./install-dotfile .config/qutebrowser/override.css
 ./install-dotfile .config/tridactyl/tridactylrc
 ./install-dotfile .config/utop/init.ml
 ./install-dotfile .config/wgetrc
