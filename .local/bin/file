@@ -1,10 +1,7 @@
 #!/usr/bin/env ocaml
 
-Topdirs.dir_directory (Sys.getenv "OCAML_TOPLEVEL_PATH");;
 #use "topfind";;
-#require "extunix";;
-
-module U = ExtUnix.Specific
+#require "unix";;
 
 let bwrap = "bwrap"
 
@@ -30,11 +27,11 @@ let () =
       "--new-session";
     ]
     @
-    List.concat_map (fun x -> if Sys.file_exists x then ["--ro-bind"; U.realpath x; U.realpath x] else []) args
+    List.concat_map (fun x -> if Sys.file_exists x then ["--ro-bind"; Unix.realpath x; Unix.realpath x] else []) args
     @
     ["/usr/bin/file"]
     @
-    List.map (fun x -> if Sys.file_exists x then U.realpath x else x) args
+    List.map (fun x -> if Sys.file_exists x then Unix.realpath x else x) args
   in
   Unix.execvp bwrap (Array.of_list args)
 

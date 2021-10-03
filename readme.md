@@ -7,7 +7,6 @@
 - `rc.lua` is the config file for [awesome](https://awesomewm.org/), a lightweight, tiling window manager.
 - neovim, nvimpager, nvimdiff
 - The following programs are wrapped using [bubblewrap](https://github.com/containers/bubblewrap/): chromium, evince, feh, firefox, file, mpv, neomutt, qutebrowser
-    - Requires OCaml with [ExtUnix](https://github.com/ygrek/extunix) for some programs (the ExtUnix requirement will go away in OCaml 4.13)
 - Mostly uncluttered `$HOME`
 
 ## Usage

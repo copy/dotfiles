@@ -9,6 +9,8 @@
 
 mkdir -p ~/.cache/mozilla ~/.mozilla ~/.cache/pki
 
+export MOZ_X11_EGL=1 # enable hardware video decoding: https://wiki.archlinux.org/title/firefox#Hardware_video_acceleration
+
 exec bwrap \
     --proc /proc \
     --dev /dev \

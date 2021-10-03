@@ -2,11 +2,12 @@
 
 packages=(
     awesome xorg-server vicious
-    #nvidia
+    #nvidia libva-vdpau-driver
     netctl
     xorg-xinit xorg-xinput xorg-xrandr xorg-xdpyinfo xorg-xev xdotool
     #systemd-boot
     #intel-ucode
+    #libva-intel-driver libva-utils
     firefox chromium
     firefox-tridactyl firefox-ublock-origin firefox-extension-https-everywhere firefox-decentraleyes firefox-dark-reader
     kitty xterm
@@ -108,7 +109,7 @@ packages=(
     virt-viewer
     usbutils
     hdparm
-    encfs
+    encfs fscrypt
     wabt binaryen
     cdrtools # mkisofs
     packer
@@ -136,7 +137,7 @@ systemctl enable cronie.service # save-zsh script
 xdg-settings set default-web-browser firefox.desktop
 
 pip3 install fabric3
-pip2 install pynvim # merlin
+#pip2 install pynvim # merlin: should not be needed anymore
 
 sa-update # spamassassin
 

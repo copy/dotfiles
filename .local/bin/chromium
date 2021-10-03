@@ -12,6 +12,8 @@ exec bwrap \
     --dev-bind-try /dev/video0 /dev/video0 \
     --dev-bind-try /dev/video1 /dev/video1 \
     --dev-bind-try /dev/dri /dev/dri \
+    --dev-bind /sys/bus/pci /sys/bus/pci \
+    --dev-bind /sys/devices /sys/devices \
     --bind /tmp /tmp \
     --ro-bind /usr /usr \
     --symlink usr/lib /lib \
@@ -20,7 +22,7 @@ exec bwrap \
     --symlink usr/sbin /sbin \
     --ro-bind /etc /etc \
     --bind-try /media/samsung/Downloads /media/samsung/Downloads \
-    --bind-try /media/zfspool/new /media/zfspool/new \
+    --bind-try /media/windows3/new /media/windows3/new \
     --symlink /media/samsung/Downloads ~/Downloads \
     --bind ~/.cache/chromium ~/.cache/chromium \
     --bind ~/.config/chromium ~/.config/chromium \
@@ -28,6 +30,8 @@ exec bwrap \
     --tmpfs /run \
     --bind /run/user/1000/pulse /run/user/1000/pulse \
     --ro-bind /run/user/1000/Xauthority /run/user/1000/Xauthority \
+    --ro-bind /run/dbus /run/dbus \
+    --ro-bind /run/user/1000/bus /run/user/1000/bus \
     --unshare-user \
     --unshare-pid \
     --unshare-uts \

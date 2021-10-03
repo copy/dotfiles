@@ -46,6 +46,9 @@ let install f =
       Unix.chmod dest source_perms
     )
   | Some _dest_contents ->
-    Printf.eprintf "Not overwriting: %s %s\n%!" source dest
+    Printf.eprintf "Not overwriting: %s %s\n%!" source dest;
+    let pid = Unix.create_process "diff" [| "diff"; "--color=always"; dest; source |] Unix.stdin Unix.stdout Unix.stderr in
+    let _, _ = Unix.waitpid [] pid in
+    ()
 
 let () = install Sys.argv.(1)

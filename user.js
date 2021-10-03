@@ -7,6 +7,8 @@ user_pref("accessibility.typeaheadfind.autostart", true);
 user_pref("browser.display.use_document_fonts", 0);
 user_pref("browser.search.suggest.enabled", false);
 user_pref("browser.urlbar.suggest.searches", false);
+user_pref("browser.urlbar.suggest.engines", false);
+user_pref("browser.urlbar.groupLabels.enabled", false);
 user_pref("browser.search.update", false);
 user_pref("browser.startup.homepage", "about:blank");
 user_pref("browser.newtabpage.enabled", false);
@@ -24,6 +26,7 @@ user_pref("general.autoScroll", true);
 user_pref("middlemouse.paste", false);
 user_pref("browser.cache.disk.enable", false);
 user_pref("browser.sessionstore.max_tabs_undo", 1000);
+user_pref("network.protocol-handler.external.mailto", false); // disable "add as an application for mailto links" popup in outlook
 
 // smoother scrolling: https://twitter.com/tumult/status/1183452749171585024
 user_pref("general.smoothScroll.msdPhysics.enabled", true);
