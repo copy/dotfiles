@@ -1,21 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-
-# XXX: Should be handled by install-dotfile script
-mkdir -p ~/.config
-mkdir -p ~/.config/awesome
-mkdir -p ~/.config/dune
-mkdir -p ~/.config/gdb
-mkdir -p ~/.config/git
-mkdir -p ~/.config/kitty
-mkdir -p ~/.config/mpv
-mkdir -p ~/.config/nvim
-mkdir -p ~/.config/nvimpager
-mkdir -p ~/.config/ocaml
-mkdir -p ~/.config/qutebrowser
-mkdir -p ~/.config/tridactyl
-mkdir -p ~/.config/utop
-mkdir -p ~/.local/bin
+cd "$(dirname "$0")"
 
 ./install-dotfile .zprofile
 ./install-dotfile .zshrc.pre

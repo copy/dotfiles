@@ -4,6 +4,7 @@
 #require "unix";;
 
 let home = Sys.getenv "HOME"
+let verbose = false
 
 let read_file name =
   match open_in_bin name with
@@ -27,8 +28,19 @@ let write_file name permissions contents =
   output_string f contents;
   close_out_noerr f
 
+let rec mkdir_recursive dir perms =
+  if dir = "/" then invalid_arg "Cannot create /";
+  match Sys.is_directory dir with
+  | true -> ()
+  | false -> invalid_arg (Printf.sprintf "Is a file: %s" dir);
+  | exception Sys_error _ ->
+    let parent = Filename.dirname dir in
+    assert (String.length parent < String.length dir);
+    mkdir_recursive parent perms;
+    Sys.mkdir dir perms
+
 let install f =
-  let source = (* XXX: dirname $0 *) f in
+  let source = Filename.concat (Filename.dirname Sys.argv.(0)) f in
   let dest = Filename.concat home f in
   let source_contents = read_file source |> Option.get in
   let source_perms = (Unix.stat source).st_perm in
@@ -37,12 +49,13 @@ let install f =
   match dest_contents with
   | None ->
     Printf.eprintf "cp %s %s\n%!" source dest;
+    mkdir_recursive (Filename.basename dest) 0o777;
     write_file dest source_perms source_contents
   | Some dest_contents when String.equal source_contents dest_contents ->
-    if source_perms = dest_perms then
-      Printf.eprintf "Already matches: %s %s\n%!" source dest
-    else (
-      Printf.eprintf "Update permissions: %s %s\n%!" source dest;
+    if source_perms = dest_perms then (
+      if verbose then Printf.eprintf "Already matches: %s %s\n%!" source dest
+    ) else (
+      Printf.eprintf "chmod 0o%o %s\n%!" source_perms dest;
       Unix.chmod dest source_perms
     )
   | Some _dest_contents ->
