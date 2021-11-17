@@ -37,3 +37,6 @@
     cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
 [pull]
     ff = only
+
+[advice]
+    detachedHead = false

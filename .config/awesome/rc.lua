@@ -1,12 +1,6 @@
 -- If you want to use this configuration,
 -- change the startup scripts at the bottom of this file
 
-
-local interfaces = {
-    "wlp112s0", "enp109s0",
-    "es3",                      -- qemu
-}
-
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
@@ -19,20 +13,7 @@ local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
-
 local vicious = require("vicious")
-
-
-function run_once(prg, args)
-  if not prg then
-    do return nil end
-  end
-  if not args then
-    args=""
-  end
-  awful.spawn.with_shell('pgrep -f -u $USER -x ' .. prg .. ' || (' .. prg .. ' ' .. args ..')')
-end
-
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -220,7 +201,7 @@ batterywidgettimer:connect_signal("timeout",
 batterywidgettimer:start()
 batterywidgettimer:emit_signal("timeout")
 
-temperaturewidget = wibox.widget.textbox()
+local temperaturewidget = wibox.widget.textbox()
 temperaturewidget:set_text("")
 temperaturewidgetimer = gears.timer({ timeout = 5 })
 temperaturewidgetimer:connect_signal("timeout",
@@ -775,10 +756,10 @@ awful.rules.rules = {
       properties = { border_width = 0 } },
 
     { rule = { class = "Qemu-system-x86_64" },
-      --properties = { border_width = 0 },
-      callback = function(c)
-          c.no_kill = true
-      end
+      callback = function(c) c.no_kill = true end
+    },
+    { rule = { class = "explorer.exe" },
+      callback = function(c) c.no_kill = true end
     },
 
     { rule = { class = "Wine" },

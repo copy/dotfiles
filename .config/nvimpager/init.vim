@@ -5,8 +5,8 @@ noremap <buffer> d <C-d>
 noremap <buffer> u <C-u>
 noremap <buffer> q :q<cr>
 
-set runtimepath+=~/.config/nvim/pack/plugins/start/vim-solarized8
-set runtimepath+=~/.config/nvim/pack/plugins/start/vim-highlightedyank
+set runtimepath+=~/.config/nvim/start/vim-solarized8
+set runtimepath+=~/.config/nvim/start/vim-highlightedyank
 
 set clipboard=unnamedplus
 set ignorecase smartcase

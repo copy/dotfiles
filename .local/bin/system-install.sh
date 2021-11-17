@@ -45,7 +45,7 @@ packages=(
     ncdu
     z3
     wget curl
-    strace lsof
+    strace ltrace lsof
     sqlitebrowser
     mpv shotwell firefox-developer-edition
     unzip zip zstd unrar p7zip zopfli brotli
@@ -80,7 +80,6 @@ packages=(
     perl-image-exiftool
     kakoune kak-lsp
     evince mupdf
-    python2-pip
     cronie
     entr nginx
     cpupower
@@ -126,18 +125,18 @@ pacman -S "${packages[@]}"
 
 pacman -U /tmp/yay-9.4.2-1-x86_64.pkg.tar
 yay -S devd zoom tzupdate pandoc-bin python-dictcc
-yay -S fswatch # dune watch mode
+#yay -S fswatch # dune watch mode
 yay -S nix
 yay -S chatterino2-git
 yay -S nodejs-jsonlint htmlhint
 yay -S graphviz # dot
 yay -S create_ap
+yay -S hlint-bin
 
 systemctl enable cronie.service # save-zsh script
 xdg-settings set default-web-browser firefox.desktop
 
 pip3 install fabric3
-#pip2 install pynvim # merlin: should not be needed anymore
 
 sa-update # spamassassin
 

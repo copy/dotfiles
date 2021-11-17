@@ -1,10 +1,11 @@
+set encoding=utf-8
+scriptencoding utf-8
 set t_ut=
 
 if !has('nvim')
     set runtimepath^=~/.config/vim
 endif
 
-let g:python_host_prog = '/usr/bin/python2.7'
 let g:python3_host_prog = '/usr/bin/python3'
 
 if !has('nvim')
@@ -12,9 +13,8 @@ if !has('nvim')
     packadd! matchit
 endif
 
-set backspace=indent,eol,start
-
 syntax enable
+set backspace=indent,eol,start
 set virtualedit=block
 set showcmd
 set softtabstop=4 shiftwidth=4 expandtab
@@ -60,10 +60,7 @@ set breakindent
 set showbreak=↪
 
 set wildmode=longest,list
-
-set encoding=utf-8
 set termencoding=utf-8
-
 set clipboard=unnamedplus
 
 "set cc=100
@@ -248,12 +245,6 @@ augroup vimrc
 
     " Close scratch window automatically
     autocmd CompleteDone * pclose
-
-    autocmd FileType python map <buffer> <f5> :!./%<enter>
-    autocmd FileType python map <buffer> <f3> <leader>g
-    autocmd FileType python map <buffer> <f4> <leader>n
-
-    autocmd BufNewFile,BufRead *.ejs set filetype=javascript
 augroup END
 
 augroup Binary
@@ -278,31 +269,25 @@ augroup qf
     autocmd FileType qf set nobuflisted
 augroup END
 
+nmap <f2> :lua vim.lsp.buf.hover()<cr>
+nmap <f3> :lua vim.lsp.buf.definition()<cr>
+nmap <f4> :lua vim.lsp.buf.references()<cr>
+nmap <f5> :lua .vim.lsp.buf.code_action()<cr>
+nmap <f5> :lua vim.lsp.buf.declaration()<cr>
+nmap <leader>n :lua vim.lsp.diagnostic.goto_next()<cr>
+nmap <leader>N :lua vim.lsp.diagnostic.goto_prev()<cr>
+
 " Rust
 augroup rust2
     autocmd!
     autocmd Filetype rust call SetRustOptions()
 augroup END
 function! SetRustOptions()
-    "let b:ale_lint_on_insert_leave = 0
-    let b:ale_lint_on_text_changed = 'never'
-    "nmap <buffer> <f2> <plug>DeopleteRustShowDocumentation
-    "nmap <buffer> <f3> <plug>DeopleteRustGoToDefinitionDefault
-    "nmap <buffer> <f2> <plug>DeopleteRustShowDocumentation
-    "nmap <buffer> <f2> :ALEGoToTypeDefinition<cr>
-    nmap <buffer> <f2> :ALEHover<cr>
-    nmap <buffer> <f3> :ALEGoToDefinition<cr>
-    nmap <buffer> <f4> :ALEFindReferences<cr>
-
-    " Deoplete somehow causes ALE to be triggered in insert mode
-    " https://github.com/dense-analysis/ale/issues/3105
-    "call deoplete#custom#buffer_option('auto_complete', v:false)
-
     augroup rust
         autocmd!
-        "autocmd BufWritePre * undojoin | Neoformat
         autocmd BufWritePre *.rs try | undojoin | Neoformat | catch /^Vim\%((\a\+)\)\=:E790/ | finally | silent Neoformat | endtry
     augroup END
+    setl omnifunc=v:lua.vim.lsp.omnifunc
 endfunction
 
 augroup templates
@@ -312,7 +297,7 @@ augroup templates
     autocmd BufNewFile *.sh silent! 0r $HOME/.config/shell.template | normal j
 augroup END
 
-let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
+let g:opamshare = substitute(system('opam var share'),'\n$','','''')
 if v:shell_error == 0
     execute 'set rtp+=' . g:opamshare . '/merlin/vim'
     execute 'set rtp^=' . g:opamshare . '/ocp-indent/vim'
@@ -377,7 +362,7 @@ function! SetOcamlOptions()
     " but not:
     " (* foo
     "  * bar *)
-    setlocal formatoptions-=c formatoptions-=o formatoptions-=r
+    setlocal formatoptions-=c formatoptions-=o formatoptions-=r formatoptions-=q
 
     function! DuneTest()
         "setlocal errorformat=%E%f\ line\ %l\ in\ %m,%C%m,%Z
@@ -404,17 +389,6 @@ function! SetOcamlOptions()
     endfunction
 
     " TODO: Make use of nvim's terminal for tests and compilation
-
-    function! MaybeALELint()
-        if expand('%:t') !=# ':merlin-type-history:'
-            ALELint
-        end
-    endfunction
-
-    augroup autoAleLint
-        autocmd!
-        autocmd TabEnter,FocusGained,TextChanged,InsertLeave,FocusLost * silent! call MaybeALELint()
-    augroup END
 endfunction
 
 augroup dune2
@@ -437,6 +411,7 @@ function! SetTypescriptOptions()
         autocmd!
         autocmd BufWritePre *.ts try | undojoin | Neoformat prettier | catch /^Vim\%((\a\+)\)\=:E790/ | finally | silent Neoformat prettier | endtry
     augroup END
+    setl omnifunc=v:lua.vim.lsp.omnifunc
 endfunction
 
 
@@ -458,6 +433,7 @@ augroup autowrite
     autocmd Filetype k AutoWrite
 augroup END
 
+let g:ale_disable_lsp = 1
 let g:ale_completion_enabled = 0
 "let g:ale_open_list = 1
 let g:ale_sign_error = '>>'
@@ -479,20 +455,19 @@ let g:ale_virtualtext_delay = 0
 let g:ale_echo_cursor = 0 " interferes with MerlinTypeOf
 let g:ale_html_htmlhint_options = '--config ~/.config/htmlhint.conf'
 let g:ale_hover_cursor = 0 " laggy
-let g:ale_rust_analyzer_config = { 'diagnostics': { 'disabled': ['incorrect-ident-case', 'inactive-code'] } }
-"g:ale_virtualtext_prefix
+let g:ale_lint_delay = 0
 let g:ale_linters = {
 \   'c': ['clang'],
 \   'cpp': ['clang'],
 \   'javascript': ['jshint'],
 \   'python': ['pyflakes', 'mypy'],
 \   'asm': [],
-\   'rust': ['analyzer'],
+\   'rust': [],
 \   'java': [],
 \   'haskell': ['hie', 'hlint'],
 \   'json': ['jsonlint'],
 \   'go': ['golint', 'gofmt'],
-\   'ocaml': ['merlin'],
+\   'ocaml': [],
 \}
 
 hi Error guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
@@ -502,8 +477,8 @@ hi ALEErrorSign guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
 hi ALEWarningSign guifg=#dc322f guibg=NONE guisp=NONE gui=NONE cterm=NONE
 
 let g:merlin_disable_default_keybindings = 1 " otherwise merlin takes \n and \p
-nmap <silent> <Leader>p <Plug>(ale_previous_wrap)
-nmap <silent> <Leader>n <Plug>(ale_next_wrap)
+"nmap <silent> <Leader>p <Plug>(ale_previous_wrap)
+"map <silent> <Leader>n <Plug>(ale_next_wrap)
 
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
@@ -557,7 +532,32 @@ endif
 
 command! TS :tab split
 
-set runtimepath+=~/.config/nvim/pack/plugins/start/deoplete.nvim
+lua << EOF
+local init = function(client) client.config.flags.debounce_text_changes = 0 end
+require'lspconfig'.ocamllsp.setup{ on_init = init }
+require'lspconfig'.rust_analyzer.setup{
+    settings = {
+        ["rust-analyzer"] = {
+            diagnostics = { disabled = {"incorrect-ident-case", "inactive-code"} },
+        }
+    },
+}
+require'lspconfig'.tsserver.setup{ cmd = { vim.fn.glob("~/.config/npm/bin/typescript-language-server"), "--stdio" }, filetypes = { "typescript", "typescriptreact" } }
+require'lspconfig'.fstar.setup{}
+vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+  update_in_insert = true,
+  underline = false,
+  signs = false,
+})
+EOF
+
+augroup fstar
+    autocmd BufNewFile,BufRead *.fst set filetype=fstar
+    autocmd BufNewFile,BufRead *.fsti set filetype=fstar
+    autocmd Filetype fstar setl omnifunc=v:lua.vim.lsp.omnifunc
+augroup END
+
+set runtimepath+=~/.config/nvim/start/deoplete.nvim
 let g:deoplete#enable_at_startup = 1
 
 try
@@ -572,8 +572,8 @@ try
     "let g:deoplete#max_abbr_width = 60
     "let g:deoplete#max_list = 0
 
-    call deoplete#custom#option('ignore_sources', { 'ocaml': ['buffer', 'around', 'member', 'tag'] })
-    call deoplete#custom#option('ignore_sources', { 'rust': ['buffer', 'around', 'member', 'tag'] })
+    call deoplete#custom#option('ignore_sources', { 'ocaml': ['buffer', 'around', 'member', 'tag', 'ale'] })
+    call deoplete#custom#option('ignore_sources', { 'rust': ['buffer', 'around', 'member', 'tag', 'ale'] })
     " The following enables synchronous omnibuffer completion
     "let g:deoplete#omni#input_patterns.ocaml = '[^. *\t]\.\w*|\s\w*|#'
 
@@ -590,13 +590,13 @@ let g:GPGUseAgent = 0
 let g:GPGPreferSymmetric = 1
 
 " Highlight character at column 100 and trailing spaces
-" TODO: Also after :tab split
 hi Bangy guibg=#2824b4 ctermbg=blue
 augroup bangy
     autocmd!
-    autocmd BufWinEnter {makefile,Makefile,*.{ml,mli,c,h,ts,rs,js,html,css,py,go,sh,k,vim,hs}} match Bangy /\%100v.\|\s\+$/
-    autocmd InsertLeave {makefile,Makefile,*.{ml,mli,c,h,ts,rs,js,html,css,py,go,sh,k,vim,hs}} match Bangy /\%100v.\|\s\+$/
-    autocmd InsertEnter {makefile,Makefile,*.{ml,mli,c,h,ts,rs,js,html,css,py,go,sh,k,vim,hs}} match Bangy /\%100v./
+    autocmd BufWinEnter {makefile,Makefile,dune*,*.{ml,mli,c,h,ts,rs,js,html,css,py,go,sh,k,vim,hs,md,txt}} match Bangy /\%100v.\|\s\+$/
+    autocmd TabEnter    {makefile,Makefile,dune*,*.{ml,mli,c,h,ts,rs,js,html,css,py,go,sh,k,vim,hs,md,txt}} match Bangy /\%100v.\|\s\+$/
+    autocmd InsertLeave {makefile,Makefile,dune*,*.{ml,mli,c,h,ts,rs,js,html,css,py,go,sh,k,vim,hs,md,txt}} match Bangy /\%100v.\|\s\+$/
+    autocmd InsertEnter {makefile,Makefile,dune*,*.{ml,mli,c,h,ts,rs,js,html,css,py,go,sh,k,vim,hs,md,txt}} match Bangy /\%100v./
 augroup END
 
 augroup scrypt

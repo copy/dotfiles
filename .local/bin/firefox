@@ -35,7 +35,8 @@ exec bwrap \
     --ro-bind ~/.opam ~/.opam \
     --tmpfs /run \
     --bind /run/user/1000/pulse /run/user/1000/pulse \
-    --ro-bind /run/user/1000/Xauthority /run/user/1000/Xauthority \
+    --bind /run/user/1000/Xauthority /run/user/1000/Xauthority \
+    --bind /run/user/1000/bus /run/user/1000/bus \
     --unshare-user \
     --unshare-pid \
     --unshare-uts \
