@@ -4,14 +4,16 @@ packages=(
     awesome xorg-server vicious
     #nvidia libva-vdpau-driver
     netctl
-    xorg-xinit xorg-xinput xorg-xrandr xorg-xdpyinfo xorg-xev xdotool
+    xorg-xinit xorg-xinput xorg-xrandr xorg-xdpyinfo xorg-xev xorg-xwininfo xdotool
+    xclip
+    mesa-utils
     #systemd-boot
     #intel-ucode
     #libva-intel-driver libva-utils
     firefox chromium
     firefox-tridactyl firefox-ublock-origin firefox-extension-https-everywhere firefox-decentraleyes firefox-dark-reader
     kitty xterm
-    wpa_supplicant dialog
+    wpa_supplicant dialog wireless_tools
     pavucontrol
     pulseaudio pulseaudio-alsa
     dnscrypt-proxy
@@ -38,6 +40,7 @@ packages=(
     ripgrep rustup
     gdb lldb perf
     xdg-user-dirs
+    findutils parallel
     hddtemp
     redshift
     git svn mercurial
@@ -66,6 +69,7 @@ packages=(
     borg borgmatic python-llfuse
     cmus
     scrot
+    qrencode
     feh
     gimp
     gsmartcontrol
@@ -81,6 +85,7 @@ packages=(
     kakoune kak-lsp
     evince mupdf
     cronie
+    moreutils
     entr nginx
     cpupower
     speedtest-cli
@@ -97,11 +102,13 @@ packages=(
     cloc tree
     jhead
     xournalpp
+    ddcutil
     noto-fonts noto-fonts-emoji noto-fonts-cjk # emoji and other unicode crap in terminal and firefox
     mypy python-pyflakes
     vint
     android-tools
     iw
+    rlwrap
     macchanger
     rmlint
     dmidecode
