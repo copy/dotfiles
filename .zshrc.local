@@ -1,6 +1,10 @@
 zstyle ':completion:*:*:(v|vim|nvim):*:*files' ignored-patterns '*.(a|dylib|so|o|pyc)'
 zstyle ':completion:*' menu select=1 # show highlight regardless of number of files
 
+if [[ "${SSH_CONNECTION}" ]]; then
+    zstyle ':prompt:grml:*:items:user' pre '%F{red}'
+fi
+
 setopt EXTENDED_GLOB
 
 # show the destination of symbolic links instead of its name
