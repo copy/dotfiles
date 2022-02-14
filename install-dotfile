@@ -49,7 +49,7 @@ let install f =
   match dest_contents with
   | None ->
     Printf.eprintf "cp %s %s\n%!" source dest;
-    mkdir_recursive (Filename.basename dest) 0o777;
+    mkdir_recursive (Filename.dirname dest) 0o777;
     write_file dest source_perms source_contents
   | Some dest_contents when String.equal source_contents dest_contents ->
     if source_perms = dest_perms then (
@@ -60,7 +60,7 @@ let install f =
     )
   | Some _dest_contents ->
     Printf.eprintf "Not overwriting: %s %s\n%!" source dest;
-    let pid = Unix.create_process "diff" [| "diff"; "--color=always"; dest; source |] Unix.stdin Unix.stdout Unix.stderr in
+    let pid = Unix.create_process "diff" [| "diff"; dest; source |] Unix.stdin Unix.stdout Unix.stderr in
     let _, _ = Unix.waitpid [] pid in
     ()
 
